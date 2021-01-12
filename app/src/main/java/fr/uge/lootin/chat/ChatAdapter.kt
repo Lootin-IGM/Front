@@ -25,7 +25,6 @@ class ChatAdapter(var messages: List<Chat>, var listener: Consumer<Int>?) : Recy
         val messageRight = itemView.findViewById<TextView>(R.id.right)
 
 
-
         @SuppressLint("ResourceType")
         @RequiresApi(api = Build.VERSION_CODES.N)
         fun update(item: Chat, pos: Int) {
@@ -62,5 +61,16 @@ class ChatAdapter(var messages: List<Chat>, var listener: Consumer<Int>?) : Recy
                         false
                 )
         )
+    }
+
+    fun pushFrontFirst(chat : Chat){
+         this.messages = listOf(chat).plus(this.messages)
+        notifyItemInserted(0)
+    }
+
+    fun pushFrontLast(chats : List<Chat>){
+        this.messages = this.messages.plus(chats)
+        //add(position, item);
+        //notifyItemInserted(1);
     }
 }
