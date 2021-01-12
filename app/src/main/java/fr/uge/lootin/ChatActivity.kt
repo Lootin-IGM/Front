@@ -13,6 +13,8 @@ class ChatActivity : AppCompatActivity() {
         findViewById<Button>(R.id.sendText).setOnClickListener { sendText() }
         findViewById<Button>(R.id.picture).setOnClickListener { SendPicture() }
         findViewById<Button>(R.id.vocal).setOnClickListener { SendVocal() }
+
+        //Test
     }
 
     fun sendText() {
