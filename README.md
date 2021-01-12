@@ -5,6 +5,7 @@ Ceci correspond à la partie Android du projet.
 ## Comment coder proprement ?
 
 - Cloner le repo sur votre machine. (`git clone`)
+- Mettez vous sur le branche **develop** (`git checkout devop`)
 - Créer une nouvelle branche qui correspondra à votre feature (`git branch nomBranche`)
 - Changer de branche (`git checkout nomBranche`)
 - Vous êtes maintenant sur une branche nouvelle branche locale, le git ne la connaît pas !
