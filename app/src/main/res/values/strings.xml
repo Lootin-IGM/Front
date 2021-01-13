@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Lootin</string>
+    <string name="googleButtonOnSignInPage">Google</string>
+    <string name="loginButtonOnSignInPage">Se connecter</string>
+    <string name="emailTextOnSignInPage">Email</string>
+    <string name="passwordTextOnSignInPage">Password</string>
+    <string name="registerTextOnSignInPage">S\'inscrire</string>
 </resources>

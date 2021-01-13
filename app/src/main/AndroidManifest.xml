@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Lootin">
-        <activity android:name=".ChatActivity">
+        <activity android:name=".signin.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
