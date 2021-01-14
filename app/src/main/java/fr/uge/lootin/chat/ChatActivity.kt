@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
+import java.util.*
 
 class ChatActivity : AppCompatActivity() {
     lateinit var recycler : RecyclerView
@@ -20,33 +21,21 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        recycler = findViewById<RecyclerView>(R.id.reclyclerChat)
-
-        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                Log.i("stated", newState.toString())
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d("-----", "end");
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                Log.i("state", "dy : " + dy)
-
-            }
-        })
+        recycler = findViewById(R.id.reclyclerChat)
         
         val tmpMessage = listOf<Chat>(Chat("yeeees", true),  Chat("go domac a 19h", false), Chat("ça fera largement l'affaire !!", false), Chat("G 5 euro", true), Chat("ça dépend si tu paies", false),Chat("yo tu baises le premier soir ?", true), Chat("Hello twa", false))
-        adapter = ChatAdapter(tmpMessage, null)
+        val mutableList : MutableList<Chat> = ArrayList()
+        for(e in tmpMessage) {
+            mutableList.add(e)
+        }
+        adapter = ChatAdapter(mutableList, null)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
+
 
         findViewById<Button>(R.id.sendText).setOnClickListener { sendText() }
         findViewById<Button>(R.id.picture).setOnClickListener { SendPicture() }
         findViewById<Button>(R.id.vocal).setOnClickListener { SendVocal() }
-
     }
 
     fun sendText() {
@@ -54,7 +43,7 @@ class ChatActivity : AppCompatActivity() {
         val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
         if (message.length > 0) {
             adapter.pushFrontFirst(Chat(message, true))
-            findViewById<TextView>(R.id.zoneText).setText("")
+            findViewById<TextView>(R.id.zoneText).text = ""
             recycler.scrollToPosition(0)
         }
     }

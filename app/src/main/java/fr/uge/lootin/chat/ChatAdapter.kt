@@ -2,6 +2,7 @@ package fr.uge.lootin.chat
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,25 +17,25 @@ import fr.uge.lootin.R
 import java.util.function.Consumer
 
 
-class ChatAdapter(var messages: List<Chat>, var listener: Consumer<Int>?) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(var messages: MutableList<Chat>, var listener: Consumer<Int>?) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     inner class ViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
-
 
         val messageLeft = itemView.findViewById<TextView>(R.id.left)
         val messageRight = itemView.findViewById<TextView>(R.id.right)
 
 
-        @SuppressLint("ResourceType")
         @RequiresApi(api = Build.VERSION_CODES.N)
         fun update(item: Chat, pos: Int) {
 
             if(item.iSend){
-                messageRight.setText(item.message)
+                messageRight.text = item.message
+                messageLeft.text = ""
             } else {
-                messageLeft.setText(item.message)
+                messageLeft.text = item.message
+                messageRight.text = ""
             }
-            itemView.setOnClickListener { v ->
+            itemView.setOnClickListener {
                 listener!!.accept(pos)
                 notifyItemChanged(pos)
 
@@ -64,12 +65,13 @@ class ChatAdapter(var messages: List<Chat>, var listener: Consumer<Int>?) : Recy
     }
 
     fun pushFrontFirst(chat : Chat){
-         this.messages = listOf(chat).plus(this.messages)
+        messages.add(0, chat)
         notifyItemInserted(0)
     }
 
     fun pushFrontLast(chats : List<Chat>){
-        this.messages = this.messages.plus(chats)
+       // this.messages = this.messages.plus(chats)
+        this.messages
         //add(position, item);
         //notifyItemInserted(1);
     }
