@@ -31,6 +31,17 @@ class ChatActivity : AppCompatActivity() {
         adapter = ChatAdapter(mutableList, null)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
+        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Log.i("stated", newState.toString())
+                if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    /*TODO load messages*/
+                    Log.d("-----", "end");
+                }
+            }
+        })
 
 
         findViewById<Button>(R.id.sendText).setOnClickListener { sendText() }
@@ -41,7 +52,7 @@ class ChatActivity : AppCompatActivity() {
     fun sendText() {
         //Toast.makeText(this, "Send message is not implemented yet", Toast.LENGTH_LONG).show()
         val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
-        if (message.length > 0) {
+        if (message.isNotEmpty()) {
             adapter.pushFrontFirst(Chat(message, true))
             findViewById<TextView>(R.id.zoneText).text = ""
             recycler.scrollToPosition(0)
