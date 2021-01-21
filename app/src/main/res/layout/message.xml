@@ -19,6 +19,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.8" />
 
+
     <TextView
         android:id="@+id/left"
         android:layout_width="0dp"

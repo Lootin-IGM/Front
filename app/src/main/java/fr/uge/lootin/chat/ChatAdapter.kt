@@ -1,78 +1,76 @@
 package fr.uge.lootin.chat
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableRow
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
-import java.util.function.Consumer
+import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
+import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
+class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
-class ChatAdapter(var messages: MutableList<Chat>, var listener: Consumer<Int>?) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+    abstract class MessageViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        abstract fun bind(item: T)
+    }
 
-    inner class ViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
+        private val messageContent = view.findViewById<TextView>(R.id.message)
 
-        val messageLeft = itemView.findViewById<TextView>(R.id.left)
-        val messageRight = itemView.findViewById<TextView>(R.id.right)
-
-
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        fun update(item: Chat, pos: Int) {
-
-            if(item.iSend){
-                messageRight.text = item.message
-                messageLeft.text = ""
-            } else {
-                messageLeft.text = item.message
-                messageRight.text = ""
-            }
-            itemView.setOnClickListener {
-                listener!!.accept(pos)
-                notifyItemChanged(pos)
-
-            }
+        override fun bind(item: MessageItemUi) {
+            messageContent.text = item.content
+            messageContent.highlightColor = item.textColor
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
-        viewHolder.update(messages[i], i)
+    class FriendMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
+        private val messageContent = view.findViewById<TextView>(R.id.message)
+
+        override fun bind(item: MessageItemUi) {
+            messageContent.text = item.content
+            messageContent.highlightColor= item.textColor
+        }
+
+
     }
 
-    override fun getItemCount(): Int {
-        return messages.size
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
+        val context = parent.context
+        return when (viewType) {
+            TYPE_MY_MESSAGE -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.my_message, parent, false)
+                MyMessageViewHolder(view)
+            }
+            TYPE_FRIEND_MESSAGE -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.fiend_message, parent, false)
+                FriendMessageViewHolder(view)
+            }
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
-
-    @Override
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        return ViewHolder(
-                LayoutInflater.from(viewGroup.context).inflate(
-                        R.layout.message,
-                        viewGroup,
-                        false
-                )
-        )
+    override fun onBindViewHolder(holder: MessageViewHolder<*>, position: Int) {
+        val item = data[position]
+        Log.d("adapter View", position.toString() + item.content)
+        when (holder) {
+            is MyMessageViewHolder -> holder.bind(item)
+            is FriendMessageViewHolder -> holder.bind(item)
+            else -> throw IllegalArgumentException()
+        }
     }
 
-    fun pushFrontFirst(chat : Chat){
-        messages.add(0, chat)
+    override fun getItemCount(): Int = data.size
+
+    override fun getItemViewType(position: Int): Int = data[position].messageType
+
+    fun pushFrontFirst(chat : MessageItemUi){
+        data.add(0, chat)
         notifyItemInserted(0)
     }
 
-    fun pushFrontLast(chats : List<Chat>){
-       // this.messages = this.messages.plus(chats)
-        this.messages
-        //add(position, item);
-        //notifyItemInserted(1);
-    }
+
 }
