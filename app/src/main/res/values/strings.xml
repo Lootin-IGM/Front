@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Lootin</string>
+    <string name="chat_hint_text_zone">Aa</string>
+    <string name="chat_descr_take_picture">take picture</string>
+    <string name="chat_descr_my_picturtes">my picturtes</string>
+    <string name="chat_descr_send_text">send text</string>
 </resources>
