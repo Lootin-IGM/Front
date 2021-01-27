@@ -4,9 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfilesSwipingActivity">
+    tools:context=".ProfilesSwipingActivity"
+    android:background="@color/background_dark">
 
-    <ImageView
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_margin="40dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/likeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/userPicture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        android:background="@color/button_dark"
+        android:scaleType="centerCrop"
+        />
+
+    </androidx.cardview.widget.CardView>
+
+   <!-- <ImageView
         android:id="@+id/userPicture"
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -17,18 +42,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.836">
 
-    </ImageView>
+    </ImageView>-->
 
     <com.google.android.material.button.MaterialButton
 
         android:id="@+id/likeButton"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:text="Loot"
-        app:backgroundTint="@color/white"
-
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:icon="@drawable/ic_lootin_logo"
+        app:backgroundTint="@color/button_dark"
         app:cornerRadius="280dp"
+        app:iconSize="@android:dimen/app_icon_size"
+        app:iconPadding="0dp"
+        android:padding="0dp"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.766"
@@ -40,11 +69,15 @@
 
         android:id="@+id/nextButton"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-
-        android:text="next"
-        app:backgroundTint="@color/white"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:iconSize="@android:dimen/app_icon_size"
+        app:icon="@drawable/ic_cross_logo"
+        app:iconPadding="0dp"
+        app:iconTint="@null"
+        android:padding="0dp"
+        app:iconGravity="textStart"
+        app:backgroundTint="@color/button_dark"
         app:cornerRadius="280dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

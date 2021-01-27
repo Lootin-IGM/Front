@@ -1,5 +1,5 @@
 package fr.uge.lootin
 
-class UserProfile(username: String, biography: String, profilePicture: String) {
+class UserProfile(val username: String, val biography: String, val profilePicture: String) {
 
 }
