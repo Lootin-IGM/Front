@@ -22,18 +22,27 @@ class ChatManagerActivity : AppCompatActivity() {
 
         val list_messages = ArrayList<PreviewMessage>()
         list_messages.add(PreviewMessage("Heyyy", "Jeanne"))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne2"))
+        list_messages.add(PreviewMessage("Heyyy ça va?", "Jeanne2"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne3"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne4"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne5"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne6"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne7"))
         list_messages.add(PreviewMessage("Heyyy", "Jeanne8"))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne9"))
+        list_messages.add(PreviewMessage("Heyyyzerht", "Jeanne9"))
         val previewMessagesAdapter = PreviewMessageAdapter(list_messages)
         var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
         recyclerViewMessagePreview.adapter = previewMessagesAdapter
         recyclerViewMessagePreview.layoutManager = GridLayoutManager(this, 1, RecyclerView.VERTICAL, false)
+
+        val list_matches = ArrayList<Match>()
+        for(i in 0..10)
+            list_matches.add(Match())
+        val matchesAdapter = MatchAdapter(list_matches)
+        var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
+        recyclerViewMatches.adapter = matchesAdapter
+        recyclerViewMatches.layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
+
     }
 
     

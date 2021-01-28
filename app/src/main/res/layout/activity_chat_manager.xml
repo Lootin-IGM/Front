@@ -4,21 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2C2F33"
     tools:context=".chat_manager.ChatManagerActivity">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#12B0D0"
+        app:cardBackgroundColor="#12B0D0"
+        app:layout_constraintBottom_toTopOf="@+id/header_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/header_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.09"/>
+        app:layout_constraintGuide_percent="0.17" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/match_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="151dp" />
+        app:layout_constraintGuide_percent="0.17" />
 
     <iammert.com.expandablelib.ExpandableLayout
         android:id="@+id/expandable_layout"
@@ -33,12 +43,15 @@
         app:parentLayout="@layout/layout_expandable_parent" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="324dp"
-        android:layout_height="22dp"
-        android:text="TEST"
-        app:layout_constraintBottom_toTopOf="@+id/header_guideline"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/match_title"
+        android:translationZ="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Match"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,6 +63,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/match_guideline" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/matchRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toTopOf="@id/header_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/match_title" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,14 +27,6 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         val vh = ViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.preview_message_layout, parent, false)
         )
-        var color: Int
-        if (i % 2 == 0) {
-            color = Color.parseColor("#1F2124")
-        }
-        else {
-            color = Color.parseColor("#2C2F33")
-        }
-        vh.update(previewMessages.get(i).message, previewMessages.get(i).sender, color)
         return vh
     }
 
@@ -43,6 +35,15 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        var color: Int
+        if (position % 2 == 0) {
+            color = Color.parseColor("#1F2124")
+        }
+        else {
+            color = Color.parseColor("#2C2F33")
+        }
+        holder.update(previewMessages[position].message, previewMessages[position].sender, color)
 
     }
 }
