@@ -8,17 +8,17 @@ import fr.uge.lootin.R
 import fr.uge.lootin.chat_manager.model.MyRenderer
 import fr.uge.lootin.chat_manager.model.Phone
 import fr.uge.lootin.chat_manager.model.PhoneCategory
-import iammert.com.expandablelib.ExpandableLayout
-import iammert.com.expandablelib.Section
+//import iammert.com.expandablelib.ExpandableLayout
+//import iammert.com.expandablelib.Section
 
 class ChatManagerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_manager)
-
+        /*
         val layout : ExpandableLayout = findViewById(R.id.expandable_layout)
         val renderer = MyRenderer()
-        layout.setRenderer(renderer)
+        layout.setRenderer(renderer)*/
 
         val list_messages = ArrayList<PreviewMessage>()
         list_messages.add(PreviewMessage("Heyyy", "Jeanne"))
