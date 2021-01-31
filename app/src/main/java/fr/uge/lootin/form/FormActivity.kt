@@ -18,7 +18,7 @@ class FormActivity : AppCompatActivity() {
 
     private fun createLayoutManager(): RecyclerView.LayoutManager? {
         //return LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        return GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false)
+        return GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +39,5 @@ class FormActivity : AppCompatActivity() {
                 gameRV.layoutManager = createLayoutManager()
             }
         }
-
-        /*
-        Log.i("test", Game.loadCards(this, GAMES_PATH).toString())*/
     }
 }
