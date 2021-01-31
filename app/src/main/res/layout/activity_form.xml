@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="@+id/horizontalGuideOnFormPage" />
 
     <EditText
-        android:id="@+id/pseudoTextOnFormPage"
+        android:id="@+id/pseudoTextOnFormPage9"
         android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginTop="32dp"
@@ -72,7 +72,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/verticaleGuideOnFormPage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pseudoTextOnFormPage" />
+        app:layout_constraintTop_toBottomOf="@+id/pseudoTextOnFormPage9" />
 
     <EditText
         android:id="@+id/pseudoTextOnFormPage3"

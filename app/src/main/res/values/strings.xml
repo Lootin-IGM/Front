@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Lootin</string>
     <string name="validateButtonOnFormPage">VALIDER</string>
+    <string name="next">SUIVANT</string>
+    <string name="pseudoTextOnFormPage">pseudo</string>
+    <string name="whatIsMyPseudo">Quel est ton pseudo ?</string>
+    <string name="pseudoMessageError">veuillez entrer votre pseudo</string>
     <string name="gameTextOnFormPage">Mes jeux</string>
     <string name="IAmTextOnFormPage">Je suis</string>
-    <string name="pseudoTextOnFormPage">pseudo</string>
     <string name="pseudoTextOnFormPage2">...</string>
     <string name="pseudoTextOnFormPage3">...</string>
     <string name="pseudoTextOnFormPage4">...</string>
