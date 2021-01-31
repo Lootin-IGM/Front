@@ -31,15 +31,16 @@ class FormActivity : AppCompatActivity() {
                 applicationContext.getString(R.string.pseudoMessageError),
                 Toast.LENGTH_SHORT
             ).show()
-            else setContentView(R.layout.activity_form)
+            else {
+                setContentView(R.layout.activity_form)
+                gameRV = findViewById(R.id.gameRecyclerView)
+                gameAdapter = GameAdapter(Game.loadCards(this, GAMES_PATH)!!)
+                gameRV.adapter = gameAdapter
+                gameRV.layoutManager = createLayoutManager()
+            }
         }
 
         /*
-        Log.i("test", Game.loadCards(this, GAMES_PATH).toString())
-
-        gameRV = findViewById(R.id.gameRecyclerView)
-        gameAdapter = GameAdapter(Game.loadCards(this, GAMES_PATH)!!)
-        gameRV.adapter = gameAdapter
-        gameRV.layoutManager = createLayoutManager()*/
+        Log.i("test", Game.loadCards(this, GAMES_PATH).toString())*/
     }
 }
