@@ -13,11 +13,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="3dp"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/conversation_photo"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/center_horizontale_guideline"
+        app:layout_constraintStart_toEndOf="@+id/conversation_photo" />
 
     <TextView
         android:id="@+id/last_message"
@@ -25,23 +27,33 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="3dp"
         android:text="TextView"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/conversation_photo" />
+        app:layout_constraintStart_toEndOf="@+id/conversation_photo"
+        app:layout_constraintTop_toBottomOf="@+id/center_horizontale_guideline" />
 
-    <Button
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/conversation_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:text="photo"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/aarmand"
+        app:civ_border_color="#FFFFFF"
+        app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_horizontale_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
