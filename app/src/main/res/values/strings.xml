@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Lootin</string>
-    <string name="validate_button">VALIDER</string>
-    <string name="email_example">example@mail.com</string>
-    <string name="password_example">*********</string>
+    <string name="whatsYourName">Comment tu t\'appelles ?</string>
+    <string name="next">SUIVANT</string>
+    <string name="validate">VALIDER</string>
+    <string name="firstName">Prénom</string>
+    <string name="lastName">Nom</string>
+    <string name="birthday">Ta date d\'anniversaire</string>
+    <string name="day">JJ</string>
+    <string name="month">MM</string>
+    <string name="year">AAAA</string>
+    <string name="iAm">Je suis</string>
+    <string name="man">Homme</string>
+    <string name="woman">Femme</string>
+    <string name="manAndWoman">Homme et Femme</string>
+    <string name="searchingFor">Je cherche</string>
 </resources>
