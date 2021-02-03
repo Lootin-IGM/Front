@@ -14,4 +14,6 @@
     <string name="woman">Femme</string>
     <string name="manAndWoman">Homme et Femme</string>
     <string name="searchingFor">Je cherche</string>
+    <string name="formError">Veuillez remplir tous les champs du formulaire</string>
+    <string name="notSelectedError">Veuillez sélectionner un des champs</string>
 </resources>

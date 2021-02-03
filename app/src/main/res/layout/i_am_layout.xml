@@ -6,7 +6,7 @@
     android:background="@color/background_dark">
 
     <TextView
-        android:id="@+id/whatIsMyPseudo"
+        android:id="@+id/whatAmI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/homme"
+        android:id="@+id/man"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -30,7 +30,6 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:inputType="textPersonName"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -53,7 +52,6 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:inputType="textPersonName"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -66,7 +64,7 @@
         app:layout_constraintTop_toTopOf="@+id/middleGuideline" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/nextButton"
+        android:id="@+id/nextButtonWhatAmI"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

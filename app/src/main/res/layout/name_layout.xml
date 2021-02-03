@@ -6,7 +6,7 @@
     android:background="@color/background_dark">
 
     <TextView
-        android:id="@+id/whatIsMyPseudo"
+        android:id="@+id/WhatsYourName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toTopOf="@+id/middleGuideline" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/nextButton"
+        android:id="@+id/nextButtonWhatsYourName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

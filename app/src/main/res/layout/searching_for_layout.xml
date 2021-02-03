@@ -29,8 +29,7 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/woman"
-        android:inputType="textPersonName"
+        android:text="@string/woman"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -53,8 +52,7 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/manAndWoman"
-        android:inputType="textPersonName"
+        android:text="@string/manAndWoman"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -76,8 +74,7 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/man"
-        android:inputType="textPersonName"
+        android:text="@string/man"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -89,7 +86,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/nextButton"
+        android:id="@+id/nextButtonSearchingFor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
