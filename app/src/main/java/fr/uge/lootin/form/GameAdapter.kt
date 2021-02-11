@@ -14,6 +14,14 @@ class GameAdapter(val gameList: List<Game>) : RecyclerView.Adapter<GameAdapter.V
         fun update(game: Game, position: Int) {
             cardImage.setImageBitmap(game.getBitmap(cardImage.context))
             //notifyItemChanged(position)
+            itemView.setOnClickListener {
+                game.clicked()
+                if (game.isSelected()) {
+                    cardImage.alpha = 0.5F
+                } else {
+                    cardImage.alpha = 1F
+                }
+            }
         }
     }
 

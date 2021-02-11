@@ -10,6 +10,7 @@ import java.io.Serializable
 import java.util.*
 
 class Game(private val path: String, private val name: String) : Comparable<Game>, Serializable {
+    private var selected: Boolean = false;
 
     companion object {
         fun loadCards(context: Context, path: String): List<Game>? {
@@ -29,6 +30,18 @@ class Game(private val path: String, private val name: String) : Comparable<Game
 
     @Transient
     private var cachedBitmap: Bitmap? = null
+
+    fun clicked() {
+        selected = !selected
+    }
+
+    fun getName(): String {
+        return name
+    }
+
+    fun isSelected(): Boolean {
+        return selected
+    }
 
     fun getBitmap(context: Context): Bitmap? {
         var ins: InputStream? = null

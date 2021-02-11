@@ -1,6 +1,7 @@
 package fr.uge.lootin.form
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -34,9 +35,14 @@ class FormActivity : AppCompatActivity() {
             else {
                 setContentView(R.layout.activity_form)
                 gameRV = findViewById(R.id.gameRecyclerView)
-                gameAdapter = GameAdapter(Game.loadCards(this, GAMES_PATH)!!)
+                var cards = Game.loadCards(this, GAMES_PATH)
+                gameAdapter = GameAdapter(cards!!)
                 gameRV.adapter = gameAdapter
                 gameRV.layoutManager = createLayoutManager()
+
+                findViewById<Button>(R.id.validateButtonOnFormPage).setOnClickListener {
+                    cards.forEach { x -> if (x.isSelected()) Log.i("test", x.getName()) }
+                }
             }
         }
     }
