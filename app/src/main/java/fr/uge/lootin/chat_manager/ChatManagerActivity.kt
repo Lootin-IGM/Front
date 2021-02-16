@@ -172,8 +172,11 @@ class ChatManagerActivity : AppCompatActivity() {
         Log.i("my_log", "deprecated method 2 : " + height2 + "     " + width2)
 
         val queue = Volley.newRequestQueue(this)
-        val token = connect(queue)
-        verifyConnect(queue, token)
+        val token: String? = intent.getStringExtra(TOKEN_VALUE)
+        if (token != null) {
+            Log.i("my_log", "dans 2nd acti" + token)
+            verifyConnect(queue, token)
+        }
 
     }
 
