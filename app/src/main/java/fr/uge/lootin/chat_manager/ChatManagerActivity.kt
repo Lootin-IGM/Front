@@ -63,31 +63,6 @@ class ChatManagerActivity : AppCompatActivity() {
 
      */
 
-    private fun connect(queue: RequestQueue): String{
-        val url = "http://192.168.43.2:8080/login"
-        Log.i("my_log", "connect request")
-        var token: String = ""
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
-                Response.Listener { response ->
-                    Log.i("my_log", "Connect Response: %s".format(response.toString()));
-                    val jsonResponse = JSONObject(response.toString());
-                    token = jsonResponse.getString("jwt")
-
-                },
-                Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to connect\n"
-                            + error.toString() + "\n"
-                            + error.networkResponse + "\n"
-                            + error.localizedMessage + "\n"
-                            + error.message + "\n"
-                            + error.cause + "\n"
-                            + error.stackTrace.toString())
-                }
-        )
-        queue.add(jsonObjectRequest)
-        return token
-    }
-
     private fun verifyConnect(queue: RequestQueue, token: String){
         val url = "http://192.168.43.2:8080/showLogin"
 
@@ -109,14 +84,42 @@ class ChatManagerActivity : AppCompatActivity() {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
-                Log.i("my_log", token);
                 params["Authorization"] = "Bearer " + token
                 return params
             }
         }
-
         queue.add(stringRequest)
     }
+
+    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
+        val url = "http://192.168.43.2:8080/matches"
+
+        Log.i("my_log", "get matches request")
+        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page +"}"),
+            Response.Listener { response ->
+                Log.i("my_log", "Response: %s".format(response.toString()))
+            },
+            Response.ErrorListener { error ->
+                Log.i("my_log", "error while trying to verify connexion\n"
+                        + error.toString() + "\n"
+                        + error.networkResponse + "\n"
+                        + error.localizedMessage + "\n"
+                        + error.message + "\n"
+                        + error.cause + "\n"
+                        + error.stackTrace.toString())
+            }
+        ) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "Bearer " + token
+
+                return params
+            }
+        }
+        queue.add(jsonObjectRequest)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_manager)
@@ -174,9 +177,12 @@ class ChatManagerActivity : AppCompatActivity() {
         val queue = Volley.newRequestQueue(this)
         val token: String? = intent.getStringExtra(TOKEN_VALUE)
         if (token != null) {
-            Log.i("my_log", "dans 2nd acti" + token)
+            Log.i("my_log", "dans 2nd acti  " + token)
             verifyConnect(queue, token)
+            getMatches(queue, token, 4, 0)
         }
+
+
 
     }
 
