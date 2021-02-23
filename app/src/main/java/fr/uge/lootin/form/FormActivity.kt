@@ -18,7 +18,6 @@ class FormActivity : AppCompatActivity() {
 
 
     private fun createLayoutManager(): RecyclerView.LayoutManager? {
-        //return LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         return GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false)
     }
 
