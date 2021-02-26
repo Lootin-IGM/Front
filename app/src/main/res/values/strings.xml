@@ -5,6 +5,9 @@
     <string name="pseudoTextOnFormPage">pseudo</string>
     <string name="whatIsMyPseudo">Quel est ton pseudo ?</string>
     <string name="pseudoMessageError">veuillez entrer votre pseudo</string>
+    <string name="imageError">veuillez importer une image</string>
     <string name="validate">VALIDER</string>
+    <string name="takePicture">APPAREIL PHOTO</string>
+    <string name="pickPicture">GALERIE PHOTO</string>
     <string name="iAmPlayingTo">Je joue à...</string>
 </resources>
