@@ -1,21 +1,26 @@
 package fr.uge.lootin.chat_manager
 
+import android.content.Context
 import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.*
-import com.android.volley.toolbox.HttpHeaderParser
 import fr.uge.lootin.R
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 
 //import iammert.com.expandablelib.ExpandableLayout
@@ -89,15 +94,70 @@ class ChatManagerActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
+    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, context: Context) {
         val url = "http://192.168.43.2:8080/matches"
 
         Log.i("my_log", "get matches request")
 
-
-        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
-                Response.Listener { response ->
+        /*
+        Response.Listener { response ->
                     Log.i("my_log", "Response: %s".format(response.toString()))
+                }
+         */
+        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
+                object : Response.Listener<JSONObject?>{
+
+                     @RequiresApi(Build.VERSION_CODES.O)
+                     override fun onResponse(response: JSONObject?) {
+                         //Log.i("my_log", response.toString())
+                         if (response != null) {
+                             val data = response.getJSONArray("data")
+                             //Log.i("my_log", data.toString())
+
+                             val list_messages = ArrayList<PreviewMessage>()
+                             val list_matches = ArrayList<Match>()
+                             for (i in 0 until data.length()) {
+                                 Log.i("my_log", data[i].toString())
+                                 val match = data.getJSONObject(i)
+
+
+                                 if (match.isNull("lastMessage")) {
+                                     list_matches.add(Match())
+                                 }
+                                 else {
+                                     val lastMessage = match.getJSONObject("lastMessage")
+                                     Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
+                                     Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
+                                     //Log.i("my_log", LocalDateTime.parse(lastMessage.getString("sendTime")).toString())
+                                     list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random()))
+                                 }
+                             }
+                             /*
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy ça va?", "Jeanne2", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne3", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne4", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne5", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne6", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne7", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyy", "Jeanne8", (0..3).random()))
+                             list_messages.add(PreviewMessage("Heyyyzerht", "Jeanne9", (0..3).random()))*/
+                             val previewMessagesAdapter = PreviewMessageAdapter(list_messages)
+                             var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
+                             recyclerViewMessagePreview.adapter = previewMessagesAdapter
+
+                             recyclerViewMessagePreview.layoutManager = GridLayoutManager(context, 1, RecyclerView.VERTICAL, false)
+                             /*
+                             for(i in 0..10)
+                                 list_matches.add(Match())
+                             */
+                             val matchesAdapter = MatchAdapter(list_matches)
+                             var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
+                             recyclerViewMatches.adapter = matchesAdapter
+                             recyclerViewMatches.layoutManager = GridLayoutManager(context, 1, RecyclerView.HORIZONTAL, false)
+
+                         }
+                    }
                 },
                 Response.ErrorListener { error ->
 
@@ -109,7 +169,7 @@ class ChatManagerActivity : AppCompatActivity() {
                             + "message " + error.message + "\n"
                             + "cause " + error.cause + "\n"
                             + "stackTrace " + error.stackTrace.toString())
-                    }
+                }
 
         ) {
             @Throws(AuthFailureError::class)
@@ -146,28 +206,6 @@ class ChatManagerActivity : AppCompatActivity() {
         val renderer = MyRenderer()
         layout.setRenderer(renderer)*/
 
-        val list_messages = ArrayList<PreviewMessage>()
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy ça va?", "Jeanne2", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne3", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne4", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne5", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne6", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne7", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyy", "Jeanne8", (0..3).random()))
-        list_messages.add(PreviewMessage("Heyyyzerht", "Jeanne9", (0..3).random()))
-        val previewMessagesAdapter = PreviewMessageAdapter(list_messages)
-        var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
-        recyclerViewMessagePreview.adapter = previewMessagesAdapter
-        recyclerViewMessagePreview.layoutManager = GridLayoutManager(this, 1, RecyclerView.VERTICAL, false)
-
-        val list_matches = ArrayList<Match>()
-        for(i in 0..10)
-            list_matches.add(Match())
-        val matchesAdapter = MatchAdapter(list_matches)
-        var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
-        recyclerViewMatches.adapter = matchesAdapter
-        recyclerViewMatches.layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -197,7 +235,7 @@ class ChatManagerActivity : AppCompatActivity() {
         if (token != null) {
             Log.i("my_log", "dans 2nd acti  " + token)
             verifyConnect(queue, token)
-            getMatches(queue, token, 4, 0)
+            getMatches(queue, token, 4, 0, this)
         }
 
 
