@@ -8,16 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import com.android.volley.*
+import com.android.volley.toolbox.*
+import com.android.volley.toolbox.HttpHeaderParser
 import fr.uge.lootin.R
+import org.json.JSONException
 import org.json.JSONObject
-import kotlin.jvm.Throws
+import java.io.UnsupportedEncodingException
+import java.nio.charset.Charset
 
 
 //import iammert.com.expandablelib.ExpandableLayout
@@ -95,19 +93,24 @@ class ChatManagerActivity : AppCompatActivity() {
         val url = "http://192.168.43.2:8080/matches"
 
         Log.i("my_log", "get matches request")
-        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page +"}"),
-            Response.Listener { response ->
-                Log.i("my_log", "Response: %s".format(response.toString()))
-            },
-            Response.ErrorListener { error ->
-                Log.i("my_log", "error while trying to verify connexion\n"
-                        + error.toString() + "\n"
-                        + error.networkResponse + "\n"
-                        + error.localizedMessage + "\n"
-                        + error.message + "\n"
-                        + error.cause + "\n"
-                        + error.stackTrace.toString())
-            }
+
+
+        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
+                Response.Listener { response ->
+                    Log.i("my_log", "Response: %s".format(response.toString()))
+                },
+                Response.ErrorListener { error ->
+
+
+                    Log.i("my_log", "error while trying to get matches\n"
+                            + error.toString() + "\n"
+                            + "networkResponse " + error.networkResponse + "\n"
+                            + "localizedMessage " + error.localizedMessage + "\n"
+                            + "message " + error.message + "\n"
+                            + "cause " + error.cause + "\n"
+                            + "stackTrace " + error.stackTrace.toString())
+                    }
+
         ) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
@@ -115,6 +118,21 @@ class ChatManagerActivity : AppCompatActivity() {
                 params["Authorization"] = "Bearer " + token
 
                 return params
+            }
+
+            override fun parseNetworkResponse(response: NetworkResponse): Response<JSONObject?>? {
+                return try {
+
+                    val jsonString = String(
+                            response.data,
+                            Charset.forName(HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET)))
+                    Response.success(
+                            JSONObject("{'data':$jsonString}"), HttpHeaderParser.parseCacheHeaders(response))
+                } catch (e: UnsupportedEncodingException) {
+                    Response.error(ParseError(e))
+                } catch (je: JSONException) {
+                    Response.error(ParseError(je))
+                }
             }
         }
         queue.add(jsonObjectRequest)
@@ -161,9 +179,9 @@ class ChatManagerActivity : AppCompatActivity() {
 
         var chatManager : ConstraintLayout =findViewById(R.id.chat_manager_id)
 
-        Log.i("my_log", "chatManager.height and width: " +  chatManager.height + "     " + chatManager.width)
-        Log.i("my_log", "chatManager.measuredHeight and measuredWidth: " +  chatManager.measuredWidth + "     " + chatManager.measuredHeight)
-        Log.i("my_log", "chatManager.bacckgroundColor " +  chatManager.background)
+        Log.i("my_log", "chatManager.height and width: " + chatManager.height + "     " + chatManager.width)
+        Log.i("my_log", "chatManager.measuredHeight and measuredWidth: " + chatManager.measuredWidth + "     " + chatManager.measuredHeight)
+        Log.i("my_log", "chatManager.bacckgroundColor " + chatManager.background)
 
         val display = windowManager.defaultDisplay
         val size = Point()
