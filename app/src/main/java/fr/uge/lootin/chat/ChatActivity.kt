@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import fr.uge.lootin.R
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -23,11 +24,15 @@ import org.json.JSONObject
 import java.net.URI
 import java.util.*
 import kotlin.jvm.Throws
+import com.google.gson.Gson
 
 class ChatActivity : AppCompatActivity() {
     lateinit var recycler : RecyclerView
     lateinit var adapter: ChatAdapter
     private lateinit var webSocketClient: WebSocketClient
+    lateinit var queue : RequestQueue
+    lateinit var token : String
+    var match_id : Long = 0
 
     override fun onResume() {
         super.onResume()
@@ -139,13 +144,49 @@ class ChatActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    private fun getNewMessages(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
+    /**
+     * Get messages
+     */
+    private fun getMessages(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
         val url = "http://192.168.43.2:8080/matches"
 
         Log.i("my_log", "get matches request")
         val jsonObjectRequest = object : JsonObjectRequest(
             Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page +"}"),
             Response.Listener { response ->
+                Log.i("my_log", "Response: %s".format(response.toString()))
+            },
+            Response.ErrorListener { error ->
+                Log.i("my_log", "error while trying to verify connexion\n"
+                        + error.toString() + "\n"
+                        + error.networkResponse + "\n"
+                        + error.localizedMessage + "\n"
+                        + error.message + "\n"
+                        + error.cause + "\n"
+                        + error.stackTrace.toString())
+            }
+        ) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "Bearer " + token
+
+                return params
+            }
+        }
+        queue.add(jsonObjectRequest)
+    }
+
+    /**
+     * Send message
+     */
+    private fun postMessages(content: String) {
+        val url = "http://192.168.43.2:8080/matches"
+
+        val jsonObjectRequest = object : JsonObjectRequest(
+            Request.Method.POST, url, JSONObject("{\"text\": " + content + ",\"matchId\":" + match_id +"}"),
+            Response.Listener { response ->
+                receiveText(response["message"] as String, response["id"] as Long,response["Timestamp"] as Date,)
                 Log.i("my_log", "Response: %s".format(response.toString()))
             },
             Response.ErrorListener { error ->
@@ -178,14 +219,20 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
         recycler = findViewById(R.id.reclyclerChat)
+        queue = Volley.newRequestQueue(this)
+        token = "THOOMAS"
+        match_id = 0
+
 
         
-        val tmpMessage = listOf<MessageItemUi>( MessageItemUi("j'adore manger", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE), MessageItemUi("yeeees", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE), MessageItemUi("go domac a 19h", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE) ,  MessageItemUi("Hey", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE),  MessageItemUi("Yo, on se capte ce soir ?", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE))
+        /*val tmpMessage = listOf<MessageItemUi>( MessageItemUi("j'adore manger", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE), MessageItemUi("yeeees", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE), MessageItemUi("go domac a 19h", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE) ,  MessageItemUi("Hey", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE),  MessageItemUi("Yo, on se capte ce soir ?", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE))
         val mutableList : MutableList<MessageItemUi> = ArrayList()
         for(e in tmpMessage) {
             mutableList.add(e)
         }
-        adapter = ChatAdapter(mutableList)
+
+         */
+        adapter = ChatAdapter(ArrayList())
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -214,10 +261,14 @@ class ChatActivity : AppCompatActivity() {
         //Toast.makeText(this, "Send message is not implemented yet", Toast.LENGTH_LONG).show()
         val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
         if (message.isNotEmpty()) {
-            adapter.pushFrontFirst(MessageItemUi(message,  Color.WHITE, MessageItemUi.TYPE_MY_MESSAGE))
-            findViewById<TextView>(R.id.zoneText).text = ""
-            recycler.scrollToPosition(0)
+            postMessages( message)
         }
+    }
+
+    private fun receiveText(message: String, id :Long, date: Date){
+        adapter.pushFrontFirst(MessageItemUi(message,  Color.WHITE, MessageItemUi.TYPE_MY_MESSAGE, id, date))
+        findViewById<TextView>(R.id.zoneText).text = ""
+        recycler.scrollToPosition(0)
     }
 
     fun SendPicture() {
