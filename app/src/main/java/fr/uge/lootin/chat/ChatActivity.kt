@@ -147,12 +147,12 @@ class ChatActivity : AppCompatActivity() {
     /**
      * Get messages
      */
-    private fun getMessages(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
-        val url = "http://192.168.43.2:8080/matches"
+    private fun getMessages() {
+        val url = "http://192.168.43.2:8080/msg"
 
         Log.i("my_log", "get matches request")
         val jsonObjectRequest = object : JsonObjectRequest(
-            Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page +"}"),
+            Request.Method.POST, url, JSONObject("{\"nb\": " + 15 + ",\"page\": 0" + "\"matchId\":" + match_id +"}"),
             Response.Listener { response ->
                 Log.i("my_log", "Response: %s".format(response.toString()))
             },
@@ -177,11 +177,19 @@ class ChatActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
+    private fun getOldMessages(nb_matches: Int, page: Int){
+
+    }
+
+    private fun getnewMessages(nb_matches: Int, page: Int){
+
+    }
+
     /**
      * Send message
      */
     private fun postMessages(content: String) {
-        val url = "http://192.168.43.2:8080/matches"
+        val url = "http://192.168.43.2:8080/msg/newMessage"
 
         val jsonObjectRequest = object : JsonObjectRequest(
             Request.Method.POST, url, JSONObject("{\"text\": " + content + ",\"matchId\":" + match_id +"}"),
