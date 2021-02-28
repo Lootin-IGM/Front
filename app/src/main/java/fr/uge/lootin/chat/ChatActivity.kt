@@ -10,11 +10,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import fr.uge.lootin.R
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONObject
 import java.net.URI
 import java.util.*
+import kotlin.jvm.Throws
 
 class ChatActivity : AppCompatActivity() {
     lateinit var recycler : RecyclerView
@@ -99,6 +107,68 @@ class ChatActivity : AppCompatActivity() {
                         "}"
         )
     }
+
+
+
+    private fun verifyConnect(queue: RequestQueue, token: String){
+        val url = "http://192.168.43.2:8080/showLogin"
+
+        Log.i("my_log", "verify connexion request")
+        val stringRequest = object : StringRequest(
+            Request.Method.GET, url,
+            Response.Listener { response ->
+                Log.i("my_log", "Response: %s".format(response))
+            },
+            Response.ErrorListener { error ->
+                Log.i("my_log", "error while trying to verify connexion\n"
+                        + error.toString() + "\n"
+                        + error.networkResponse + "\n"
+                        + error.localizedMessage + "\n"
+                        + error.message + "\n"
+                        + error.cause + "\n"
+                        + error.stackTrace.toString())
+            }
+        ) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "Bearer " + token
+                return params
+            }
+        }
+        queue.add(stringRequest)
+    }
+
+    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
+        val url = "http://192.168.43.2:8080/matches"
+
+        Log.i("my_log", "get matches request")
+        val jsonObjectRequest = object : JsonObjectRequest(
+            Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page +"}"),
+            Response.Listener { response ->
+                Log.i("my_log", "Response: %s".format(response.toString()))
+            },
+            Response.ErrorListener { error ->
+                Log.i("my_log", "error while trying to verify connexion\n"
+                        + error.toString() + "\n"
+                        + error.networkResponse + "\n"
+                        + error.localizedMessage + "\n"
+                        + error.message + "\n"
+                        + error.cause + "\n"
+                        + error.stackTrace.toString())
+            }
+        ) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "Bearer " + token
+
+                return params
+            }
+        }
+        queue.add(jsonObjectRequest)
+    }
+
 
 
 
