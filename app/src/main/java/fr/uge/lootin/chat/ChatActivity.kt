@@ -139,7 +139,7 @@ class ChatActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
+    private fun getNewMessages(queue: RequestQueue, token: String, nb_matches: Int, page: Int) {
         val url = "http://192.168.43.2:8080/matches"
 
         Log.i("my_log", "get matches request")
@@ -170,9 +170,9 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-
-
-
+    /**
+     * Checker si on est bien connecté, sinon pop up + exit(0)
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
