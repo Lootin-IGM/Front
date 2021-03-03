@@ -1,129 +1,139 @@
 package fr.uge.lootin
 
-import android.R.attr.maxHeight
-import android.R.attr.maxWidth
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.ImageRequest
-import com.android.volley.toolbox.NetworkImageView
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import com.android.volley.*
+import com.android.volley.toolbox.*
+import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.WebRequestUtils.Companion.onError
+import fr.uge.lootin.WebRequestUtils.Companion.onResult
+import org.json.JSONObject
 
 
 class ProfilesSwipingActivity : AppCompatActivity() {
 
-    // faire dans un asynch sinon erreur => check ce que miranda à fait
-    private val profilesList: ArrayList<UserProfile> = ArrayList()
-    private var index: Int = 0
     private lateinit var queue: RequestQueue
+    var token: String = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTQ4NDk0MDAsImlhdCI6MTYxNDgxMzQwMH0.HfAvwk3aNsYppFaRFNlZ2w2F6JtsdIZgLvkZDGaoQ84"
+    private val usersList: ArrayList<Users> = ArrayList()
+    private var currentUser: Int = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profiles_swiping)
-        queue = Volley.newRequestQueue(this)
-        profilesList.add(UserProfile("XxMichellexX", "J'adore jouer, je m'appelle michelle, ça rime avec echelle ou nique ta mère Ah ça rime pas ?", "https://i.pinimg.com/originals/1f/ce/37/1fce3791e19f6b1e88349808aa7b3010.jpg", 23))
-        profilesList.add(
-            UserProfile(
-                "Playeuse",
-                "BlablablablaBDEblablablaECLATEblablablaBDKblablablaPASMIEUXblablabla",
-                "https://i2-prod.essexlive.news/incoming/article3540005.ece/ALTERNATES/s1200c/0_Tinder-date-disaster.jpg",
-                22
-
-            )
-        )
-        profilesList.add(
-            UserProfile(
-                "Rimsky",
-                "Kalashcriminel like brrrrrr",
-                "https://i.dailymail.co.uk/1s/2019/11/22/08/21327722-7713851-Grace_Millane_pictured_was_on_a_round_the_world_trip_when_she_di-m-18_1574410407590.jpg",
-                27
-            )
-        )
-        profilesList.add(
-            UserProfile(
-                "Paola69",
-                "hola me gusta los tacos de El-paso",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMBLacTzQULDRXLNFomvxHQ-71aY8aVA-9Hg&usqp=CAU",
-                26
-            )
-        )
+        this.queue = Volley.newRequestQueue(this)
+        //connect()
         displayNextProfile()
-
-        findViewById<com.google.android.material.button.MaterialButton>(R.id.likeButton).setOnClickListener {
-            if (profilesList.size <= index + 1) {
-                // Ici recharger les profils
-            } else {
-                // call rest api => like
-                index++
-                displayNextProfile()
-            }
+        findViewById<MaterialButton>(R.id.likeButton).setOnClickListener {
+            likeCurrentUser()
+            displayNextProfile()
         }
-
-        findViewById<com.google.android.material.button.MaterialButton>(R.id.nextButton).setOnClickListener {
-            if (profilesList.size <= index + 1) {
-                // Ici recharger les profils
-            } else {
-                index++
-                displayNextProfile()
-            }
+        findViewById<MaterialButton>(R.id.nextButton).setOnClickListener {
+            displayNextProfile()
         }
-
-    }
-
-    private fun httpRequest(
-        url: String,
-        responseListener: Response.Listener<String>,
-        errorListener: Response.ErrorListener
-    ){
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(
-            Request.Method.GET,
-            url,//{ response ->  textView.text = "Response is: ${response.substring(0, 500)}" }
-            responseListener,
-            errorListener
-        )
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest)
+        findViewById<MaterialButton>(R.id.moreButton).setOnClickListener {
+            val intent = Intent(this, AboutProfileActivity::class.java)
+            intent.putExtra("userId", usersList[currentUser].id)
+            intent.putExtra("token", token)
+            startActivity(intent)
+        }
     }
 
 
-    private fun imageRequest(url: String){
-        val requestQueue = Volley.newRequestQueue(applicationContext)
-        val imageView: ImageView = findViewById(R.id.userPicture)
-        val ir = ImageRequest(
-            url,
-            { response -> imageView.setImageBitmap(response) }, 300, 300, ImageView.ScaleType.CENTER,  Bitmap.Config.RGB_565
-        ) { Log.e("http_error", "Image Load Error: ") }
+    /*
+    1. afficher photo
+    2. créer rview + afficher jeux
+    3. créer écran de chargement si pas de nouveaux résultats (optionnel)
+     private fun imageRequest(url: String, imageView: ImageView) {
+         //val imageView: ImageView = findViewById(R.id.userPicture)
+         val ir = ImageRequest(
+             url,
+             { response -> imageView.setImageBitmap(response) },
+             300,
+             300,
+             ImageView.ScaleType.CENTER,
+             Bitmap.Config.RGB_565
+         ) { Log.e("http_error", "Image Load Error: ") }
 
-        requestQueue.add(ir)
-    }
+         queue.add(ir)
+     }
+ */
 
-    @SuppressLint("WrongViewCast")
+
     private fun displayNextProfile() {
-        val user = profilesList[index]
-        val url = user.profilePicture
-        /*httpRequest(url, { response ->
-            var nv = findViewById<NetworkImageView>(R.id.userPicture);
-            //nv.setDefaultImageResId(R.drawable.default_image); // image for loading...
-            nv.setImageUrl(imageUrl, ImgController.getInstance().getImageLoader())
-        }, { Log.i("http_error", "an error has been encountered while sending http request") })*/
-        imageRequest(url)
-        var bio = user.biography
-        if (bio.length > 30) bio = bio.substring(0, 30) + "..."
-        findViewById<TextView>(R.id.username_textView).text = user.username + ", " + user.age.toString()
-        findViewById<TextView>(R.id.biography_textView).text = bio
+        currentUser++
+        if (currentUser == usersList.size)  loadUsers()
+        else displayNextUser()
     }
 
+    private fun loadUsers() {
+        val url = "http://10.188.201.141:8080/profile"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        val request = GsonGETRequest(url, UserList::class.java, map,
+            { response ->
+                onResult(response)
+                usersList.addAll(response.users)
+                displayNextUser()
+            },
+            { error -> onError(error) }
+        )
+        queue.add(request)
+    }
 
+    private fun getAuthentifiedHeader(): HashMap<String, String>{
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        return map
+    }
+
+    private fun likeCurrentUser() {
+        val url = "http://10.188.201.141:8080/like"
+        val request = object : JsonObjectRequest(Request.Method.POST,
+            url,
+            JSONObject("{\"userLikedId\": " + usersList[currentUser].id + "}"),
+            { response ->
+                onResult(response)
+                val jsonResponse = JSONObject(response.toString());
+            },
+            { error -> onError(error) }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                var header = getAuthentifiedHeader()
+                header["Content-Type"] = "application/json"
+                return header
+            }
+        }
+        queue.add(request)
+    }
+
+    private fun displayNextUser() {
+        var user = usersList[currentUser]
+        var bio =
+            user.firstName + " " + user.lastName + " " + user.lastName + " " + user.lastName + " " + user.lastName
+        if (bio.length > 30) bio = bio.substring(0, 30) + "..."
+        findViewById<TextView>(R.id.username_textView).text = user.login + ", " + user.firstName
+        findViewById<TextView>(R.id.biography_textView2).text = bio
+    }
+
+    private fun connect() {
+        val url = "http://10.188.201.141:8080/login"
+        Log.i("my_log", "connect request")
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.POST,
+            url,
+            JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
+            { response ->
+                onResult(response)
+                val jsonResponse = JSONObject(response.toString());
+                this.token = jsonResponse.getString("jwt")
+            },
+            { error -> onError(error) }
+        )
+        queue.add(jsonObjectRequest)
+    }
 
 
 
