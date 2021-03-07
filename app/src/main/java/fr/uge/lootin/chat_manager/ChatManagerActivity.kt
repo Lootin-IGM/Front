@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -107,7 +106,7 @@ class ChatManagerActivity : AppCompatActivity() {
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
 
-                     @RequiresApi(Build.VERSION_CODES.O)
+
                      override fun onResponse(response: JSONObject?) {
                          //Log.i("my_log", response.toString())
                          if (response != null) {
@@ -195,6 +194,9 @@ class ChatManagerActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+
         queue.add(jsonObjectRequest)
     }
 
