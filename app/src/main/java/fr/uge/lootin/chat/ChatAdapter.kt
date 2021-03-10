@@ -32,8 +32,6 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
             messageContent.text = item.content
             messageContent.highlightColor= item.textColor
         }
-
-
     }
 
 
