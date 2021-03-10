@@ -116,7 +116,7 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun verifyConnect(queue: RequestQueue, token: String){
-        val url = "http://192.168.43.2:8080/showLogin"
+        val url = "http://192.168.1.44:8080/showLogin"
 
         Log.i("my_log", "verify connexion request")
         val stringRequest = object : StringRequest(
@@ -148,7 +148,7 @@ class ChatActivity : AppCompatActivity() {
      * Get messages
      */
     private fun getMessages() {
-        val url = "http://192.168.43.2:8080/msg"
+        val url = "http://192.168.1.44:8080/msg"
 
         Log.i("my_log", "get matches request")
         val jsonObjectRequest = object : JsonObjectRequest(
@@ -189,7 +189,7 @@ class ChatActivity : AppCompatActivity() {
      * Send message
      */
     private fun postMessages(content: String) {
-        val url = "http://192.168.43.2:8080/msg/newMessage"
+        val url = "http://192.168.1.44:8080/msg/newMessage"
 
         val jsonObjectRequest = object : JsonObjectRequest(
             Request.Method.POST, url, JSONObject("{\"text\": " + content + ",\"matchId\":" + match_id +"}"),
@@ -218,6 +218,28 @@ class ChatActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
+    private fun connect(queue: RequestQueue){
+        val url = "http://192.168.1.44:8080/login"
+        Log.i("my_log", "connect request")
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
+                Response.Listener { response ->
+                    Log.i("my_log", "Connect Response: %s".format(response.toString()));
+                    val jsonResponse = JSONObject(response.toString());
+                    this.token = jsonResponse.getString("jwt")
+
+                },
+                Response.ErrorListener { error ->
+                    Log.i("my_log", "error while trying to connect\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
+        )
+        queue.add(jsonObjectRequest)
+    }
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
@@ -231,6 +253,7 @@ class ChatActivity : AppCompatActivity() {
         token = "THOOMAS"
         match_id = 0
 
+        connect(queue)
 
         
         /*val tmpMessage = listOf<MessageItemUi>( MessageItemUi("j'adore manger", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE), MessageItemUi("yeeees", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE), MessageItemUi("go domac a 19h", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE) ,  MessageItemUi("Hey", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE),  MessageItemUi("Yo, on se capte ce soir ?", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE))
