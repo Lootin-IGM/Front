@@ -93,74 +93,44 @@ class ChatManagerActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, context: Context) {
+    private fun getMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_matches: ArrayList<Match>, list_messages: ArrayList<PreviewMessage>, matchAdapter: MatchAdapter, previewMessageAdapter: PreviewMessageAdapter) {
         val url = "http://192.168.43.2:8080/matches"
 
         Log.i("my_log", "get matches request")
 
-        /*
-        Response.Listener { response ->
-                    Log.i("my_log", "Response: %s".format(response.toString()))
-                }
-         */
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
-
-
                      override fun onResponse(response: JSONObject?) {
-                         //Log.i("my_log", response.toString())
+
                          if (response != null) {
                              val data = response.getJSONArray("data")
-                             //Log.i("my_log", data.toString())
 
-                             val list_messages = ArrayList<PreviewMessage>()
-                             val list_matches = ArrayList<Match>()
+                             val matchesSize = list_matches.size
+                             val previewMessagesSize = list_messages.size
                              for (i in 0 until data.length()) {
-                                 Log.i("my_log", data[i].toString())
                                  val match = data.getJSONObject(i)
 
-
+                                 // TODO A traiter quand ce sera prêt (photo + id)
                                  if (match.isNull("lastMessage")) {
                                      list_matches.add(Match())
                                  }
+
+                                 // TODO Rajouter photo quand ce sera prêt
                                  else {
                                      val lastMessage = match.getJSONObject("lastMessage")
-                                     Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
+                                     //Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
                                      Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
                                      //Log.i("my_log", LocalDateTime.parse(lastMessage.getString("sendTime")).toString())
                                      list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random()))
                                  }
                              }
-                             /*
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy ça va?", "Jeanne2", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne3", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne4", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne5", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne6", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne7", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyy", "Jeanne8", (0..3).random()))
-                             list_messages.add(PreviewMessage("Heyyyzerht", "Jeanne9", (0..3).random()))*/
-                             val previewMessagesAdapter = PreviewMessageAdapter(list_messages)
-                             var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
-                             recyclerViewMessagePreview.adapter = previewMessagesAdapter
-
-                             recyclerViewMessagePreview.layoutManager = GridLayoutManager(context, 1, RecyclerView.VERTICAL, false)
-                             /*
-                             for(i in 0..10)
-                                 list_matches.add(Match())
-                             */
-                             val matchesAdapter = MatchAdapter(list_matches)
-                             var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
-                             recyclerViewMatches.adapter = matchesAdapter
-                             recyclerViewMatches.layoutManager = GridLayoutManager(context, 1, RecyclerView.HORIZONTAL, false)
-
+                             matchAdapter.notifyItemInserted(matchesSize)
+                             previewMessageAdapter.notifyItemInserted(previewMessagesSize)
+                             
                          }
                     }
                 },
                 Response.ErrorListener { error ->
-
-
                     Log.i("my_log", "error while trying to get matches\n"
                             + error.toString() + "\n"
                             + "networkResponse " + error.networkResponse + "\n"
@@ -169,19 +139,16 @@ class ChatManagerActivity : AppCompatActivity() {
                             + "cause " + error.cause + "\n"
                             + "stackTrace " + error.stackTrace.toString())
                 }
-
         ) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
                 params["Authorization"] = "Bearer " + token
-
                 return params
             }
 
             override fun parseNetworkResponse(response: NetworkResponse): Response<JSONObject?>? {
                 return try {
-
                     val jsonString = String(
                             response.data,
                             Charset.forName(HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET)))
@@ -194,21 +161,72 @@ class ChatManagerActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-
         queue.add(jsonObjectRequest)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_manager)
+
+        val list_messages = ArrayList<PreviewMessage>()
+
+
+        val previewMessagesAdapter = PreviewMessageAdapter(list_messages)
+        var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
+        recyclerViewMessagePreview.adapter = previewMessagesAdapter
+
+        recyclerViewMessagePreview.layoutManager = GridLayoutManager(this, 1, RecyclerView.VERTICAL, false)
+        recyclerViewMessagePreview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Log.i("my_log", newState.toString())
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    /*TODO load messages*/
+
+                    val size = list_messages.size
+                    list_messages.add(PreviewMessage("Le refresh a fonctionné :)", "Jeanne", (0..3).random()))
+                    previewMessagesAdapter.notifyItemInserted(size)
+                    Log.d("-----", "end");
+                }
+            }
+        })
+
+        val list_matches = ArrayList<Match>()
+        val matchesAdapter = MatchAdapter(list_matches)
+        var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
+        recyclerViewMatches.adapter = matchesAdapter
+        recyclerViewMatches.layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
+
+        recyclerViewMatches.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Log.i("my_log", newState.toString())
+                if (!recyclerView.canScrollHorizontally(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    /*TODO load matches */
+
+                    val size = list_matches.size
+                    list_matches.add(Match())
+                    matchesAdapter.notifyItemInserted(size)
+                    Log.d("-----", "end");
+                }
+            }
+        })
+
+
+
+        val queue = Volley.newRequestQueue(this)
+        val token: String? = intent.getStringExtra(TOKEN_VALUE)
+        if (token != null) {
+            Log.i("my_log", "dans 2nd acti  " + token)
+            verifyConnect(queue, token)
+            getMatches(queue, token, 4, 0, list_matches, list_messages, matchesAdapter, previewMessagesAdapter)
+        }
         /*
         val layout : ExpandableLayout = findViewById(R.id.expandable_layout)
         val renderer = MyRenderer()
         layout.setRenderer(renderer)*/
 
-
+        /*
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
@@ -230,16 +248,7 @@ class ChatManagerActivity : AppCompatActivity() {
         val height2: Int = size.y
         Log.i("my_log", "deprecated method 2 : " + height2 + "     " + width2)
         Log.i("my_log", "deprecated method 2 : " + height2 + "     " + width2)
-        Log.i("my_log", "deprecated method 2 : " + height2 + "     " + width2)
-
-        val queue = Volley.newRequestQueue(this)
-        val token: String? = intent.getStringExtra(TOKEN_VALUE)
-        if (token != null) {
-            Log.i("my_log", "dans 2nd acti  " + token)
-            verifyConnect(queue, token)
-            getMatches(queue, token, 4, 0, this)
-        }
-
+        Log.i("my_log", "deprecated method 2 : " + height2 + "     " + width2)*/
 
 
     }
