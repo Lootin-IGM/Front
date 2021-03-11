@@ -15,7 +15,7 @@ import org.json.JSONObject
 class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
-    var match_id : Long = 0
+    var match_id : Long = 1
     val localhost : String = "192.168.1.58"
     val username : String = "Loulou"
     val password : String = "Yvette"
@@ -28,8 +28,8 @@ class PreChatActivity : AppCompatActivity() {
             url,
             JSONObject("{\"username\": \"$username\",\"password\": \"$password\"}"),
             { response ->
-                Log.i("my_log", "Connect Response: %s".format(response.toString()));
-                val jsonResponse = JSONObject(response.toString());
+                Log.i("my_log", "Connect Response: %s".format(response.toString()))
+                val jsonResponse = JSONObject(response.toString())
                 this.token = jsonResponse.getString("jwt")
                 callChat()
 

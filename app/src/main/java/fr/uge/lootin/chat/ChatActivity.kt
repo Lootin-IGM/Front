@@ -1,13 +1,12 @@
 package fr.uge.lootin.chat
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -23,8 +22,7 @@ import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONObject
 import java.net.URI
 import java.util.*
-import kotlin.jvm.Throws
-import com.google.gson.Gson
+
 
 class ChatActivity : AppCompatActivity() {
     lateinit var recycler : RecyclerView
@@ -117,23 +115,23 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun verifyConnect(queue: RequestQueue, token: String){
-        val url = "http://" + localhost + ":8080/showLogin"
+        val url = "http://$localhost:8080/showLogin"
 
         Log.i("my_log", "verify connexion request")
         val stringRequest = object : StringRequest(
-            Request.Method.GET, url,
-            Response.Listener { response ->
-                Log.i("my_log", "Response: %s".format(response))
-            },
-            Response.ErrorListener { error ->
-                Log.i("my_log", "error while trying to verify connexion\n"
-                        + error.toString() + "\n"
-                        + error.networkResponse + "\n"
-                        + error.localizedMessage + "\n"
-                        + error.message + "\n"
-                        + error.cause + "\n"
-                        + error.stackTrace.toString())
-            }
+                Request.Method.GET, url,
+                Response.Listener { response ->
+                    Log.i("my_log", "Response: %s".format(response))
+                },
+                Response.ErrorListener { error ->
+                    Log.i("my_log", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
         ) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
@@ -146,24 +144,24 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun connect(queue: RequestQueue){
-        val url = "http://" + localhost + ":8080/login"
+        val url = "http://$localhost:8080/login"
         Log.i("my_log", "connect request")
         val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
-            { response ->
-                Log.i("my_log", "Connect Response: %s".format(response.toString()));
-                val jsonResponse = JSONObject(response.toString());
-                this.token = jsonResponse.getString("jwt")
+                { response ->
+                    Log.i("my_log", "Connect Response: %s".format(response.toString()));
+                    val jsonResponse = JSONObject(response.toString());
+                    this.token = jsonResponse.getString("jwt")
 
-            },
-            { error ->
-                Log.i("my_log", "error while trying to connect\n"
-                        + error.toString() + "\n"
-                        + error.networkResponse + "\n"
-                        + error.localizedMessage + "\n"
-                        + error.message + "\n"
-                        + error.cause + "\n"
-                        + error.stackTrace.toString())
-            }
+                },
+                { error ->
+                    Log.i("my_log", "error while trying to connect\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
         )
         queue.add(jsonObjectRequest)
     }
@@ -172,28 +170,28 @@ class ChatActivity : AppCompatActivity() {
      * Get messages
      */
     private fun getMessages() {
-        val url = "http://" + localhost + ":8080/msg"
+        val url = "http://$localhost:8080/msg"
 
         Log.i("my_log", "get matches request")
         val jsonObjectRequest = object : JsonObjectRequest(
-            Request.Method.POST, url, JSONObject("{\"nb\": " + 15 + ",\"page\": 0" + "\"matchId\":" + match_id +"}"),
-            Response.Listener { response ->
-                Log.i("my_log", "Response: %s".format(response.toString()))
-            },
-            Response.ErrorListener { error ->
-                Log.i("my_log", "error while trying to verify connexion\n"
-                        + error.toString() + "\n"
-                        + error.networkResponse + "\n"
-                        + error.localizedMessage + "\n"
-                        + error.message + "\n"
-                        + error.cause + "\n"
-                        + error.stackTrace.toString())
-            }
+                Request.Method.POST, url, JSONObject("{\"nb\": 15,\"page\": 0\"matchId\":$match_id}"),
+                Response.Listener { response ->
+                    Log.i("my_log", "Response: %s".format(response.toString()))
+                },
+                Response.ErrorListener { error ->
+                    Log.i("my_log", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
         ) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "Bearer " + token
+                params["Authorization"] = "Bearer $token"
 
                 return params
             }
@@ -213,28 +211,28 @@ class ChatActivity : AppCompatActivity() {
      * Send message
      */
     private fun postMessages(content: String) {
-        val url = "http://" + localhost +":8080/msg/newMessage"
+        val url = "http://$localhost:8080/msg/newMessage"
 
         val jsonObjectRequest = object : JsonObjectRequest(
-            Request.Method.POST, url, JSONObject("{\"text\": " + content + ",\"matchId\":" + match_id +"}"),
-            Response.Listener { response ->
-                receiveText(response["message"] as String, response["id"] as Long,response["Timestamp"] as Date,)
-                Log.i("my_log", "Response: %s".format(response.toString()))
-            },
-            Response.ErrorListener { error ->
-                Log.i("my_log", "error while trying to verify connexion\n"
-                        + error.toString() + "\n"
-                        + error.networkResponse + "\n"
-                        + error.localizedMessage + "\n"
-                        + error.message + "\n"
-                        + error.cause + "\n"
-                        + error.stackTrace.toString())
-            }
+                Request.Method.POST, url, JSONObject("{\"text\": $content,\"matchId\":$match_id}"),
+                Response.Listener { response ->
+                    receiveText(response["message"] as String, response["id"] as Long, response["Timestamp"] as Date)
+                    Log.i("my_log", "Response: %s".format(response.toString()))
+                },
+                Response.ErrorListener { error ->
+                    Log.i("my_log", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
         ) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "Bearer " + token
+                params["Authorization"] = "Bearer $token"
 
                 return params
             }
@@ -252,19 +250,12 @@ class ChatActivity : AppCompatActivity() {
 
         recycler = findViewById(R.id.reclyclerChat)
         queue = Volley.newRequestQueue(this)
-        token = "THOOMAS"
-        match_id = 0
+        val intent = intent
+        token = intent.getStringExtra("token").toString()
+        match_id = intent.getLongExtra("match_id", -1)
 
         connect(queue)
 
-        
-        /*val tmpMessage = listOf<MessageItemUi>( MessageItemUi("j'adore manger", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE), MessageItemUi("yeeees", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE), MessageItemUi("go domac a 19h", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE) ,  MessageItemUi("Hey", Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE),  MessageItemUi("Yo, on se capte ce soir ?", Color.DKGRAY, MessageItemUi.TYPE_MY_MESSAGE))
-        val mutableList : MutableList<MessageItemUi> = ArrayList()
-        for(e in tmpMessage) {
-            mutableList.add(e)
-        }
-
-         */
         adapter = ChatAdapter(ArrayList())
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
@@ -282,33 +273,33 @@ class ChatActivity : AppCompatActivity() {
 
 
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener { sendText() }
-        findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener { SendPicture() }
-        findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener { SendVocal() }
+        findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener { sendPicture() }
+        findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener { sendVocal() }
 
 
     }
 
 
 
-    fun sendText() {
+    private fun sendText() {
         //Toast.makeText(this, "Send message is not implemented yet", Toast.LENGTH_LONG).show()
         val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
         if (message.isNotEmpty()) {
-            postMessages( message)
+            postMessages(message)
         }
     }
 
-    private fun receiveText(message: String, id :Long, date: Date){
-        adapter.pushFrontFirst(MessageItemUi(message,  Color.WHITE, MessageItemUi.TYPE_MY_MESSAGE, id, date))
+    private fun receiveText(message: String, id: Long, date: Date){
+        adapter.pushFrontFirst(MessageItemUi(message, Color.WHITE, MessageItemUi.TYPE_MY_MESSAGE, id, date))
         findViewById<TextView>(R.id.zoneText).text = ""
         recycler.scrollToPosition(0)
     }
 
-    fun SendPicture() {
+    private fun sendPicture() {
         Toast.makeText(this, "Send picture is not implemented yet", Toast.LENGTH_LONG).show()
     }
 
-    fun SendVocal() {
+    private fun sendVocal() {
         Toast.makeText(this, "Send vocal is not implemented yet", Toast.LENGTH_LONG).show()
     }
 
