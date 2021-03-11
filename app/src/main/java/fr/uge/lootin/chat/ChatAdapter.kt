@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_MY_MESSAGE
+import java.util.function.Consumer
 
 class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
@@ -35,7 +36,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
     }
 
 
-
+    /**
+     * TODO rajouter photos ici
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
         val context = parent.context
         return when (viewType) {
@@ -44,7 +47,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
                 MyMessageViewHolder(view)
             }
             TYPE_FRIEND_MESSAGE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.fiend_message, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message, parent, false)
                 FriendMessageViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")
@@ -65,10 +68,22 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
 
     override fun getItemViewType(position: Int): Int = data[position].messageType
 
+
     fun pushFrontFirst(chat : MessageItemUi){
         data.add(0, chat)
         notifyItemInserted(0)
     }
 
+    fun pushOldMessage(message: MessageItemUi){
+        data.add(message)
+        notifyItemInserted(data.size - 1)
+    }
+
+
+    fun pushOldMessages(messages: List<MessageItemUi>){
+        val size = data.size
+        messages.forEach { data.add(it) }
+        notifyItemRangeInserted(size - 1, messages.size)
+    }
 
 }

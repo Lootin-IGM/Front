@@ -10,12 +10,14 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.chat.ChatActivity
+import fr.uge.lootin.chat.MATCH_ID
+import fr.uge.lootin.chat.TOKEN_VALUE
 import org.json.JSONObject
 
 class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
-    var match_id : Long = 1
+    var match_id : Long = 0
     val localhost : String = "192.168.1.58"
     val username : String = "Loulou"
     val password : String = "Yvette"
@@ -32,7 +34,6 @@ class PreChatActivity : AppCompatActivity() {
                 val jsonResponse = JSONObject(response.toString())
                 this.token = jsonResponse.getString("jwt")
                 callChat()
-
             },
             { error ->
                 Log.i(
@@ -49,10 +50,10 @@ class PreChatActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
-    fun callChat(){
+    private fun callChat(){
         val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra("token", token)
-        intent.putExtra("match_id", match_id)
+        intent.putExtra(TOKEN_VALUE, token)
+        intent.putExtra(MATCH_ID, match_id)
         startActivityForResult(intent, 1)
     }
 

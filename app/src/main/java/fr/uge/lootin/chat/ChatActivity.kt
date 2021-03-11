@@ -9,20 +9,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import com.android.volley.*
+import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import fr.uge.lootin.R
+import fr.uge.lootin.request.GsonGETRequest
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONException
 import org.json.JSONObject
 import java.net.URI
+import java.nio.charset.Charset
 import java.util.*
+import java.io.UnsupportedEncodingException as UnsupportedEncodingException1
 
+const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
+const val MATCH_ID = "fr.uge.lootin.MATCHID"
 
 class ChatActivity : AppCompatActivity() {
     lateinit var recycler : RecyclerView
@@ -32,6 +38,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var token : String
     var match_id : Long = 0
     val localhost : String = "192.168.1.58"
+    var page : Int = 0
 
     override fun onResume() {
         super.onResume()
@@ -95,7 +102,6 @@ class ChatActivity : AppCompatActivity() {
             val adapter: JsonAdapter<BitcoinTicker> = moshi.adapter(BitcoinTicker::class.java)
             val bitcoin = .fromJson(message)
             runOnUiThread { btc_price_tv.text = "1 BTC: ${bitcoin?.price} €" }
-
              */
         }
     }
@@ -111,7 +117,6 @@ class ChatActivity : AppCompatActivity() {
                         "}"
         )
     }
-
 
 
     private fun verifyConnect(queue: RequestQueue, token: String){
@@ -136,68 +141,41 @@ class ChatActivity : AppCompatActivity() {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "Bearer " + token
+                params["Authorization"] = "Bearer $token"
                 return params
             }
         }
         queue.add(stringRequest)
     }
 
-    private fun connect(queue: RequestQueue){
-        val url = "http://$localhost:8080/login"
-        Log.i("my_log", "connect request")
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
-                { response ->
-                    Log.i("my_log", "Connect Response: %s".format(response.toString()));
-                    val jsonResponse = JSONObject(response.toString());
-                    this.token = jsonResponse.getString("jwt")
 
-                },
-                { error ->
-                    Log.i("my_log", "error while trying to connect\n"
-                            + error.toString() + "\n"
-                            + error.networkResponse + "\n"
-                            + error.localizedMessage + "\n"
-                            + error.message + "\n"
-                            + error.cause + "\n"
-                            + error.stackTrace.toString())
-                }
-        )
-        queue.add(jsonObjectRequest)
+    private fun receiveData(response: MessagesResponse){
+
+        response.data.forEach{adapter.pushOldMessage(MessageItemUi(it.message, Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE, it.id, it.sendTime))}
     }
 
-    /**
-     * Get messages
-     */
     private fun getMessages() {
-        val url = "http://$localhost:8080/msg"
-
-        Log.i("my_log", "get matches request")
-        val jsonObjectRequest = object : JsonObjectRequest(
-                Request.Method.POST, url, JSONObject("{\"nb\": 15,\"page\": 0\"matchId\":$match_id}"),
-                Response.Listener { response ->
-                    Log.i("my_log", "Response: %s".format(response.toString()))
+        val url = "http://$localhost:8080/messages/$match_id/5/$page"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        val request =
+            GsonGETRequest(url, MessagesResponse::class.java, map,
+                { response ->
+                    Log.i("my_log", response.toString())
+                    receiveData(response)
                 },
-                Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to verify connexion\n"
-                            + error.toString() + "\n"
-                            + error.networkResponse + "\n"
-                            + error.localizedMessage + "\n"
-                            + error.message + "\n"
-                            + error.cause + "\n"
-                            + error.stackTrace.toString())
+                { error -> Log.i("my_log", "error while trying to verify connexion\n"
+                        + error.toString() + "\n"
+                        + error.networkResponse + "\n"
+                        + error.localizedMessage + "\n"
+                        + error.message + "\n"
+                        + error.cause + "\n"
+                        + error.stackTrace.toString())
                 }
-        ) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String>? {
-                val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "Bearer $token"
-
-                return params
-            }
-        }
-        queue.add(jsonObjectRequest)
+            )
+        queue.add(request)
     }
+
 
     private fun getOldMessages(nb_matches: Int, page: Int){
 
@@ -250,11 +228,12 @@ class ChatActivity : AppCompatActivity() {
 
         recycler = findViewById(R.id.reclyclerChat)
         queue = Volley.newRequestQueue(this)
-        val intent = intent
-        token = intent.getStringExtra("token").toString()
-        match_id = intent.getLongExtra("match_id", -1)
+        token = intent.getStringExtra(TOKEN_VALUE).toString()
+        match_id = intent.getLongExtra(MATCH_ID, -1)
+        Log.d("my_log", "token -> $token");
+        Log.d("my_log", "match-id -> $match_id");
 
-        connect(queue)
+        //connect(queue)
 
         adapter = ChatAdapter(ArrayList())
         recycler.adapter = adapter
@@ -266,12 +245,13 @@ class ChatActivity : AppCompatActivity() {
                 Log.i("stated", newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     /*TODO load messages*/
-                    Log.d("-----", "end");
+                    getMessages()
+                    Log.d("my_log", "end");
                 }
             }
         })
 
-
+        //getMessages()
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener { sendText() }
         findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener { sendPicture() }
         findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener { sendVocal() }
@@ -307,7 +287,7 @@ class ChatActivity : AppCompatActivity() {
 
     companion object {
         const val WEB_SOCKET_URL = "wss://ws-feed.pro.coinbase.com"
-        const val TAG = "Coinbase"
+        const val TAG = "MESSAGE"
     }
 
 }
