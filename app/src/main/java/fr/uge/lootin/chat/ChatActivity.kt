@@ -218,6 +218,28 @@ class ChatActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
+    private fun connect(queue: RequestQueue){
+        val url = "http://192.168.1.44:8080/login"
+        Log.i("my_log", "connect request")
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
+                Response.Listener { response ->
+                    Log.i("my_log", "Connect Response: %s".format(response.toString()));
+                    val jsonResponse = JSONObject(response.toString());
+                    this.token = jsonResponse.getString("jwt")
+
+                },
+                Response.ErrorListener { error ->
+                    Log.i("my_log", "error while trying to connect\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString())
+                }
+        )
+        queue.add(jsonObjectRequest)
+    }
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
