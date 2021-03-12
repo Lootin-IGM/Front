@@ -10,4 +10,21 @@
     <string name="takePicture">APPAREIL PHOTO</string>
     <string name="pickPicture">GALERIE PHOTO</string>
     <string name="iAmPlayingTo">Je joue à...</string>
+    <string name="app_name">Lootin</string>
+    <string name="whatsYourName">Comment tu t\'appelles ?</string>
+    <string name="next">SUIVANT</string>
+    <string name="validate">VALIDER</string>
+    <string name="firstName">Prénom</string>
+    <string name="lastName">Nom</string>
+    <string name="birthday">Ta date d\'anniversaire</string>
+    <string name="day">JJ</string>
+    <string name="month">MM</string>
+    <string name="year">AAAA</string>
+    <string name="iAm">Je suis</string>
+    <string name="man">Homme</string>
+    <string name="woman">Femme</string>
+    <string name="manAndWoman">Homme et Femme</string>
+    <string name="searchingFor">Je cherche</string>
+    <string name="formError">Veuillez remplir tous les champs du formulaire</string>
+    <string name="notSelectedError">Veuillez sélectionner un des champs</string>
 </resources>
