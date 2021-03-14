@@ -17,8 +17,8 @@ import kotlin.math.sign
 const val URL = "http://192.168.43.2:8080"
 
 // TODO ATTENTION, NE DOIVENT PAS ETRE NULS!!!!!!!!
-const val SIZE_PAGE_MATCHES = 1
-const val SIZE_PAGE_PREVIEW_MESSAGE = 1
+const val SIZE_PAGE_MATCHES = 3
+const val SIZE_PAGE_PREVIEW_MESSAGE = 3
 
 class ChatManagerActivity : AppCompatActivity() {
 
@@ -76,7 +76,7 @@ class ChatManagerActivity : AppCompatActivity() {
                                  else {
                                      val lastMessage = match.getJSONObject("lastMessage")
                                      //Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
-                                     Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
+                                     //Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
                                      //Log.i("my_log", LocalDateTime.parse(lastMessage.getString("sendTime")).toString())
                                      list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random()))
                                  }
@@ -121,10 +121,15 @@ class ChatManagerActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
-    private fun treatEmptyMatches(response: JSONObject, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter) {
+    private fun treatEmptyMatches(response: JSONObject, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter, page: Int) {
         val data = response.getJSONArray("data")
         val matchesSize = list_matches.size
-        for (i in 0 until data.length()) {
+        val pos = page * SIZE_PAGE_MATCHES
+        val from = list_matches.size - pos
+        if (from >= data.length()) {
+            return
+        }
+        for (i in from until data.length()) {
             val match = data.getJSONObject(i)
             // TODO A traiter quand ce sera prêt (photo + id)
             if (match.isNull("lastMessage")) {
@@ -135,10 +140,15 @@ class ChatManagerActivity : AppCompatActivity() {
         matchAdapter.notifyItemInserted(matchesSize)
     }
 
-    private fun treatLastMessage(response: JSONObject, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter) {
+    private fun treatLastMessage(response: JSONObject, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter, page: Int) {
         val data = response.getJSONArray("data")
         val previewMessagesSize = list_messages.size
-        for (i in 0 until data.length()) {
+        val pos = page * SIZE_PAGE_PREVIEW_MESSAGE
+        val from = list_messages.size - pos
+        if (from >= data.length()) {
+            return
+        }
+        for (i in from until data.length()) {
             val match = data.getJSONObject(i)
 
             // TODO Rajouter photo quand ce sera prêt
@@ -155,12 +165,12 @@ class ChatManagerActivity : AppCompatActivity() {
 
     private fun requestGetEmptyMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter) {
         val url = URL + "/matches/empty"
-
+        var page = list_matches.size / SIZE_PAGE_PREVIEW_MESSAGE
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
                     override fun onResponse(response: JSONObject?) {
                         if (response != null) {
-                            treatEmptyMatches(response, list_matches, matchAdapter)
+                            treatEmptyMatches(response, list_matches, matchAdapter, page)
                         }
                     }
                 },
@@ -184,14 +194,15 @@ class ChatManagerActivity : AppCompatActivity() {
         queue.add(jsonObjectRequest)
     }
 
-    private fun requestGetLastMessages(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter) {
+    private fun requestGetLastMessages(queue: RequestQueue, token: String, nb_matches: Int, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter) {
         val url = URL + "/matches/lastMsg"
 
+        var page = list_messages.size / SIZE_PAGE_PREVIEW_MESSAGE
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
                     override fun onResponse(response: JSONObject?) {
                         if (response != null) {
-                            treatLastMessage(response, list_messages, previewMessageAdapter)
+                            treatLastMessage(response, list_messages, previewMessageAdapter, page)
                         }
                     }
                 },
@@ -235,10 +246,10 @@ class ChatManagerActivity : AppCompatActivity() {
         recyclerViewMessagePreview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                Log.i("my_log", newState.toString())
+
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     /*TODO load messages*/
-                    requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages.size / SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
+                    requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
                     /*val size = listMessages.size
                     listMessages.add(PreviewMessage("Le refresh a fonctionné :)", "Jeanne", (0..3).random()))
                     previewMessagesAdapter.notifyItemInserted(size)*/
@@ -255,7 +266,7 @@ class ChatManagerActivity : AppCompatActivity() {
         recyclerViewMatches.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                Log.i("my_log", newState.toString())
+
                 if (!recyclerView.canScrollHorizontally(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     /*TODO load matches */
                     requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches.size / SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
@@ -272,7 +283,7 @@ class ChatManagerActivity : AppCompatActivity() {
         requestVerifyConnect(queue, token)
         //requestGetMatches(queue, token, 4, 0, list_matches, list_messages, matchesAdapter, previewMessagesAdapter)
         requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, 0, listMatches, matchesAdapter)
-        requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, 0, listMessages, previewMessagesAdapter)
+        requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
 
         /*
         val layout : ExpandableLayout = findViewById(R.id.expandable_layout)
