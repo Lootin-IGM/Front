@@ -1,5 +1,6 @@
 package fr.uge.lootin.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,50 +9,82 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import fr.uge.lootin.R
+import fr.uge.lootin.form.FormActivity
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class RegisterActivity : AppCompatActivity() {
-    private var email: String = ""
+    private var username: String = ""
     private var password: String = ""
-    private var confirmPassword: String = ""
+    private var firstName: String = ""
+    private var lastName: String = ""
+    private var age: Int = 0
+    private var gender: String = ""
+    private var attraction: String = ""
 
     private fun launchFormActivity() {
-        //TODO
+        val intent = Intent(this, FormActivity::class.java).apply {
+            putExtra("username", username)
+            putExtra("password", password)
+            putExtra("firstName", firstName)
+            putExtra("lastName", lastName)
+            putExtra("age", age)
+            putExtra("gender", gender)
+            putExtra("attraction", attraction)
+        }
+        startActivity(intent)
     }
 
     private fun showToastError() {
         Toast.makeText(
-            applicationContext,
-            applicationContext.getString(R.string.formError),
-            Toast.LENGTH_SHORT
+                applicationContext,
+                applicationContext.getString(R.string.formError),
+                Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun showBadPasswordError() {
+        Toast.makeText(
+                applicationContext,
+                applicationContext.getString(R.string.wrongPassword),
+                Toast.LENGTH_SHORT
         ).show()
     }
 
     private fun showToastNotSelectedError() {
         Toast.makeText(
-            applicationContext,
-            applicationContext.getString(R.string.notSelectedError),
-            Toast.LENGTH_SHORT
+                applicationContext,
+                applicationContext.getString(R.string.notSelectedError),
+                Toast.LENGTH_SHORT
         ).show()
     }
 
     private fun checkParamsWhatsYourName(): Boolean {
-        var firstName = findViewById<EditText>(R.id.firstNameText).text.toString()
-        var lasName = findViewById<EditText>(R.id.lastNameText).text.toString()
-        if (firstName == "" || lasName == "") {
+        val firstName = findViewById<EditText>(R.id.firstNameText).text.toString()
+        val lastName = findViewById<EditText>(R.id.lastNameText).text.toString()
+        if (firstName == "" || lastName == "") {
             showToastError()
             return false
         }
+        this.firstName = firstName
+        this.lastName = lastName
         return true
     }
 
     private fun checkParamsBirthday(): Boolean {
-        var day = findViewById<EditText>(R.id.dayText).text.toString()
-        var month = findViewById<EditText>(R.id.monthText).text.toString()
-        var year = findViewById<EditText>(R.id.yearText).text.toString()
+        val day = findViewById<EditText>(R.id.dayText).text.toString()
+        val month = findViewById<EditText>(R.id.monthText).text.toString()
+        val year = findViewById<EditText>(R.id.yearText).text.toString()
         if (day == "" || month == "" || year == "") {
             showToastError()
             return false
         }
+        val date = SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).parse(day + "-" + month + "-" + year)
+        val actual = SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(Date())
+        val ageInDays = SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).parse(actual).time - date.time
+        this.age = (TimeUnit.DAYS.convert(ageInDays, TimeUnit.MILLISECONDS) / 365).toInt()
+
         return true
     }
 
@@ -60,6 +93,8 @@ class RegisterActivity : AppCompatActivity() {
             showToastNotSelectedError()
             return false
         }
+        if (man) this.gender = "MALE"
+        if (woman) this.gender = "FEMALE"
         return true
     }
 
@@ -72,13 +107,16 @@ class RegisterActivity : AppCompatActivity() {
             showToastNotSelectedError()
             return false
         }
+        if (man) this.attraction = "MEN"
+        if (woman) this.attraction = "WOMEN"
+        if (manAndWoman) this.attraction = "BOTH"
         return true
     }
 
     private fun launchSearchingForActivity() {
-        var man: Boolean = false
-        var woman: Boolean = false
-        var manAndWoman: Boolean = false
+        var man = false
+        var woman = false
+        var manAndWoman = false
         findViewById<TextView>(R.id.searchingForMan).setOnClickListener {
             man = !man
             woman = false
@@ -123,11 +161,11 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
         findViewById<Button>(R.id.nextButtonSearchingFor).setOnClickListener {
-            checkParamsSearchingFor(
-                man,
-                woman,
-                manAndWoman
-            )
+            if (checkParamsSearchingFor(
+                            man,
+                            woman,
+                            manAndWoman
+                    )) launchFormActivity()
         }
     }
 
@@ -144,8 +182,8 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun launchIAmActivity() {
-        var man: Boolean = false
-        var woman: Boolean = false
+        var man = false
+        var woman = false
         findViewById<TextView>(R.id.man).setOnClickListener {
             man = !man
             woman = false
@@ -190,14 +228,41 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun launchNameActivity() {
         setContentView(R.layout.name_layout)
 
         findViewById<Button>(R.id.nextButtonWhatsYourName).setOnClickListener {
             if (checkParamsWhatsYourName()) {
                 launchBirthdayActivity()
+            }
+        }
+    }
+
+    private fun checkParamsRegister(): Boolean {
+        val pseudo = findViewById<EditText>(R.id.choosePseudoInput).text.toString()
+        val password = findViewById<EditText>(R.id.choosePasswordInput).text.toString()
+        val confirmPassword = findViewById<EditText>(R.id.confirmPasswordInput).text.toString()
+        if (pseudo.equals("") || password.equals("") || confirmPassword.equals("")) {
+            showToastError()
+            return false
+        }
+        if (!password.equals(confirmPassword)) {
+            showBadPasswordError()
+            return false
+        }
+        this.username = pseudo
+        this.password = password
+        return true
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.register_layout)
+
+        findViewById<Button>(R.id.nextButtonChoosePseudo).setOnClickListener {
+            if (checkParamsRegister()) {
+                launchNameActivity()
             }
         }
     }

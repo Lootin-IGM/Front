@@ -10,10 +10,7 @@
     <string name="takePicture">APPAREIL PHOTO</string>
     <string name="pickPicture">GALERIE PHOTO</string>
     <string name="iAmPlayingTo">Je joue à...</string>
-    <string name="app_name">Lootin</string>
     <string name="whatsYourName">Comment tu t\'appelles ?</string>
-    <string name="next">SUIVANT</string>
-    <string name="validate">VALIDER</string>
     <string name="firstName">Prénom</string>
     <string name="lastName">Nom</string>
     <string name="birthday">Ta date d\'anniversaire</string>
@@ -27,4 +24,14 @@
     <string name="searchingFor">Je cherche</string>
     <string name="formError">Veuillez remplir tous les champs du formulaire</string>
     <string name="notSelectedError">Veuillez sélectionner un des champs</string>
+    <string name="choosePseudo">Choisis ton pseudo</string>
+    <string name="pseudo">Pseudo</string>
+    <string name="password">Mot de passe</string>
+    <string name="choosePassword">Choisis ton mot de passe</string>
+    <string name="chooseConfirmPassword">Confirmes ton mot de passe</string>
+    <string name="wrongPassword">Veuillez entrer le même mot de passe dans les champs "Choisis ton mot de passe" et "Confirmes ton mot de passe"</string>
+    <string name="description">Décris toi</string>
+    <string name="descriptionText">Description...</string>
+    <string name="descriptionError">Veuillez vous décrire</string>
+    <string name="gamesMessageError">Veuillez sélectionner au moins un jeu</string>
 </resources>

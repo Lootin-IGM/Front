@@ -6,22 +6,23 @@
     android:background="@color/background_dark">
 
     <TextView
-        android:id="@+id/whatIsMyPseudo"
+        android:id="@+id/Description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
-        android:text="@string/whatIsMyPseudo"
+        android:text="@string/description"
         android:textColor="@color/white"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/pseudoText"
+        android:id="@+id/descriptionText"
         android:layout_width="0dp"
+        android:autofillHints=""
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
@@ -29,21 +30,24 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/pseudoTextOnFormPage"
-        android:inputType="textPersonName"
+        android:hint="@string/descriptionText"
+        android:inputType="textMultiLine"
         android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/nextButton"
+        android:id="@+id/nextButtonDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -51,7 +55,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:text="@string/next"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:cornerRadius="280dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/threeQuarterGuideline"
@@ -70,4 +74,5 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.75" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
