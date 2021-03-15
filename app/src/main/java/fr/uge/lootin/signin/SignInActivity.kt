@@ -19,7 +19,6 @@ import org.json.JSONObject
 class SignInActivity : AppCompatActivity() {
     private var username: String = ""
     private var password: String = ""
-    private var token: String = ""
 
     private fun checkParams(): Boolean {
         username = findViewById<EditText>(R.id.UsernameOnsignInPage).text.toString()
