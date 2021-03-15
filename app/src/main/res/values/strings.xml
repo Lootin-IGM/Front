@@ -4,5 +4,13 @@
     <string name="loginButtonOnSignInPage">Se connecter</string>
     <string name="emailTextOnSignInPage">Email</string>
     <string name="passwordTextOnSignInPage">Password</string>
-    <string name="registerTextOnSignInPage">S\'inscrire</string>
+    <string name="registerTextOnSignInPage"><u>S\'inscrire</u></string>
+    <string name="validateButtonOnFormPage">Valider</string>
+    <string name="gameTextOnFormPage">Jeux :</string>
+    <string name="IAmTextOnFormPage">Je suis :</string>
+    <string name="pseudoTextOnFormPage">Pseudo</string>
+    <string name="pseudoTextOnFormPage2">Pseudo2</string>
+    <string name="pseudoTextOnFormPage3">Pseudo3</string>
+    <string name="pseudoTextOnFormPage4">Pseudo4</string>
+    <string name="OuOnSignInPage">OU</string>
 </resources>

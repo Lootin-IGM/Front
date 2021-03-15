@@ -4,69 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2c2f33"
     tools:context=".signin.SignInActivity">
 
     <EditText
         android:id="@+id/EmailOnsignInPage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/rounded_edit_text"
         android:ems="10"
         android:hint="@string/emailTextOnSignInPage"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/PasswordOnsignInPage"
+        android:paddingLeft="16dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="16dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineUnderLogo" />
 
     <EditText
         android:id="@+id/PasswordOnsignInPage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/rounded_edit_text"
+        android:paddingLeft="16dp"
+        android:paddingTop="13dp"
+        android:paddingBottom="16dp"
+        android:textColor="@color/white"
         android:ems="10"
         android:hint="@string/passwordTextOnSignInPage"
+        android:textColorHint="@color/white"
+        android:textSize="20dp"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/EmailOnsignInPage" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/ConnectionButtonOnsignInPage"
-        android:layout_width="209dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="32dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textSize="20dp"
+        app:backgroundTint="#D81F38"
         android:text="@string/loginButtonOnSignInPage"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="280dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PasswordOnsignInPage" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/GoogleButtonOnsignInPage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:text="@string/googleButtonOnSignInPage"
+        app:backgroundTint="#FFFFFF"
+        app:cornerRadius="280dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
-
-    <Button
-        android:id="@+id/GoogleButtonOnsignInPage"
-        android:layout_width="209dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="32dp"
-        android:text="@string/googleButtonOnSignInPage"
-        app:layout_constraintBottom_toTopOf="@+id/ConnectionButtonOnsignInPage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ConnectionButtonOnsignInPage" />
 
     <TextView
         android:id="@+id/RegisterLinkOnsignInPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:text="@string/registerTextOnSignInPage"
+        android:textColor="@color/blue_lootin"
+        android:textColorLink="@color/blue_lootin"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConnectionButtonOnsignInPage" />
+        app:layout_constraintTop_toBottomOf="@+id/GoogleButtonOnsignInPage" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guidelineTopLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.50" />
+        app:layout_constraintGuide_begin="25dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineUnderLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="207dp" />
+
+    <ImageView
+        android:id="@+id/Lootin_Logo_Txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineUnderLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_lootin"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/Lootin_Logo_Txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineTopLogo"
+        app:srcCompat="@drawable/ic_frame"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/connexion_line_img"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/GoogleButtonOnsignInPage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConnectionButtonOnsignInPage"
+        app:srcCompat="@drawable/connexion_line_img"
+        tools:ignore="MissingConstraints,VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/OuOnSignInPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/OuOnSignInPage"
+        android:textColor="@color/grey_lootin"
+        app:layout_constraintBottom_toTopOf="@+id/GoogleButtonOnsignInPage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConnectionButtonOnsignInPage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
