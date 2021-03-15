@@ -12,7 +12,7 @@
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Lootin">
-        <activity android:name=".register.RegisterActivity">
+        <activity android:name=".signin.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".form.FormActivity" />
+        <activity android:name=".register.RegisterActivity" />
     </application>
 
 

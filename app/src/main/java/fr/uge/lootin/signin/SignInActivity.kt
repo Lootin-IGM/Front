@@ -1,5 +1,6 @@
 package fr.uge.lootin.signin
 
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -13,6 +14,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.R
+import fr.uge.lootin.register.RegisterActivity
 import org.json.JSONObject
 
 
@@ -35,7 +37,8 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun launchRegisterActivity() {
-        //TODO
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
     }
 
     private fun saveJWT(jwt: String) {
