@@ -8,7 +8,7 @@
     tools:context=".signin.SignInActivity">
 
     <EditText
-        android:id="@+id/EmailOnsignInPage"
+        android:id="@+id/UsernameOnsignInPage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -18,8 +18,8 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/emailTextOnSignInPage"
-        android:inputType="textEmailAddress"
+        android:hint="@string/usernameTextOnSignInPage"
+        android:inputType="textPersonName"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
         android:paddingBottom="16dp"
@@ -51,7 +51,7 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EmailOnsignInPage" />
+        app:layout_constraintTop_toBottomOf="@+id/UsernameOnsignInPage" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/ConnectionButtonOnsignInPage"
