@@ -1,4 +1,4 @@
-package fr.uge.lootin
+package fr.uge.lootin.httpUtils
 
 import android.util.Log
 import com.android.volley.NetworkResponse

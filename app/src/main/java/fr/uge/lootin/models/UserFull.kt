@@ -1,4 +1,4 @@
-package fr.uge.lootin
+package fr.uge.lootin.models
 
 class UserFull(val id: String, val description: String, val firstName: String, val lastName: String, val login: String, val gender: String, val image: String, val age: Int, val games: Set<Game>) {
 
