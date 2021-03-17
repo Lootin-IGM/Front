@@ -1,6 +1,5 @@
 package fr.uge.lootin
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
@@ -11,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.*
 import com.android.volley.toolbox.*
 import com.google.android.material.button.MaterialButton
-import fr.uge.lootin.WebRequestUtils.Companion.onError
-import fr.uge.lootin.WebRequestUtils.Companion.onResult
+import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
+import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.models.UserList
+import fr.uge.lootin.models.Users
 import org.json.JSONObject
 
 
@@ -20,7 +22,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTU4NzY1ODQsImlhdCI6MTYxNTg0MDU4NH0.sH3cKuizAZyO8L5ccQCvfZ2MtZmOXT_2MZx2B0FTRhM"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTU5NjAwMjksImlhdCI6MTYxNTkyNDAyOX0.Wj-Q2UqrKOeTAFQKDCxXytpRzPpehGleE9R6WLui_t4"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private val url: String = "http://192.168.1.18:8080"
@@ -41,18 +43,22 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             displayNextProfile()
         }
         findViewById<MaterialButton>(R.id.moreButton).setOnClickListener {
-            /*val intent = Intent(this, AboutProfileActivity::class.java)
-            intent.putExtra("userId", usersList[currentUser].id)
-            intent.putExtra("token", token)
-            startActivity(intent)*/
+            val bundle = Bundle();
+            bundle.putString("USER_ID", usersList[currentUser].id);
+            bundle.putString("TOKEN", token);
+            val decodedString: ByteArray = Base64.decode(usersList[currentUser].image, Base64.DEFAULT)
+            val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+            bundle.putParcelable("IMAGE", decodedByte);
+            bundle.putSerializable("USER", usersList[currentUser])
             val firstFrag = DisplayProfileFragment();
-            this.supportFragmentManager.beginTransaction()
-                .replace(R.id.constraintLayoutProfile, firstFrag, "bite")
-                .addToBackStack(null)
-                .commit();
+            firstFrag.arguments = bundle
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                R.anim.slide_in,
+                R.anim.fade_out, R.anim.fade_in, R.anim.slide_out
+            ).add(R.id.fragment_container_view, firstFrag,  "userMoreFragment").addToBackStack("userMoreFragment").commit()
+
         }
     }
-
 
     private fun displayImage(image: String) {
         val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
@@ -134,7 +140,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         }
         return res
     }
-
 
 
 }
