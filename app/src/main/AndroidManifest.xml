@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".form.FormActivity" />
         <activity android:name=".register.RegisterActivity" />
+        <activity android:name=".ProfilesSwipingActivity" />
     </application>
 
 

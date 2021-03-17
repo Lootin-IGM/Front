@@ -1,6 +1,5 @@
 package fr.uge.lootin
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
@@ -8,8 +7,10 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.*
-import com.android.volley.toolbox.*
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
 import fr.uge.lootin.WebRequestUtils.Companion.onError
 import fr.uge.lootin.WebRequestUtils.Companion.onResult
@@ -20,10 +21,10 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTU4NzY1ODQsImlhdCI6MTYxNTg0MDU4NH0.sH3cKuizAZyO8L5ccQCvfZ2MtZmOXT_2MZx2B0FTRhM"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6YmkiLCJleHAiOjE2MTYwMTU0OTcsImlhdCI6MTYxNTk3OTQ5N30.tzZ5HE13oVKXmdYeYtHbsFYoVohWe6lfXLkSjm6ztBs"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
-    private val url: String = "http://192.168.1.18:8080"
+    private val url: String = "http://192.168.1.86:8080"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

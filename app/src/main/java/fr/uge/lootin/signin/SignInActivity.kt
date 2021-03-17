@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.register.RegisterActivity
 import org.json.JSONObject
@@ -46,7 +47,8 @@ class SignInActivity : AppCompatActivity() {
         val editor = preferences.edit()
         editor.putString("jwt", jwt)
         editor.commit()
-        launchRegisterActivity()
+        val intent = Intent(this, ProfilesSwipingActivity::class.java)
+        startActivity(intent)
     }
 
     private fun login(queue: RequestQueue) {
