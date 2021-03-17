@@ -36,15 +36,12 @@ class GsonGETRequest<T>(
         return try {
             val json = String(
                 response?.data ?: ByteArray(0),
-                Charset.forName(HttpHeaderParser.parseCharset(response?.headers))
-            )
-            Log.i(
-                "poet", gson.fromJson(json, clazz).toString()
+                Charset.forName(HttpHeaderParser.parseCharset(response?.headers)))
+            Log.i("poet",             gson.fromJson(json, clazz).toString()
             )
             Response.success(
                 gson.fromJson(json, clazz),
-                HttpHeaderParser.parseCacheHeaders(response)
-            )
+                HttpHeaderParser.parseCacheHeaders(response))
         } catch (e: UnsupportedEncodingException) {
             Response.error(ParseError(e))
         } catch (e: JsonSyntaxException) {

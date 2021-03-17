@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/constraintLayoutProfile"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfilesSwipingActivity"
+    android:background="@color/background_dark">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="32dp"
+        android:elevation="10dp"
+        app:cardBackgroundColor="@color/button_dark"
+        app:cardCornerRadius="19dp"
+        app:layout_constraintBottom_toTopOf="@+id/likeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+           <TextView
+               android:id="@+id/biography_textView2"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginEnd="24dp"
+               android:layout_marginBottom="8dp"
+               android:text="TextView"
+               android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+               android:textColor="@color/white"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent" />
+
+
+           <com.google.android.material.button.MaterialButton
+
+               android:id="@+id/moreButton"
+               style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+               android:layout_width="45dp"
+               android:layout_height="45dp"
+               android:layout_marginEnd="16dp"
+               android:layout_marginBottom="8dp"
+               android:padding="0dp"
+               app:backgroundTint="@color/button_dark"
+               app:cornerRadius="280dp"
+               app:icon="@drawable/ic_baseline_expand_more_24"
+               app:iconGravity="textStart"
+               app:iconPadding="0dp"
+               app:iconSize="@android:dimen/app_icon_size"
+               app:iconTint="@null"
+               app:layout_constraintBottom_toBottomOf="@+id/userPicture"
+               app:layout_constraintEnd_toEndOf="parent" />
+
+           <ImageView
+               android:id="@+id/userPicture"
+               android:layout_width="match_parent"
+               android:layout_height="0dp"
+               android:layout_marginTop="16dp"
+               android:layout_marginBottom="8dp"
+               android:background="@color/blue_lootin"
+               android:scaleType="centerCrop"
+               android:visibility="visible"
+               app:layout_constraintBottom_toTopOf="@+id/username_textView"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.0"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintVertical_bias="1.0" />
+
+           <TextView
+               android:id="@+id/username_textView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="24dp"
+               android:layout_marginEnd="24dp"
+               android:layout_marginBottom="16dp"
+               android:text="TextView"
+               android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+               android:textColor="@color/white"
+               android:textStyle="bold"
+               app:layout_constraintBottom_toTopOf="@+id/biography_textView2"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="1.0"
+               app:layout_constraintStart_toStartOf="parent" />
+       </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+
+
+    <com.google.android.material.button.MaterialButton
+
+        android:id="@+id/likeButton"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:padding="0dp"
+        app:backgroundTint="@color/button_dark"
+        app:cornerRadius="280dp"
+        app:icon="@drawable/ic_lootin_logo"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="@android:dimen/app_icon_size"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.766"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.93" />
+
+    <com.google.android.material.button.MaterialButton
+
+        android:id="@+id/nextButton"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:padding="0dp"
+        app:backgroundTint="@color/button_dark"
+        app:cornerRadius="280dp"
+        app:icon="@drawable/ic_cross_logo"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="@android:dimen/app_icon_size"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.248"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.93" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/ic_baseline_chat_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/ic_baseline_person_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="25dp"
+                android:layout_height="27dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ic_baseline_settings_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
