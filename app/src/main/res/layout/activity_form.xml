@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".form.FormActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticaleGuideOnFormPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <TextView
+        android:id="@+id/IamPlayingTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/iAmPlayingTo"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gameRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/validateButtonOnFormPage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IamPlayingTo" />
+
+    <Button
+        android:id="@+id/validateButtonOnFormPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/red_lootin"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/validate"
+        android:textSize="16dp"
+        app:cornerRadius="280dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/verticaleGuideOnFormPage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
