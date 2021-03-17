@@ -7,12 +7,14 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.*
-import com.android.volley.toolbox.*
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
-import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
 import org.json.JSONObject
