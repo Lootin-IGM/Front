@@ -22,7 +22,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTU5NjAwMjksImlhdCI6MTYxNTkyNDAyOX0.Wj-Q2UqrKOeTAFQKDCxXytpRzPpehGleE9R6WLui_t4"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTYwMzIzMzEsImlhdCI6MTYxNTk5NjMzMX0.0UGT1wje8CGEoQgLGo1iqpOBlI9xPYc19PQGbUrE9lM"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private val url: String = "http://192.168.1.18:8080"
@@ -44,11 +44,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         }
         findViewById<MaterialButton>(R.id.moreButton).setOnClickListener {
             val bundle = Bundle();
-            bundle.putString("USER_ID", usersList[currentUser].id);
             bundle.putString("TOKEN", token);
-            val decodedString: ByteArray = Base64.decode(usersList[currentUser].image, Base64.DEFAULT)
-            val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-            bundle.putParcelable("IMAGE", decodedByte);
             bundle.putSerializable("USER", usersList[currentUser])
             val firstFrag = DisplayProfileFragment();
             firstFrag.arguments = bundle
@@ -56,7 +52,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 R.anim.slide_in,
                 R.anim.fade_out, R.anim.fade_in, R.anim.slide_out
             ).add(R.id.fragment_container_view, firstFrag,  "userMoreFragment").addToBackStack("userMoreFragment").commit()
-
         }
     }
 

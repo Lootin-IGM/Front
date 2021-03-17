@@ -24,26 +24,26 @@ class DisplayProfileFragment : DialogFragment() {
     private var userId: String = ""
     private var token: String = ""
     private lateinit var queue: RequestQueue
-    private lateinit var image: String
+    private lateinit var user: Users
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        user = arguments?.getSerializable("USER") as Users
         var view = inflater.inflate(R.layout.fragment_display_profile, container, false)
-        Log.i("poet"," user recu : " + arguments?.getSerializable("USER") as Users)
-        val decodedString: ByteArray = Base64.decode((arguments?.getSerializable("USER") as Users).image, Base64.DEFAULT)
+        displayUserDetails(user, view)
+        displayUserImage(user, view)
+        loadCompleteUser()
+        isCancelable = false
+        return view
+    }
+
+    fun displayUserImage(user: Users, view: View){
+        val decodedString: ByteArray = Base64.decode(user.image, Base64.DEFAULT)
         val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
         view.findViewById<ImageView>(R.id.userPic).setImageBitmap(decodedByte)
-
-
-        loadUser()
-        isCancelable = false
-
-        Log.i("poet", activity?.findViewById<ImageView>(R.id.userPicture)?.drawable.toString())
-
-        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,7 @@ class DisplayProfileFragment : DialogFragment() {
     }
 
 
-    private fun loadUser() {
+    private fun loadCompleteUser() {
         val url = "$url/profile/full/$userId"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
@@ -78,14 +78,20 @@ class DisplayProfileFragment : DialogFragment() {
             { response ->
                 Log.i("result", "result : $response")
                 WebRequestUtils.onResult(response)
-                displayUser(response)
+                displayUserGames(response)
             },
             { error -> WebRequestUtils.onError(error) }
         )
         queue.add(request)
     }
 
-    private fun displayUser(user: UserFull) {
+    private fun displayUserDetails(user: Users, view: View){
+        view.findViewById<TextView>(R.id.userName).text = user.login + ", " + user.age
+        view.findViewById<TextView>(R.id.userBiography).text = user.description
+        view.findViewById<TextView>(R.id.userGender).text = user.gender
+
+    }
+    private fun displayUserGames(user: UserFull) {
      /*   view?.findViewById<TextView>(R.id.userName)?.text =
             user.login + ", " + user.age.toString()
         view?.findViewById<TextView>(R.id.userBiography)?.setText(user.description)

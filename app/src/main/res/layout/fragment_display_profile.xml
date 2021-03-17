@@ -35,23 +35,47 @@
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
                 android:text="Michel Frero"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@+id/userPic"
-                tools:layout_editor_absoluteX="76dp" />
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userPic" />
 
             <TextView
+                android:id="@+id/userGender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:text="(Female)"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white"
+                android:textStyle="italic|bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+            <TextView
                 android:id="@+id/userBiography"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="description"
-                app:layout_constraintTop_toBottomOf="@+id/userName" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userGender" />
+
             <com.google.android.material.button.MaterialButton
 
                 android:id="@+id/lessButton"
