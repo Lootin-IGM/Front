@@ -42,11 +42,11 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         val context = parent.context
         return when (viewType) {
             TYPE_MY_MESSAGE -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.my_message, parent, false)
+                val view = LayoutInflater.from(context).inflate(R.layout.my_message_text, parent, false)
                 MyMessageViewHolder(view)
             }
             TYPE_FRIEND_MESSAGE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_text, parent, false)
                 FriendMessageViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")
