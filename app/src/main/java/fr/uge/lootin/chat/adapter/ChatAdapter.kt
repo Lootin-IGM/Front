@@ -10,13 +10,13 @@ import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
-class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
+class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: Long) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
     abstract class MessageViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T)
     }
 
-    class MyMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
+    class MyMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
 
         override fun bind(item: MessageItemUi) {
@@ -25,7 +25,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
         }
     }
 
-    class FriendMessageViewHolder(val view: View) : MessageViewHolder<MessageItemUi>(view) {
+    class FriendMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
 
         override fun bind(item: MessageItemUi) {
@@ -68,20 +68,18 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
     override fun getItemViewType(position: Int): Int = data[position].messageType
 
 
-    fun pushFrontFirst(chat : MessageItemUi){
-        data.add(0, chat)
-        notifyItemInserted(0)
-    }
-
     fun pushOldMessage(message: MessageItemUi){
+        //TODO check l'id des messages et l'ajouter que s'il n'est pas dans la liste
         data.add(message)
         notifyItemInserted(data.size - 1)
     }
 
-    fun pushOldMessages(messages: List<MessageItemUi>){
-        val size = data.size
-        messages.forEach { data.add(it) }
-        notifyItemRangeInserted(size - 1, messages.size)
+
+    /**
+     * Return the current page
+     */
+    fun onPage(): Long{
+        return data.size / size_page - 1
     }
 
 }
