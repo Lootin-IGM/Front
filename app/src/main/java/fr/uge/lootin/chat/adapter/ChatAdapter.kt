@@ -74,7 +74,6 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         notifyItemInserted(data.size - 1)
     }
 
-
     /**
      * Return the current page
      */
