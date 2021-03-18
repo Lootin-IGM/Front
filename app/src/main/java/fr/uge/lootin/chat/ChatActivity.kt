@@ -37,7 +37,7 @@ class ChatActivity : AppCompatActivity() {
 
         // Create recycler and adapter
         val recycler: RecyclerView = findViewById(R.id.reclyclerChat)
-        val adapter = ChatAdapter(ArrayList())
+        val adapter = ChatAdapter(ArrayList(), PAGE_SIZE)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
 
