@@ -106,6 +106,14 @@ class ChatActivity : AppCompatActivity() {
         res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val array = stream.toByteArray()
         //TODO send array au websocket
+
+
+        /**
+         * TODO FOR DECODE ARRAY
+         *
+         * Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray , 0, byteArray .length);
+         * imageView.setImageBitmap(bitmap);
+         */
     }
 
     companion object {
