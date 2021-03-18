@@ -16,7 +16,7 @@ import fr.uge.lootin.request.GsonGETRequest
 import org.json.JSONObject
 import java.util.HashMap
 
-class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String) {
+class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long) {
 
     private lateinit var queue : RequestQueue
 
@@ -77,6 +77,6 @@ class RestService(private val localhost: String, private val match_id: Long, pri
      * TODO mettre l'id du bg qui envoie les messages
      */
     private fun receiveData(response: MessagesResponse){
-        response.data.forEach{adapter.pushOldMessage( MessageItemUi.factoryMessageItemUI(it.message, it.id, it.sendTime,it.sender.id == 0L ))}
+        response.data.forEach{adapter.pushOldMessage( MessageItemUi.factoryMessageItemUI(it.message, it.id, it.sendTime,it.sender.id == idUser))}
     }
 }
