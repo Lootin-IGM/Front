@@ -1,4 +1,4 @@
-package fr.uge.lootin.chat
+package fr.uge.lootin.chat.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
-import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
-import fr.uge.lootin.chat.MessageItemUi.Companion.TYPE_MY_MESSAGE
-import java.util.function.Consumer
+import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
+import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
 
 class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
@@ -78,7 +77,6 @@ class ChatAdapter(var data: MutableList<MessageItemUi>) : RecyclerView.Adapter<C
         data.add(message)
         notifyItemInserted(data.size - 1)
     }
-
 
     fun pushOldMessages(messages: List<MessageItemUi>){
         val size = data.size

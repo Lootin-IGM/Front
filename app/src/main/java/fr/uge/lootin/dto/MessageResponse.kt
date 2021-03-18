@@ -1,4 +1,4 @@
-package fr.uge.lootin.chat
+package fr.uge.lootin.dto
 
 import java.util.*
 

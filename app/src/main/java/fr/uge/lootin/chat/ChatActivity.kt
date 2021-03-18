@@ -10,22 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
-import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import fr.uge.lootin.R
+import fr.uge.lootin.chat.adapter.ChatAdapter
+import fr.uge.lootin.chat.adapter.MessageItemUi
+import fr.uge.lootin.dto.MessagesResponse
 import fr.uge.lootin.request.GsonGETRequest
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
-import org.json.JSONException
 import org.json.JSONObject
 import java.net.URI
-import java.nio.charset.Charset
 import java.util.*
-import java.io.UnsupportedEncodingException as UnsupportedEncodingException1
 
 const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
 const val MATCH_ID = "fr.uge.lootin.MATCHID"
@@ -42,80 +39,10 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        initWebSocket()
     }
 
     override fun onPause() {
         super.onPause()
-        webSocketClient.close()
-    }
-
-    private fun initWebSocket() {
-        val coinbaseUri: URI? = URI(WEB_SOCKET_URL)
-
-        createWebSocketClient(coinbaseUri)
-    }
-
-    private fun createWebSocketClient(coinbaseUri: URI?) {
-        webSocketClient = object : WebSocketClient(coinbaseUri) {
-
-            override fun onOpen(handshakedata: ServerHandshake?) {
-                Log.d(TAG, "onOpen")
-                subscribe()
-            }
-
-            override fun onMessage(message: String?) {
-                Log.d(TAG, "onMessage: $message")
-                setUpBtcPriceText(message)
-            }
-
-            override fun onClose(code: Int, reason: String?, remote: Boolean) {
-                Log.d(TAG, "onClose")
-                unsubscribe()
-            }
-
-            override fun onError(ex: Exception?) {
-                Log.e("createWebSocketClient", "onError: ${ex?.message}")
-            }
-        }
-    }
-
-    /**
-     * TODO
-     */
-    private fun subscribe() {
-        webSocketClient.send(
-                "{\n" +
-                        "    \"type\": \"subscribe\",\n" +
-                        "    \"channels\": [{ \"name\": \"ticker\", \"product_ids\": [\"BTC-EUR\"] }]\n" +
-                        "}"
-        )
-    }
-
-    /**
-     * TODO adapter
-     */
-    private fun setUpBtcPriceText(message: String?) {
-        message?.let {
-            /*
-            val moshi = Moshi.Builder().build()
-            val adapter: JsonAdapter<BitcoinTicker> = moshi.adapter(BitcoinTicker::class.java)
-            val bitcoin = .fromJson(message)
-            runOnUiThread { btc_price_tv.text = "1 BTC: ${bitcoin?.price} €" }
-             */
-        }
-    }
-
-    /**
-     * TODO
-     */
-    private fun unsubscribe() {
-        webSocketClient.send(
-                "{\n" +
-                        "    \"type\": \"unsubscribe\",\n" +
-                        "    \"channels\": [\"ticker\"]\n" +
-                        "}"
-        )
     }
 
 
@@ -178,11 +105,12 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun getOldMessages(nb_matches: Int, page: Int){
-
+        /*TODO*/
     }
 
-    private fun getnewMessages(nb_matches: Int, page: Int){
 
+    private fun getnewMessages(nb_matches: Int, page: Int){
+        /*TODO*/
     }
 
     /**
@@ -222,13 +150,13 @@ class ChatActivity : AppCompatActivity() {
         val url = "http://192.168.1.44:8080/login"
         Log.i("my_log", "connect request")
         val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
-                Response.Listener { response ->
+                { response ->
                     Log.i("my_log", "Connect Response: %s".format(response.toString()));
                     val jsonResponse = JSONObject(response.toString());
                     this.token = jsonResponse.getString("jwt")
 
                 },
-                Response.ErrorListener { error ->
+                { error ->
                     Log.i("my_log", "error while trying to connect\n"
                             + error.toString() + "\n"
                             + error.networkResponse + "\n"
@@ -281,10 +209,7 @@ class ChatActivity : AppCompatActivity() {
 
     }
 
-
-
     private fun sendText() {
-        //Toast.makeText(this, "Send message is not implemented yet", Toast.LENGTH_LONG).show()
         val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
         if (message.isNotEmpty()) {
             postMessages(message)
@@ -305,11 +230,14 @@ class ChatActivity : AppCompatActivity() {
         Toast.makeText(this, "Send vocal is not implemented yet", Toast.LENGTH_LONG).show()
     }
 
-
-
     companion object {
-        const val WEB_SOCKET_URL = "wss://ws-feed.pro.coinbase.com"
-        const val TAG = "MESSAGE"
+        private const val TAG = "MAINACTIVITY"
+        const val LOGIN = "login"
+        const val PASSCODE = "passcode"
+
+        const val ANDROID_EMULATOR_LOCALHOST: String = "192.168.1.58"
+        const val PORT:String = "8080"
+        const val ENPOINT: String = "gs-guide-websocket"
     }
 
 }
