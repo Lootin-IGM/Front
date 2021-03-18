@@ -28,6 +28,9 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
     private var compositeDisposable: CompositeDisposable? = null
     private val headers: MutableList<StompHeader> = ArrayList()
 
+    /**
+     * Create stomp web socket
+     */
     fun createStomp(){
         mStompClient = Stomp.over(
             Stomp.ConnectionProvider.OKHTTP,
@@ -38,16 +41,23 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         connectTopic("/topic/greetings")
     }
 
+    /**
+     * Disconnect web socket to the sever
+     */
     fun disconnect() {
         mStompClient!!.disconnect()
         if (compositeDisposable != null) compositeDisposable!!.dispose()
     }
 
-    fun sendEchoViaStomp(v: View?) {
+    /**
+     * Send web socket
+     */
+    fun sendMessage(v: View?) {
         val m : MessageModel = MessageModel("Thomas")
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
             mStompClient!!.send(
+                //TODO ou est-ce qu'on envoie
                 "/app/hello",
                 m.toJSON()
             )
@@ -65,9 +75,12 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
                 })
     }
 
+    /**
+     * Connect stomp web socket to the server
+     */
     private fun connectStomp() {
-        headers.add(StompHeader(ChatActivity.LOGIN, "guest"))
-        headers.add(StompHeader(ChatActivity.PASSCODE, "guest"))
+        //headers.add(StompHeader(ChatActivity.LOGIN, "guest"))
+        //headers.add(StompHeader(ChatActivity.PASSCODE, "guest"))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
         val dispLifecycle = mStompClient!!.lifecycle()
@@ -94,6 +107,9 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         compositeDisposable!!.add(dispLifecycle)
     }
 
+    /**
+     * Connect to topic
+     */
     private fun connectTopic(topic : String){
         val dispTopic = mStompClient!!.topic(topic)
             .subscribeOn(Schedulers.io())
