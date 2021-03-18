@@ -6,7 +6,7 @@ class MessagesResponse(val data : List<Message>) {
 
 
 
-    class Message(val id : Long, val sendTime : Date,val message : String, val sender: User){
+    class Message(val id : Long, val sendTime : Date, val message : String, val sender: User){
 
 
 

@@ -16,10 +16,9 @@ import fr.uge.lootin.request.GsonGETRequest
 import org.json.JSONObject
 import java.util.HashMap
 
-class RestService(private val localhost: String, private val match_id: String, private val size_page : String, private val adapter: ChatAdapter) {
-    private lateinit var token: String
+class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String) {
+
     private lateinit var queue : RequestQueue
-    private var page: Int = 0
 
     fun verifyConnect(queue: RequestQueue, token: String){
         val url = "http://$localhost:8080/showLogin"
@@ -52,36 +51,8 @@ class RestService(private val localhost: String, private val match_id: String, p
 
 
 
-    fun connect(queue: RequestQueue) {
-        val url = "http://192.168.1.44:8080/login"
-        Log.i("my_log", "connect request")
-        val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.POST,
-            url,
-            JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
-            { response ->
-                Log.i("my_log", "Connect Response: %s".format(response.toString()));
-                val jsonResponse = JSONObject(response.toString());
-                this.token = jsonResponse.getString("jwt")
-
-            },
-            { error ->
-                Log.i(
-                    "my_log", "error while trying to connect\n"
-                            + error.toString() + "\n"
-                            + error.networkResponse + "\n"
-                            + error.localizedMessage + "\n"
-                            + error.message + "\n"
-                            + error.cause + "\n"
-                            + error.stackTrace.toString()
-                )
-            }
-        )
-        queue.add(jsonObjectRequest)
-    }
-
-    fun getMessages() {
-        val url = "http://$localhost:8080/messages/$match_id/5/$page"
+    fun getMessages(page : Long) {
+        val url = "http://$localhost:8080/messages/$match_id/$size_page/$page"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
         val request =
@@ -102,8 +73,10 @@ class RestService(private val localhost: String, private val match_id: String, p
         queue.add(request)
     }
 
+    /**
+     * TODO mettre l'id du bg qui envoie les messages
+     */
     private fun receiveData(response: MessagesResponse){
-
-        response.data.forEach{adapter.pushOldMessage(MessageItemUi(it.message, Color.DKGRAY, MessageItemUi.TYPE_FRIEND_MESSAGE, it.id, it.sendTime))}
+        response.data.forEach{adapter.pushOldMessage( MessageItemUi.factoryMessageItemUI(it.message, it.id, it.sendTime,it.sender.id == 0L ))}
     }
 }
