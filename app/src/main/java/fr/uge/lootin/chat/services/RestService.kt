@@ -1,6 +1,8 @@
 package fr.uge.lootin.chat.services
 
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -9,11 +11,14 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
+import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.dto.MessagesResponse
 import fr.uge.lootin.request.GsonGETRequest
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.lang.reflect.Method
 import java.util.HashMap
 
 class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long) {
@@ -51,7 +56,9 @@ class RestService(private val localhost: String, private val match_id: Long, pri
 
 
 
-    fun getMessages(page : Long) {
+
+    fun getMessages() {
+        val page = adapter.onPage()
         val url = "http://$localhost:8080/messages/$match_id/$size_page/$page"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"

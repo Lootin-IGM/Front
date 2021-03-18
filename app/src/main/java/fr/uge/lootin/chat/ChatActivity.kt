@@ -1,27 +1,24 @@
 package fr.uge.lootin.chat
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.services.RestService
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 
 class ChatActivity : AppCompatActivity() {
-
-    /*
-    lateinit var recycler : RecyclerView
-    lateinit var adapter: ChatAdapter
-
-     */
-
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
@@ -56,7 +53,7 @@ class ChatActivity : AppCompatActivity() {
             }
         })
 
-        //TODO call getMessages() and look pages
+        restService.getMessages()
 
         // Send Text messages
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
@@ -75,7 +72,40 @@ class ChatActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
             Toast.makeText(this, "Send vocal is not implemented yet", Toast.LENGTH_LONG).show()
         }
+    }
 
+
+    /**
+     * capture
+     */
+    private fun capturePhoto() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, 200)
+    }
+
+    private fun openGalleryForImage() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 100)
+    }
+
+    /**
+     * retour en fonction de la galerie ou de la capture
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        var res: Bitmap? = null
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == 200 && data != null) {
+             res  = data.extras!!.get("data") as Bitmap
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 100) {
+            res = (data?.data as BitmapDrawable).bitmap // to get bitmap from imageView
+        }
+
+        val stream = ByteArrayOutputStream()
+        res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val array = stream.toByteArray()
+        //TODO send array au websocket
     }
 
     companion object {
