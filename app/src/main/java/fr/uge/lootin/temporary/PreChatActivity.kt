@@ -65,7 +65,8 @@ class PreChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_chat)
 
-        val queue : RequestQueue = Volley.newRequestQueue(this)
-        findViewById<Button>(R.id.buttonGo).setOnClickListener { connect(queue) }
+        //TODO val queue : RequestQueue = Volley.newRequestQueue(this)
+        //TODO findViewById<Button>(R.id.buttonGo).setOnClickListener { connect(queue) }
+        callChat()
     }
 }

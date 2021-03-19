@@ -9,11 +9,10 @@ import java.util.*
 data class MessageText(
     val content: String,
     val id_author: Long,
-    val date: Date,
     ) {
 
     fun toJSON() : String =
-        "{\"content\": \"$content\", \"id_author\": \"$id_author\", \"date\": \"$date\"}"
+        "{\"content\": \"$content\", \"id_author\": \"$id_author\"}"
 
 
     companion object {

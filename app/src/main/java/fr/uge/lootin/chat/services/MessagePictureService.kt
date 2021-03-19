@@ -51,9 +51,8 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
     /**
      * Send web socket messages
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun sendMessage(byteArray: ByteArray ) {
-        val m : MessagePicture = MessagePicture(byteArray, myId, Date.from(Instant.now()))
+        val m : MessagePicture = MessagePicture(byteArray, myId)
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
             mStompClient!!.send(

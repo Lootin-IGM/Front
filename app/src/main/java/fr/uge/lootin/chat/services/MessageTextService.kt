@@ -1,18 +1,15 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessageText
 import fr.uge.lootin.chat.models.MessageTextResponse
-
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,7 +20,6 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import ua.naiksoftware.stomp.dto.StompMessage
-import java.time.Instant
 import java.util.*
 
 
@@ -38,8 +34,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      */
     fun createStomp(){
         mStompClient = Stomp.over(
-            Stomp.ConnectionProvider.OKHTTP,
-            url
+                Stomp.ConnectionProvider.OKHTTP,
+                url
         )
         resetSubscriptions()
         connectStomp()
@@ -49,28 +45,27 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Send web socket messages
      */
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun sendMessage(message : String ) {
-        val m : MessageText = MessageText(message, myId, Date.from(Instant.now()))
+    fun sendMessage(message: String) {
+        val m : MessageText = MessageText(message, myId)
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
-            mStompClient!!.send(
-                //TODO ou est-ce qu'on envoie
-                DEST_MESSAGE,
-                m.toJSON()
-            )
-                .compose(applySchedulers())
-                .subscribe(
-                    {
-                        Log.d(
-                            TAG,
-                            "STOMP text message send successfully"
-                        )
-                    }
-                ) { throwable: Throwable ->
-                    Log.e(TAG, "Error send STOMP echo", throwable)
-                    toast(throwable.message)
-                })
+                mStompClient!!.send(
+                        //TODO ou est-ce qu'on envoie
+                        DEST_MESSAGE,
+                        m.toJSON()
+                )
+                        .compose(applySchedulers())
+                        .subscribe(
+                                {
+                                    Log.d(
+                                            TAG,
+                                            "STOMP text message send successfully"
+                                    )
+                                }
+                        ) { throwable: Throwable ->
+                            Log.e(TAG, "Error send STOMP echo", throwable)
+                            toast(throwable.message)
+                        })
     }
 
     /**
@@ -78,32 +73,36 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      */
     private fun connectStomp() {
         //headers.add(StompHeader(ChatActivity.LOGIN, "guest"))
-        //headers.add(StompHeader(ChatActivity.PASSCODE, "guest"))
+        headers.add(StompHeader("X-Authorization", "Bearer $myId"))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
+        Log.d(TAG, "try connect stomp")
         val dispLifecycle = mStompClient!!.lifecycle()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { lifecycleEvent: LifecycleEvent ->
                 when (lifecycleEvent.type) {
-                    LifecycleEvent.Type.OPENED -> toast("Stomp connection opened")
+                    LifecycleEvent.Type.OPENED -> Log.d(TAG, "Stomp connection opened ${lifecycleEvent.handshakeResponseHeaders}")
                     LifecycleEvent.Type.ERROR -> {
                         Log.e(
-                            TAG,
-                            "Stomp connection error",
-                            lifecycleEvent.exception
+                                TAG,
+                                "Stomp connection error",
+                                lifecycleEvent.exception
                         )
                         toast("Stomp connection error")
                     }
                     LifecycleEvent.Type.CLOSED -> {
+                        Log.d(TAG, "Stomp connection closed")
                         toast("Stomp connection closed")
                         resetSubscriptions()
                     }
-                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> toast("Stomp failed server heartbeat")
-                    else -> toast("WTF Error connect stomp MessageTextService")
+                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> Log.d(TAG, "Stomp failed server heartbeat")
+                    else -> Log.d(TAG, "WTF Error connect stomp MessageTextService")
                 }
             }
         compositeDisposable!!.add(dispLifecycle)
+        //mStompClient!!.connect(headers)
+
     }
 
     /**
@@ -114,20 +113,20 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { topicMessage: StompMessage ->
-                    Log.d(
-                        TAG,
-                        "Received " + topicMessage.payload
-                    )
-                    Log.d(TAG, "on push dans connectstomp")
+                    { topicMessage: StompMessage ->
+                        Log.d(
+                                TAG,
+                                "Received " + topicMessage.payload
+                        )
+                        Log.d(TAG, "on push dans connectstomp")
 
-                    addItem(mGson.fromJson(topicMessage.payload, MessageTextResponse::class.java))
-                }
+                        addItem(mGson.fromJson(topicMessage.payload, MessageTextResponse::class.java))
+                    }
             ) { throwable: Throwable? ->
                 Log.e(
-                    TAG,
-                    "Error on subscribe topic",
-                    throwable
+                        TAG,
+                        "Error on subscribe topic",
+                        throwable
                 )
             }
         compositeDisposable!!.add(dispTopic)
@@ -139,10 +138,10 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      */
     private fun addItem(message: MessageTextResponse) {
         adapter.pushMessage(MessageItemUi.factoryMessageItemUI(
-            message.content,
-            message.id,
-            message.date,
-            myId == message.id_author
+                message.content,
+                message.id,
+                message.date,
+                myId == message.id_author
         ))
         recyclerView.scrollToPosition(adapter.itemCount - 1)
         Log.d(TAG, "on push un element")
@@ -180,7 +179,47 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
 
     companion object {
         private const val TAG = "--ACTIVITY--TEXT"
-        private const val TOPIC = "/topic/greetings"
+        //private const val TOPIC = "/topic/greetings"
+        private const val TOPIC = "/user/queue/specific-user-user"
+
         private const val DEST_MESSAGE = "/app/hello"
+    }
+
+
+    fun connectStomp(view: View?) {
+        val headers: MutableList<StompHeader> = ArrayList()
+        headers.add(StompHeader("LOGIN", "guest"))
+        headers.add(StompHeader("PASSCODE", "guest"))
+        mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
+        resetSubscriptions()
+        val dispLifecycle = mStompClient!!.lifecycle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { lifecycleEvent: LifecycleEvent ->
+                    when (lifecycleEvent.type) {
+                        LifecycleEvent.Type.OPENED -> toast("Stomp connection opened")
+                        LifecycleEvent.Type.ERROR -> {
+                            Log.e(TAG, "Stomp connection error", lifecycleEvent.exception)
+                            toast("Stomp connection error")
+                        }
+                        LifecycleEvent.Type.CLOSED -> {
+                            toast("Stomp connection closed")
+                            resetSubscriptions()
+                        }
+                        LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> toast("Stomp failed server heartbeat")
+                    }
+                }
+        compositeDisposable!!.add(dispLifecycle)
+
+        // Receive greetings
+        val dispTopic = mStompClient!!.topic("/topic/greetings")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ topicMessage: StompMessage ->
+                    Log.d(TAG, "Received " + topicMessage.payload)
+                    addItem(mGson.fromJson(topicMessage.payload, MessageTextResponse::class.java))
+                }) { throwable: Throwable? -> Log.e(TAG, "Error on subscribe topic", throwable) }
+        compositeDisposable!!.add(dispTopic)
+        mStompClient!!.connect(headers)
     }
 }

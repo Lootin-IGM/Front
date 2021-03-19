@@ -29,7 +29,6 @@ class ChatActivity : AppCompatActivity() {
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -46,11 +45,11 @@ class ChatActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
 
         //create restService
-        val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
+        //TODO val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
         //create web sockets services
         val messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
-        pictureService = MessagePictureService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
+        //TODO pictureService = MessagePictureService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -58,13 +57,13 @@ class ChatActivity : AppCompatActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    restService.getMessages()
+                    //TODO restService.getMessages()
                     recycler.scrollToPosition(0)
                 }
             }
         })
 
-        restService.getMessages()
+        //TODO restService.getMessages()
         messageService.createStomp()
 
         // Send Text messages
@@ -77,14 +76,14 @@ class ChatActivity : AppCompatActivity() {
 
         //TODO Send Picture messages (WS)
         findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-            Toast.makeText(this, "Send camera picture", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Send my picture", Toast.LENGTH_LONG).show()
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(cameraIntent, 200)
         }
 
-        //TODO Send Vocal messages (WS) --> image de la caméra enfaite
+        //TODO Send camera picture messages (WS)
         findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
-            Toast.makeText(this, "Send my pictures", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Send camera pictures", Toast.LENGTH_LONG).show()
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 100)
@@ -94,7 +93,6 @@ class ChatActivity : AppCompatActivity() {
     /**
      * retour en fonction de la galerie ou de la capture
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var res: Bitmap? = null
         super.onActivityResult(requestCode, resultCode, data)
@@ -110,7 +108,7 @@ class ChatActivity : AppCompatActivity() {
         val array = stream.toByteArray()
 
         //send picture with web socket
-        pictureService.sendMessage(array)
+        //TODO pictureService.sendMessage(array)
     }
 
     companion object {
@@ -126,6 +124,8 @@ class ChatActivity : AppCompatActivity() {
 
         const val LOCALHOST: String = "192.168.1.58"
         const val PORT:String = "8080"
-        const val ENPOINT: String = "gs-guide-websocket"
+        const val ENPOINT: String = "secured/room"
+
+        //const val ENPOINT: String = "gs-guide-websocket"
     }
 }
