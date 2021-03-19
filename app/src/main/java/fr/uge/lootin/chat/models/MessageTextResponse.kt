@@ -4,9 +4,9 @@ import com.google.gson.GsonBuilder
 import java.util.*
 
 /**
- * [MessageTextModel] represents a notification model
+ * [MessageTextResponse] represents a notification model
  */
-data class MessageTextModel(
+data class MessageTextResponse(
     val content: String,
     val id_author: Long,
     val date: Date,
@@ -22,12 +22,12 @@ data class MessageTextModel(
         /**
          * Creates a Notification object from api
          * @param payload - the api json result
-         * @return a [MessageTextModel] object
+         * @return a [MessageTextResponse] object
          */
-        fun fromApi(payload: String): MessageTextModel =
+        fun fromApi(payload: String): MessageTextResponse =
             GsonBuilder()
                 .create()
-                .fromJson(payload, MessageTextModel::class.java)
+                .fromJson(payload, MessageTextResponse::class.java)
     }
 
 }

@@ -4,28 +4,28 @@ import com.google.gson.GsonBuilder
 import java.util.*
 
 /**
- * [MessageTextModel] represents a notification model
+ * [MessageText] represents a notification model
  */
-data class MessagePictureModel(
-    val byte: ByteArray,
+data class MessageText(
+    val content: String,
     val id_author: Long,
     val date: Date,
     ) {
 
     fun toJSON() : String =
-        "{\"byte\": \"$byte\", \"id_author\": \"$id_author\", \"date\": \"$date\"}"
+        "{\"content\": \"$content\", \"id_author\": \"$id_author\", \"date\": \"$date\"}"
 
 
     companion object {
         /**
          * Creates a Notification object from api
          * @param payload - the api json result
-         * @return a [MessageTextModel] object
+         * @return a [MessageText] object
          */
-        fun fromApi(payload: String): MessagePictureModel =
+        fun fromApi(payload: String): MessageText =
             GsonBuilder()
                 .create()
-                .fromJson(payload, MessagePictureModel::class.java)
+                .fromJson(payload, MessageText::class.java)
     }
 
 }
