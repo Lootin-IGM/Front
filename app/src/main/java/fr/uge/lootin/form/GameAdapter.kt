@@ -11,16 +11,21 @@ class GameAdapter(val gameList: List<Game>) : RecyclerView.Adapter<GameAdapter.V
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val cardImage: ImageView = itemView.findViewById(R.id.gameImage)
 
+        fun changeImage(position: Int) {
+            var game = gameList[position]
+            if (game.isSelected()) {
+                cardImage.alpha = 0.5F
+            } else {
+                cardImage.alpha = 1F
+            }
+        }
+
         fun update(game: Game, position: Int) {
             cardImage.setImageBitmap(game.getBitmap())
-            //notifyItemChanged(position)
+            changeImage(position)
             itemView.setOnClickListener {
                 game.clicked()
-                if (game.isSelected()) {
-                    cardImage.alpha = 0.5F
-                } else {
-                    cardImage.alpha = 1F
-                }
+                changeImage(position)
             }
         }
     }

@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
+import fr.uge.lootin.settings.DisplaySettingsFragment
 import org.json.JSONObject
 
 
@@ -24,7 +26,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTYwMzIzMzEsImlhdCI6MTYxNTk5NjMzMX0.0UGT1wje8CGEoQgLGo1iqpOBlI9xPYc19PQGbUrE9lM"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZXhlTWFsYWRlIiwiZXhwIjoxNjE2MjA5MDgxLCJpYXQiOjE2MTYxNzMwODF9.O3pb-GA2A7oXSLGUPixhF9glNvj3rZiRPbMHM5RJEAE"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private val url: String = "http://192.168.1.18:8080"
@@ -53,7 +55,15 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_in,
                 R.anim.fade_out, R.anim.fade_in, R.anim.slide_out
-            ).add(R.id.fragment_container_view, firstFrag,  "userMoreFragment").addToBackStack("userMoreFragment").commit()
+            ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
+                .addToBackStack("userMoreFragment").commit()
+        }
+
+        findViewById<ImageButton>(R.id.settingsButton).setOnClickListener {
+            val settingsFrag = DisplaySettingsFragment.newInstance(token)
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
+                .addToBackStack("settingsFragment").commit()
         }
     }
 
