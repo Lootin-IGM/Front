@@ -18,19 +18,23 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
 
     class MyMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
+        private val date = view.findViewById<TextView>(R.id.date_send)
 
         override fun bind(item: MessageItemUi) {
             messageContent.text = item.content
             messageContent.highlightColor = item.textColor
+            date.text = item.date.toString()
         }
     }
 
     class FriendMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
+        private val date = view.findViewById<TextView>(R.id.date_send)
 
         override fun bind(item: MessageItemUi) {
             messageContent.text = item.content
             messageContent.highlightColor= item.textColor
+            date.text = item.date.toString()
         }
     }
 

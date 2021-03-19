@@ -3,7 +3,7 @@ package fr.uge.lootin.chat.adapter
 import android.graphics.Color
 import java.util.*
 
-class MessageItemUi private constructor(val content:String,val textColor:Int, val messageType:Int, val id: Long, date : Date){
+class MessageItemUi private constructor(val content:String,val textColor:Int, val messageType:Int, val id: Long,val date : Date){
 
 
     override fun equals(other: Any?): Boolean {
