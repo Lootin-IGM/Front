@@ -50,8 +50,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      * Send web socket messages
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun sendMessage(v: View?, ) {
-        val m : MessageText = MessageText("Hello WebSocket World", myId, Date.from(Instant.now()))
+    fun sendMessage(message : String ) {
+        val m : MessageText = MessageText(message, myId, Date.from(Instant.now()))
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
             mStompClient!!.send(
