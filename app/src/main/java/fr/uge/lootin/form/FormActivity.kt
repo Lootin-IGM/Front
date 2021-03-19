@@ -1,5 +1,6 @@
 package fr.uge.lootin.form
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.R
 import fr.uge.lootin.settings.Description
+import fr.uge.lootin.settings.GamesList
+import fr.uge.lootin.signin.SignInActivity
 import java.io.ByteArrayOutputStream
 
 
@@ -30,14 +33,20 @@ class FormActivity : AppCompatActivity() {
         this.profilImage = image
     }
 
-    fun registerRequest(games: List<String>) {
+    private fun loadSignInActivity(gl: GamesList) {
+        supportFragmentManager.beginTransaction().remove(gl).commit()
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun registerRequest(games: List<String>, gl: GamesList) {
         val queue = Volley.newRequestQueue(this.applicationContext)
         val url = "http://192.168.1.86:8080/register"
         Log.i("test", "post upload image request")
         val jsonObjectRequest = object : VolleyFileUploadRequest(Method.POST, url,
             Response.Listener { response ->
                 Log.i("test", response.statusCode.toString())
-
+                loadSignInActivity(gl)
             }, Response.ErrorListener { error ->
                 Log.i(
                     "test", "error while trying to connect\n"

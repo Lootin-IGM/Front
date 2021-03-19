@@ -76,7 +76,7 @@ class GamesList : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                (activity as FormActivity).registerRequest(gamesSelected)
+                (activity as FormActivity).registerRequest(gamesSelected, this)
             }
         }
     }
