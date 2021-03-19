@@ -71,7 +71,7 @@ class ChatActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
             val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
-                messageService.sendMessage( message)
+                messageService.sendMessage(message)
             }
         }
 
@@ -82,7 +82,7 @@ class ChatActivity : AppCompatActivity() {
             startActivityForResult(cameraIntent, 200)
         }
 
-        //TODO Send Vocal messages (WS)
+        //TODO Send Vocal messages (WS) --> image de la caméra enfaite
         findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
             Toast.makeText(this, "Send my pictures", Toast.LENGTH_LONG).show()
             val intent = Intent(Intent.ACTION_PICK)
@@ -127,7 +127,5 @@ class ChatActivity : AppCompatActivity() {
         const val LOCALHOST: String = "192.168.1.58"
         const val PORT:String = "8080"
         const val ENPOINT: String = "gs-guide-websocket"
-        const val TEXT_TOPIC: String = "TODO"
-        const val PICTURE_TOPIC: String = "TODO"
     }
 }
