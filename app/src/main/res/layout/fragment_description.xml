@@ -6,7 +6,7 @@
     android:background="@color/background_dark">
 
     <TextView
-        android:id="@+id/Description"
+        android:id="@+id/FragmentDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,34 +20,32 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/descriptionText"
+        android:id="@+id/FragmentDescriptionText"
         android:layout_width="0dp"
-        android:autofillHints=""
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:autofillHints=""
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
         android:hint="@string/descriptionText"
         android:inputType="textMultiLine"
-        android:paddingLeft="16dp"
         android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="13dp"
         android:paddingEnd="0dp"
         android:paddingRight="0dp"
-        android:paddingTop="13dp"
         android:paddingBottom="16dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/FragmentNextButtonDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/FragmentDescription" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/nextButtonDescription"
+        android:id="@+id/FragmentNextButtonDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

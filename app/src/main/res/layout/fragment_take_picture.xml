@@ -21,7 +21,7 @@
         app:layout_constraintGuide_percent="0.50" />
 
     <Button
-        android:id="@+id/takePictureButton"
+        android:id="@+id/FragmentTakePictureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -35,10 +35,10 @@
         app:cornerRadius="280dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/verticalGuideOnPicturePage"
-        app:layout_constraintTop_toBottomOf="@+id/imageOnPicturePage" />
+        app:layout_constraintTop_toBottomOf="@+id/FragmentImageOnPicturePage" />
 
     <Button
-        android:id="@+id/pickPictureButton"
+        android:id="@+id/FragmentPickPictureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toTopOf="@+id/horizontalGuideOnPicturePage" />
 
     <Button
-        android:id="@+id/nextButtonOnTakePicture"
+        android:id="@+id/FragmentNextButtonOnTakePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -72,7 +72,7 @@
         app:layout_constraintStart_toStartOf="@+id/verticalGuideOnPicturePage" />
 
     <ImageView
-        android:id="@+id/imageOnPicturePage"
+        android:id="@+id/FragmentImageOnPicturePage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/horizontalGuideOnPicturePage"

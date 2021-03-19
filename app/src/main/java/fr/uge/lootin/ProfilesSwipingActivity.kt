@@ -12,8 +12,11 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
-import fr.uge.lootin.WebRequestUtils.Companion.onError
-import fr.uge.lootin.WebRequestUtils.Companion.onResult
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
+import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
+import fr.uge.lootin.models.UserList
+import fr.uge.lootin.models.Users
 import org.json.JSONObject
 
 
@@ -21,10 +24,10 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6YmkiLCJleHAiOjE2MTYwMTU0OTcsImlhdCI6MTYxNTk3OTQ5N30.tzZ5HE13oVKXmdYeYtHbsFYoVohWe6lfXLkSjm6ztBs"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTYwMzIzMzEsImlhdCI6MTYxNTk5NjMzMX0.0UGT1wje8CGEoQgLGo1iqpOBlI9xPYc19PQGbUrE9lM"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
-    private val url: String = "http://192.168.1.86:8080"
+    private val url: String = "http://192.168.1.18:8080"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +45,17 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             displayNextProfile()
         }
         findViewById<MaterialButton>(R.id.moreButton).setOnClickListener {
-            /*val intent = Intent(this, AboutProfileActivity::class.java)
-            intent.putExtra("userId", usersList[currentUser].id)
-            intent.putExtra("token", token)
-            startActivity(intent)*/
+            val bundle = Bundle();
+            bundle.putString("TOKEN", token);
+            bundle.putSerializable("USER", usersList[currentUser])
             val firstFrag = DisplayProfileFragment();
-            this.supportFragmentManager.beginTransaction()
-                .replace(R.id.constraintLayoutProfile, firstFrag, "bite")
-                .addToBackStack(null)
-                .commit();
+            firstFrag.arguments = bundle
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                R.anim.slide_in,
+                R.anim.fade_out, R.anim.fade_in, R.anim.slide_out
+            ).add(R.id.fragment_container_view, firstFrag,  "userMoreFragment").addToBackStack("userMoreFragment").commit()
         }
     }
-
 
     private fun displayImage(image: String) {
         val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
@@ -135,7 +137,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         }
         return res
     }
-
 
 
 }
