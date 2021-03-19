@@ -1,13 +1,14 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.gson.GsonBuilder
-import fr.uge.lootin.chat.ChatActivity
 import fr.uge.lootin.chat.adapter.ChatAdapter
-import fr.uge.lootin.chat.models.MessageModel
+import fr.uge.lootin.chat.models.MessageTextModel
 
 import io.reactivex.Completable
 import io.reactivex.CompletableTransformer
@@ -19,10 +20,11 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import ua.naiksoftware.stomp.dto.StompMessage
-import java.util.ArrayList
+import java.time.Instant
+import java.util.*
 
 
-class MessageService(private val adapter: ChatAdapter, private val context: Context, private val url: String) {
+class MessageService(private val adapter: ChatAdapter, private val context: Context, private val url: String, private val myId: Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -38,7 +40,7 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         )
         resetSubscriptions()
         connectStomp()
-        connectTopic("/topic/greetings")
+        connectTopic()
     }
 
     /**
@@ -50,15 +52,16 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
     }
 
     /**
-     * Send web socket
+     * Send web socket messages
      */
-    fun sendMessage(v: View?) {
-        val m : MessageModel = MessageModel("Thomas")
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun sendMessage(v: View?, ) {
+        val m : MessageTextModel = MessageTextModel("Hello WebSocket World", myId, Date.from(Instant.now()))
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
             mStompClient!!.send(
                 //TODO ou est-ce qu'on envoie
-                "/app/hello",
+                DEST_MESSAGE,
                 m.toJSON()
             )
                 .compose(applySchedulers())
@@ -66,7 +69,7 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
                     {
                         Log.d(
                             TAG,
-                            "STOMP echo send successfully"
+                            "STOMP text message send successfully"
                         )
                     }
                 ) { throwable: Throwable ->
@@ -108,10 +111,10 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
     }
 
     /**
-     * Connect to topic
+     * Connect to topic and receive messages
      */
-    private fun connectTopic(topic : String){
-        val dispTopic = mStompClient!!.topic(topic)
+    private fun connectTopic(){
+        val dispTopic = mStompClient!!.topic(TOPIC)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -122,7 +125,7 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
                     )
                     Log.d(TAG, "on push dans connectstomp")
 
-                    addItem(mGson.fromJson(topicMessage.payload, MessageModel::class.java))
+                    addItem(mGson.fromJson(topicMessage.payload, MessageTextModel::class.java))
                 }
             ) { throwable: Throwable? ->
                 Log.e(
@@ -151,7 +154,7 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         compositeDisposable = CompositeDisposable()
     }
 
-    private fun addItem(echoModel: MessageModel) {
+    private fun addItem(echoModel: MessageTextModel) {
         //TODO adapter.pushFrontFirst(echoModel)
         Log.d(TAG, "on push dans addItem")
     }
@@ -163,5 +166,7 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
 
     companion object {
         private const val TAG = "MessageSTOMP"
+        private const val TOPIC = "/topic/greetings"
+        private const val DEST_MESSAGE = "/app/hello"
     }
 }

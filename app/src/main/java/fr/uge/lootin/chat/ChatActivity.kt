@@ -65,28 +65,18 @@ class ChatActivity : AppCompatActivity() {
 
         //TODO Send Picture messages (WS)
         findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-            Toast.makeText(this, "Send picture is not implemented yet", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Send camera picture", Toast.LENGTH_LONG).show()
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(cameraIntent, 200)
         }
 
         //TODO Send Vocal messages (WS)
         findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
-            Toast.makeText(this, "Send vocal is not implemented yet", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Send my pictures", Toast.LENGTH_LONG).show()
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 100)
         }
-    }
-
-
-    /**
-     * capture
-     */
-    private fun capturePhoto() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, 200)
-    }
-
-    private fun openGalleryForImage() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, 100)
     }
 
     /**
