@@ -70,6 +70,11 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
 
     fun pushOldMessage(message: MessageItemUi){
         //TODO check l'id des messages et l'ajouter que s'il n'est pas dans la liste
+        data.add(0, message)
+        notifyItemInserted(0)
+    }
+
+    fun pushMessage(message: MessageItemUi){
         data.add(message)
         notifyItemInserted(data.size - 1)
     }
