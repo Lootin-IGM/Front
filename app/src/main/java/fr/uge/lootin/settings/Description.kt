@@ -16,7 +16,7 @@ class Description : Fragment() {
     private fun loadFragmentPicture(description: String) {
         (activity as FormActivity).setDescription(description)
         (activity as FormActivity).supportFragmentManager.beginTransaction().remove(this).commit()
-        val firstFrag = TakePicture()
+        val firstFrag = TakePicture.registerInstance()
         (activity as FormActivity).supportFragmentManager.beginTransaction()
             .add(R.id.form_fragment, firstFrag, "PictureFragment")
             .addToBackStack("PrictureFragment").commit()

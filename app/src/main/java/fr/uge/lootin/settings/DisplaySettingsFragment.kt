@@ -21,6 +21,15 @@ class DisplaySettingsFragment : Fragment() {
             .addToBackStack("gamesSettingsFragment").commit()
     }
 
+    private fun launchProfilePictureFragment() {
+        val profileFragment = TakePicture.settingsInstance(token)
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().remove(this)
+            .commit()
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_container_view, profileFragment, "pictureSettingsFragment")
+            .addToBackStack("pictureSettingsFragment").commit()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,6 +40,8 @@ class DisplaySettingsFragment : Fragment() {
         layout.findViewById<TextView>(R.id.changeGames).setOnClickListener {
             launchGameListFragment()
         }
+        layout.findViewById<TextView>(R.id.changePP)
+            .setOnClickListener { launchProfilePictureFragment() }
         return layout
     }
 
