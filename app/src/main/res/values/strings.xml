@@ -41,6 +41,10 @@
     <string name="registerTextOnSignInPage"><u>S\'inscrire</u></string>
     <string name="OuOnSignInPage">OU</string>
     <string name="loginMessageError">Veuillez entrer un login et un mot de passe pour vous connecter</string>
+    <string name="settings">Réglages</string>
+    <string name="changeDescription">Modifier ma description</string>
+    <string name="changePP">Modifier ma photo de profil</string>
+    <string name="changeGames">Modifier mes jeux</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -130,4 +134,6 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

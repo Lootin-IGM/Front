@@ -13,7 +13,7 @@ class Game(private val image: Bitmap, private val name: String) : Comparable<Gam
     private var selected: Boolean = false;
 
     companion object {
-        fun loadCards(context: Context, gameList: GameListDto): List<Game>? {
+        fun loadCards(context: Context?, gameList: GameListDto): List<Game>? {
             val l: MutableList<Game> = ArrayList<Game>()
             try {
                 for (g in gameList.games) {
