@@ -142,8 +142,8 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
      */
     private fun addItem(message: MessagePictureResponse) {
         val bitmap = BitmapFactory.decodeByteArray(message.byte , 0, message.byte.size);
-        adapter.pushMessage(MessageItemUi.factoryMessageItemUI(
-            "une a une photo !! ",
+        adapter.pushMessage(MessageItemUi.factoryPictureItemUI(
+            bitmap,
             message.id,
             message.date,
             myId == message.id_author
