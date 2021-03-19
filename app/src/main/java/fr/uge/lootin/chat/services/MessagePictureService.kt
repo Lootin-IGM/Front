@@ -102,7 +102,7 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
                         resetSubscriptions()
                     }
                     LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> toast("Stomp failed server heartbeat")
-                    else -> toast("WTF")
+                    else -> toast("WTF Error connect stomp MessagePictureService")
                 }
             }
         compositeDisposable!!.add(dispLifecycle)
