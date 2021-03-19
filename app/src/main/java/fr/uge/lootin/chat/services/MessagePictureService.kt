@@ -121,7 +121,7 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
                         TAG,
                         "Received " + topicMessage.payload
                     )
-                    Log.d(TAG, "on push dans connectstomp")
+                    Log.d(TAG, "on push dans connectTopic")
 
                     addItem(mGson.fromJson(topicMessage.payload, MessagePictureResponse::class.java))
                 }
@@ -137,12 +137,17 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
     }
 
     /**
-     * Add a picture to recyclerview
+     * Add a picture message to recyclerview
      * TODO changer le model pour qu'il accepte des bitmap
      */
     private fun addItem(message: MessagePictureResponse) {
         val bitmap = BitmapFactory.decodeByteArray(message.byte , 0, message.byte.size);
-        adapter.pushMessage(MessageItemUi.factoryMessageItemUI("une a une photo !! ", message.id, message.date, myId == message.id_author))
+        adapter.pushMessage(MessageItemUi.factoryMessageItemUI(
+            "une a une photo !! ",
+            message.id,
+            message.date,
+            myId == message.id_author
+        ))
         recyclerView.scrollToPosition(adapter.itemCount - 1)
         Log.d(TAG, "on push un element")
     }
