@@ -16,6 +16,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         abstract fun bind(item: T)
     }
 
+    /**
+     * Viewholder of the text message the client is sending
+     */
     class MyMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
         private val date = view.findViewById<TextView>(R.id.date_send)
@@ -27,6 +30,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         }
     }
 
+    /**
+     * viewholder of the text message the friend's client is sending
+     */
     class FriendMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
         private val date = view.findViewById<TextView>(R.id.date_send)
@@ -72,6 +78,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
     override fun getItemViewType(position: Int): Int = data[position].messageType
 
 
+    /**
+     * Add old messages in the adapter
+     */
     fun pushOldMessage(message: MessageItemUi){
         if(!data.contains(message)){
             data.add(message)
@@ -79,6 +88,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         }
     }
 
+    /**
+     * Add new messages in the adapter
+     */
     fun pushMessage(message: MessageItemUi){
         data.add(0, message)
         notifyItemInserted(0)
