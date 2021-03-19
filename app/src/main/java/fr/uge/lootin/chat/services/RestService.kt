@@ -9,7 +9,7 @@ import com.android.volley.toolbox.StringRequest
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.dto.MessagesResponse
-import fr.uge.lootin.request.GsonGETRequest
+import fr.uge.lootin.temporary.GsonGETRequest
 import java.util.HashMap
 
 class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long) {

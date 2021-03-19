@@ -1,4 +1,4 @@
-package fr.uge.lootin
+package fr.uge.lootin.temporary
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import fr.uge.lootin.R
 import fr.uge.lootin.chat.ChatActivity
 import fr.uge.lootin.chat.ChatActivity.Companion.MATCH_ID
 import fr.uge.lootin.chat.ChatActivity.Companion.TOKEN_VALUE
