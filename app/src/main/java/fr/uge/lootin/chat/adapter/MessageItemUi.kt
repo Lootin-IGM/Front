@@ -39,6 +39,7 @@ class MessageItemUi private constructor(
             if( iAuthor)return MessageItemUi(null,bitmap, MY_COLOR, TYPE_MY_MESSAGE_PICTURE, id, date)
             return MessageItemUi(null, bitmap, FRIEND_COLOR, TYPE_FRIEND_MESSAGE_PICTURE, id, date)
         }
+
         const val TYPE_MY_MESSAGE = 0
         const val TYPE_FRIEND_MESSAGE = 1
         const val TYPE_MY_MESSAGE_PICTURE = 2

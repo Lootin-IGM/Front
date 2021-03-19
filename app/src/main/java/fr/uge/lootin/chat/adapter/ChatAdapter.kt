@@ -48,7 +48,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
     }
 
     /**
-     * Viewholder of the Picture message the friend's client is sending
+     * Viewholder of the Picture message the client is sending
      */
     class MyPictureViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val picture = view.findViewById<ImageView>(R.id.picture)
