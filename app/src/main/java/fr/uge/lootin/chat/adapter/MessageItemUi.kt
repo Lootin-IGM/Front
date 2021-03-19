@@ -4,6 +4,23 @@ import android.graphics.Color
 import java.util.*
 
 class MessageItemUi private constructor(val content:String,val textColor:Int, val messageType:Int, val id: Long, date : Date){
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MessageItemUi
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
     companion object {
 
         fun factoryMessageItemUI( content:String, id: Long, date : Date, iAuthor : Boolean): MessageItemUi {

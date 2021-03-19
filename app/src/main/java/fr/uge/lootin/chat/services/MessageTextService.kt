@@ -135,7 +135,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     }
 
     private fun addItem(message: MessageTextResponse) {
-        adapter.pushOldMessage(MessageItemUi.factoryMessageItemUI(message.content, message.id, message.date, myId == message.id_author))
+        adapter.pushMessage(MessageItemUi.factoryMessageItemUI(message.content, message.id, message.date, myId == message.id_author))
         recyclerView.scrollToPosition(adapter.itemCount - 1)
         Log.d(TAG, "on push un element")
     }
