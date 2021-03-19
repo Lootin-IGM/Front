@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
-import fr.uge.lootin.chat.services.MessageService
+import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -43,7 +43,7 @@ class ChatActivity : AppCompatActivity() {
         val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
         //create web sockets services
-        val messageService = MessageService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
+        val messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -112,7 +112,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "MAINACTIVITY"
+        private const val TAG = "--ACTIVITY--MAIN"
         const val LOGIN = "login"
         const val PASSCODE = "passcode"
 

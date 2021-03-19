@@ -16,6 +16,26 @@ data class MessagePicture(
     fun toJSON() : String =
         "{\"byte\": \"$byte\", \"id_author\": \"$id_author\", \"date\": \"$date\"}"
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MessagePicture
+
+        if (!byte.contentEquals(other.byte)) return false
+        if (id_author != other.id_author) return false
+        if (date != other.date) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = byte.contentHashCode()
+        result = 31 * result + id_author.hashCode()
+        result = 31 * result + date.hashCode()
+        return result
+    }
+
 
     companion object {
         /**

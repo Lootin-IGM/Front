@@ -10,14 +10,16 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.chat.ChatActivity
-import fr.uge.lootin.chat.MATCH_ID
-import fr.uge.lootin.chat.TOKEN_VALUE
+import fr.uge.lootin.chat.ChatActivity.Companion.MATCH_ID
+import fr.uge.lootin.chat.ChatActivity.Companion.TOKEN_VALUE
+import fr.uge.lootin.chat.ChatActivity.Companion.USER_ID
 import org.json.JSONObject
 
 class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
     var match_id : Long = 0
+    val user_id : Long = 1
     val localhost : String = "192.168.1.58"
     val username : String = "Loulou"
     val password : String = "Yvette"
@@ -54,6 +56,7 @@ class PreChatActivity : AppCompatActivity() {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra(TOKEN_VALUE, token)
         intent.putExtra(MATCH_ID, match_id)
+        intent.putExtra(USER_ID, user_id)
         startActivityForResult(intent, 1)
     }
 

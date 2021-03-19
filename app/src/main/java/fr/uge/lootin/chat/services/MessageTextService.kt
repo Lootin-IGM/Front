@@ -27,7 +27,7 @@ import java.time.Instant
 import java.util.*
 
 
-class MessageService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long) {
+class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -170,7 +170,7 @@ class MessageService(private val adapter: ChatAdapter, private val recyclerView:
     }
 
     companion object {
-        private const val TAG = "MessageSTOMP"
+        private const val TAG = "--ACTIVITY--TEXT"
         private const val TOPIC = "/topic/greetings"
         private const val DEST_MESSAGE = "/app/hello"
     }
