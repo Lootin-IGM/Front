@@ -4,11 +4,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
+import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE_PICTURE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
+import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE_PICTURE
 
 class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: Long) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
@@ -31,7 +34,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
     }
 
     /**
-     * viewholder of the text message the friend's client is sending
+     * Viewholder of the text message the friend's client is sending
      */
     class FriendMessageViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
         private val messageContent = view.findViewById<TextView>(R.id.message)
@@ -44,10 +47,34 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         }
     }
 
+    /**
+     * Viewholder of the Picture message the friend's client is sending
+     */
+    class MyPictureViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
+        private val picture = view.findViewById<ImageView>(R.id.picture)
+        private val date = view.findViewById<TextView>(R.id.date_send)
+
+        override fun bind(item: MessageItemUi) {
+            picture.setImageBitmap(item.picture)
+            date.text = item.date.toString()
+        }
+    }
 
     /**
-     * TODO rajouter photos ici
+     * Viewholder of the Picture message the friend's client is sending
      */
+    class FriendPictureViewHolder(view: View) : MessageViewHolder<MessageItemUi>(view) {
+        private val picture = view.findViewById<ImageView>(R.id.picture)
+        private val date = view.findViewById<TextView>(R.id.date_send)
+
+        override fun bind(item: MessageItemUi) {
+            picture.setImageBitmap(item.picture)
+            date.text = item.date.toString()
+        }
+    }
+
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
         val context = parent.context
         return when (viewType) {
@@ -59,6 +86,14 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_text, parent, false)
                 FriendMessageViewHolder(view)
             }
+            TYPE_MY_MESSAGE_PICTURE -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.my_message_picture, parent, false)
+                MyPictureViewHolder(view)
+            }
+            TYPE_FRIEND_MESSAGE_PICTURE -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_picture, parent, false)
+                FriendPictureViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -69,6 +104,8 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         when (holder) {
             is MyMessageViewHolder -> holder.bind(item)
             is FriendMessageViewHolder -> holder.bind(item)
+            is MyPictureViewHolder -> holder.bind(item)
+            is FriendPictureViewHolder -> holder.bind(item)
             else -> throw IllegalArgumentException()
         }
     }
