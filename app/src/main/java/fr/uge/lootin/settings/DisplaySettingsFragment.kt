@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButton
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 
@@ -39,6 +40,11 @@ class DisplaySettingsFragment : Fragment() {
             .addToBackStack("descriptionSettingsFragment").commit()
     }
 
+    private fun closeSettingsFragment() {
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().remove(this)
+            .commit()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +59,9 @@ class DisplaySettingsFragment : Fragment() {
             .setOnClickListener { launchProfilePictureFragment() }
         layout.findViewById<TextView>(R.id.changeDescription).setOnClickListener {
             launchDescriptionFragment()
+        }
+        layout.findViewById<MaterialButton>(R.id.backSettingsButton).setOnClickListener {
+            closeSettingsFragment()
         }
         return layout
     }
