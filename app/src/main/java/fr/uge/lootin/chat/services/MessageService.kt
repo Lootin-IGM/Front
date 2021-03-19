@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import fr.uge.lootin.chat.adapter.ChatAdapter
+import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessageTextModel
 
 import io.reactivex.Completable
@@ -24,7 +26,7 @@ import java.time.Instant
 import java.util.*
 
 
-class MessageService(private val adapter: ChatAdapter, private val context: Context, private val url: String, private val myId: Long) {
+class MessageService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -44,19 +46,11 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
     }
 
     /**
-     * Disconnect web socket to the sever
-     */
-    fun disconnect() {
-        mStompClient!!.disconnect()
-        if (compositeDisposable != null) compositeDisposable!!.dispose()
-    }
-
-    /**
      * Send web socket messages
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun sendMessage(v: View?, ) {
-        val m : MessageTextModel = MessageTextModel("Hello WebSocket World", myId, Date.from(Instant.now()))
+        val m : MessageTextModel = MessageTextModel("Hello WebSocket World", myId, Date.from(Instant.now()), -1)
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
             mStompClient!!.send(
@@ -138,6 +132,14 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         mStompClient!!.connect(headers)
     }
 
+    private fun addItem(message: MessageTextModel) {
+        //TODO adapter.pushFrontFirst(echoModel)
+        adapter.pushOldMessage(MessageItemUi.factoryMessageItemUI(message.content, message.id, message.date, myId == message.id_author))
+        recyclerView.scrollToPosition(0)
+        Log.d(TAG, "on push un element")
+    }
+
+
     private fun applySchedulers(): CompletableTransformer {
         return CompletableTransformer { upstream: Completable ->
             upstream
@@ -154,9 +156,12 @@ class MessageService(private val adapter: ChatAdapter, private val context: Cont
         compositeDisposable = CompositeDisposable()
     }
 
-    private fun addItem(echoModel: MessageTextModel) {
-        //TODO adapter.pushFrontFirst(echoModel)
-        Log.d(TAG, "on push dans addItem")
+    /**
+     * Disconnect web socket to the sever
+     */
+    fun disconnect() {
+        mStompClient!!.disconnect()
+        if (compositeDisposable != null) compositeDisposable!!.dispose()
     }
 
     private fun toast(text: String?) {

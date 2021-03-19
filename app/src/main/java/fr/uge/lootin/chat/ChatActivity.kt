@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
+import fr.uge.lootin.chat.services.MessageService
 import fr.uge.lootin.chat.services.RestService
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -41,19 +42,23 @@ class ChatActivity : AppCompatActivity() {
         //create restService
         val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
+        //create web sockets services
+        val messageService = MessageService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
+
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    //TODO heheh ----------restService.getMessages()
+                    restService.getMessages()
                     recycler.scrollToPosition(0)
                 }
             }
         })
 
         restService.getMessages()
+        messageService.createStomp()
 
         // Send Text messages
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
@@ -123,5 +128,4 @@ class ChatActivity : AppCompatActivity() {
         const val TEXT_TOPIC: String = "TODO"
         const val PICTURE_TOPIC: String = "TODO"
     }
-
 }
