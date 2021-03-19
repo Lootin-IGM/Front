@@ -92,7 +92,7 @@ class FormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         getIntentValues()
         setContentView(R.layout.activity_form)
-        val firstFrag = Description()
+        val firstFrag = Description.registerInstance()
         supportFragmentManager.beginTransaction()
             .add(R.id.form_fragment, firstFrag, "DescriptionFragment")
             .addToBackStack("DescriptionFragment").commit()

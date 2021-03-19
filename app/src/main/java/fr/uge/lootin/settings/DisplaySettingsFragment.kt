@@ -30,6 +30,15 @@ class DisplaySettingsFragment : Fragment() {
             .addToBackStack("pictureSettingsFragment").commit()
     }
 
+    private fun launchDescriptionFragment() {
+        val descriptionFragment = Description.settingsInstance(token)
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().remove(this)
+            .commit()
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_container_view, descriptionFragment, "descriptionSettingsFragment")
+            .addToBackStack("descriptionSettingsFragment").commit()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +51,9 @@ class DisplaySettingsFragment : Fragment() {
         }
         layout.findViewById<TextView>(R.id.changePP)
             .setOnClickListener { launchProfilePictureFragment() }
+        layout.findViewById<TextView>(R.id.changeDescription).setOnClickListener {
+            launchDescriptionFragment()
+        }
         return layout
     }
 
