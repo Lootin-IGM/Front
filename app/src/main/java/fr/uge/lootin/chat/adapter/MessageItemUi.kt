@@ -29,6 +29,8 @@ class MessageItemUi private constructor(val content:String,val textColor:Int, va
         }
         const val TYPE_MY_MESSAGE = 0
         const val TYPE_FRIEND_MESSAGE = 1
+        const val TYPE_MY_MESSAGE_PICTURE = 2
+        const val TYPE_FRIEND_MESSAGE_PICTURE = 3
 
         private const val MY_COLOR = Color.WHITE
         private const val FRIEND_COLOR = Color.DKGRAY

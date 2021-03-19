@@ -12,6 +12,20 @@
     android:layout_marginStart="15dp"
     android:layout_marginEnd="35dp">
 
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@tools:sample/avatars"
+        android:background="@drawable/fiend_bubble"
+        android:padding="16dp"
+        android:scaleType="centerInside"
+        android:adjustViewBounds = "true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO" />
+
     <TextView
         android:id="@+id/date_send"
         android:layout_width="wrap_content"
@@ -21,17 +35,4 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture" />
-
-    <ImageView
-        android:id="@+id/picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:srcCompat="@tools:sample/avatars"
-        android:background="@drawable/fiend_bubble"
-        android:padding="16dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="TODO" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
