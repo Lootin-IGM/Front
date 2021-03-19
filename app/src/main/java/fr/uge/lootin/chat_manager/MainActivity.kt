@@ -14,11 +14,12 @@ import fr.uge.lootin.R
 import org.json.JSONObject
 
 const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
+const val IP = "10.188.154.243"
 
 class MainActivity : AppCompatActivity() {
     var token:String = "yesss"
     private fun connect(queue: RequestQueue){
-        val url = "http://192.168.43.2:8080/login"
+        val url = URL + "/login"
         Log.i("my_log", "connect request")
         val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"username\": \"Loulou\",\"password\": \"Yvette\"}"),
                 Response.Listener { response ->

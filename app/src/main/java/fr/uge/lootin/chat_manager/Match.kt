@@ -1,4 +1,6 @@
 package fr.uge.lootin.chat_manager
 
-class Match {
+import android.graphics.Bitmap
+
+class Match (val id_matcher: Int, val image: Bitmap) {
 }

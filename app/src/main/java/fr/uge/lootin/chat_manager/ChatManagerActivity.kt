@@ -1,6 +1,9 @@
 package fr.uge.lootin.chat_manager
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,13 +17,22 @@ import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import kotlin.math.sign
 
-const val URL = "http://192.168.43.2:8080"
+const val URL = "http://192.168.56.1:8080"
 
 // TODO ATTENTION, NE DOIVENT PAS ETRE NULS!!!!!!!!
 const val SIZE_PAGE_MATCHES = 3
 const val SIZE_PAGE_PREVIEW_MESSAGE = 3
 
 class ChatManagerActivity : AppCompatActivity() {
+
+    private fun fromStringToBitmap(image: String) : Bitmap {
+        Log.i("my_log", "image string??" + image)
+        val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
+        Log.i("my_log", "decodedString??" + decodedString.toString() + "  size ?? " + decodedString.size)
+        val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        Log.i("my_log", bitmap.toString())
+        return bitmap
+    }
 
     private fun requestVerifyConnect(queue: RequestQueue, token: String){
         val url = URL + "/showLogin"
@@ -49,7 +61,7 @@ class ChatManagerActivity : AppCompatActivity() {
         }
         queue.add(stringRequest)
     }
-
+    /*
     private fun requestGetMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_matches: ArrayList<Match>, list_messages: ArrayList<PreviewMessage>, matchAdapter: MatchAdapter, previewMessageAdapter: PreviewMessageAdapter) {
         val url = URL + "/matches"
 
@@ -119,7 +131,7 @@ class ChatManagerActivity : AppCompatActivity() {
             }
         }
         queue.add(jsonObjectRequest)
-    }
+    }*/
 
     private fun treatEmptyMatches(response: JSONObject, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter, page: Int) {
         val data = response.getJSONArray("data")
@@ -134,7 +146,7 @@ class ChatManagerActivity : AppCompatActivity() {
             // TODO A traiter quand ce sera prêt (photo + id)
             if (match.isNull("lastMessage")) {
                 Log.i("my_log", "match?? " + match.getString("id"))
-                list_matches.add(Match())
+                list_matches.add(Match(Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
             }
         }
         matchAdapter.notifyItemInserted(matchesSize)
@@ -153,7 +165,7 @@ class ChatManagerActivity : AppCompatActivity() {
 
             // TODO Rajouter photo quand ce sera prêt
             val lastMessage = match.getJSONObject("lastMessage")
-            list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random()))
+            list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random(), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
             Log.i("my_log", "message?? " + match.getString("id"))
 
             //Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())

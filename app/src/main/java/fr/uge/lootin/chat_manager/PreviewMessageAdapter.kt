@@ -1,5 +1,6 @@
 package fr.uge.lootin.chat_manager
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.icu.number.IntegerWidth
 import android.view.LayoutInflater
@@ -17,12 +18,12 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         private var pseudo: TextView = itemView.findViewById(R.id.pseudo)
         private var layout: ConstraintLayout = itemView.findViewById(R.id.layoutId)
         private var photo: CircleImageView = itemView.findViewById(R.id.conversation_photo)
-        fun update(newMessage: String, newPseudo: String, color: Int, id_photo: Int) {
+        fun update(newMessage: String, newPseudo: String, color: Int, id_photo: Int, image: Bitmap) {
             message.text = newMessage
             pseudo.text = newPseudo
             layout.setBackgroundColor(color)
-
-            if (id_photo == 0) {
+            photo.setImageBitmap(image)
+            /*if (id_photo == 0) {
                 photo.setImageResource(R.drawable.aarmand)
                 //photo.setBackgroundResource()
             }
@@ -34,7 +35,7 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
             }
             if (id_photo == 3) {
                 photo.setImageResource(R.drawable.loulou_content)
-            }
+            }*/
         }
 
     }
@@ -59,7 +60,7 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         else {
             color = Color.parseColor("#2C2F33")
         }
-        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].id_photo)
+        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].id_photo, previewMessages[position].photo)
 
     }
 }

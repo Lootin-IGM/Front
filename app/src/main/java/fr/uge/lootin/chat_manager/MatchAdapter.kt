@@ -1,5 +1,6 @@
 package fr.uge.lootin.chat_manager
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,10 @@ import kotlin.collections.ArrayList
 class MatchAdapter (private var matches: ArrayList<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var photo: CircleImageView = itemView.findViewById(R.id.profile_image)
-        fun update() {
-            val num = (0..3).random()
+        fun update(image: Bitmap) {
+            photo.setImageBitmap(image)
+
+            /* num = (0..3).random()
             if (num == 0) {
                 photo.setImageResource(R.drawable.aarmand)
                 //photo.setBackgroundResource()
@@ -29,7 +32,7 @@ class MatchAdapter (private var matches: ArrayList<Match>) : RecyclerView.Adapte
             }
             if (num == 3) {
                 photo.setImageResource(R.drawable.loulou_content)
-            }
+            }*/
 
         }
 
@@ -47,6 +50,6 @@ class MatchAdapter (private var matches: ArrayList<Match>) : RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.update()
+        holder.update(matches[position].image)
     }
 }
