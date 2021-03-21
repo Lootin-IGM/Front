@@ -1,4 +1,4 @@
-package fr.uge.lootin.chat_manager
+package fr.uge.lootin.chat_manager.preview_message
 
 import android.graphics.Bitmap
 

@@ -1,8 +1,7 @@
-package fr.uge.lootin.chat_manager
+package fr.uge.lootin.chat_manager.preview_message
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.icu.number.IntegerWidth
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

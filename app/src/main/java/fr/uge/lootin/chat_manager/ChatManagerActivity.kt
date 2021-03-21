@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.*
 import fr.uge.lootin.R
-import org.json.JSONException
+import fr.uge.lootin.chat_manager.match.Match
+import fr.uge.lootin.chat_manager.match.MatchAdapter
+import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
+import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
 import org.json.JSONObject
-import java.io.UnsupportedEncodingException
-import java.nio.charset.Charset
-import kotlin.math.sign
 
 const val URL = "http://192.168.56.1:8080"
 

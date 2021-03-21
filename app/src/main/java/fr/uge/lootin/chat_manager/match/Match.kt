@@ -1,4 +1,4 @@
-package fr.uge.lootin.chat_manager
+package fr.uge.lootin.chat_manager.match
 
 import android.graphics.Bitmap
 
