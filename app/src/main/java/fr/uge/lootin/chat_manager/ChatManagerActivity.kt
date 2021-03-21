@@ -19,19 +19,15 @@ import org.json.JSONObject
 
 const val URL = "http://192.168.56.1:8080"
 
-// TODO ATTENTION, NE DOIVENT PAS ETRE NULS!!!!!!!!
-const val SIZE_PAGE_MATCHES = 3
-const val SIZE_PAGE_PREVIEW_MESSAGE = 3
+
+const val SIZE_PAGE_MATCHES = 6
+const val SIZE_PAGE_PREVIEW_MESSAGE = 7
 
 class ChatManagerActivity : AppCompatActivity() {
 
     private fun fromStringToBitmap(image: String) : Bitmap {
-        Log.i("my_log", "image string??" + image)
         val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
-        Log.i("my_log", "decodedString??" + decodedString.toString() + "  size ?? " + decodedString.size)
-        val bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-        Log.i("my_log", bitmap.toString())
-        return bitmap
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
     private fun requestVerifyConnect(queue: RequestQueue, token: String){
@@ -61,78 +57,6 @@ class ChatManagerActivity : AppCompatActivity() {
         }
         queue.add(stringRequest)
     }
-    /*
-    private fun requestGetMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_matches: ArrayList<Match>, list_messages: ArrayList<PreviewMessage>, matchAdapter: MatchAdapter, previewMessageAdapter: PreviewMessageAdapter) {
-        val url = URL + "/matches"
-
-        Log.i("my_log", "get matches request")
-
-        val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
-                object : Response.Listener<JSONObject?>{
-                     override fun onResponse(response: JSONObject?) {
-
-                         if (response != null) {
-                             val data = response.getJSONArray("data")
-
-                             val matchesSize = list_matches.size
-                             val previewMessagesSize = list_messages.size
-                             for (i in 0 until data.length()) {
-                                 val match = data.getJSONObject(i)
-
-                                 // TODO A traiter quand ce sera prêt (photo + id)
-                                 if (match.isNull("lastMessage")) {
-                                     list_matches.add(Match())
-                                 }
-
-                                 // TODO Rajouter photo quand ce sera prêt
-                                 else {
-                                     val lastMessage = match.getJSONObject("lastMessage")
-                                     //Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
-                                     //Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
-                                     //Log.i("my_log", LocalDateTime.parse(lastMessage.getString("sendTime")).toString())
-                                     list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random()))
-                                 }
-                             }
-                             matchAdapter.notifyItemInserted(matchesSize)
-                             previewMessageAdapter.notifyItemInserted(previewMessagesSize)
-                             
-                         }
-                    }
-                },
-                Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to get matches\n"
-                            + error.toString() + "\n"
-                            + "networkResponse " + error.networkResponse + "\n"
-                            + "localizedMessage " + error.localizedMessage + "\n"
-                            + "message " + error.message + "\n"
-                            + "cause " + error.cause + "\n"
-                            + "stackTrace " + error.stackTrace.toString())
-                }
-        ) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String>? {
-                val params: MutableMap<String, String> = HashMap()
-                params["Authorization"] = "Bearer " + token
-                return params
-            }
-
-            override fun parseNetworkResponse(response: NetworkResponse): Response<JSONObject?>? {
-                return try {
-                    val jsonString = String(
-                            response.data,
-                            Charset.forName(HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET)))
-                    Response.success(
-                            JSONObject("{'data':$jsonString}"), HttpHeaderParser.parseCacheHeaders(response))
-                } catch (e: UnsupportedEncodingException) {
-                    Response.error(ParseError(e))
-                } catch (je: JSONException) {
-                    Response.error(ParseError(je))
-                }
-            }
-        }
-        queue.add(jsonObjectRequest)
-    }*/
-
     private fun treatEmptyMatches(response: JSONObject, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter, page: Int) {
         val data = response.getJSONArray("data")
         val matchesSize = list_matches.size
@@ -143,9 +67,7 @@ class ChatManagerActivity : AppCompatActivity() {
         }
         for (i in from until data.length()) {
             val match = data.getJSONObject(i)
-            // TODO A traiter quand ce sera prêt (photo + id)
             if (match.isNull("lastMessage")) {
-                Log.i("my_log", "match?? " + match.getString("id"))
                 list_matches.add(Match(Integer.valueOf(match.getString("id")), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
             }
         }
@@ -163,14 +85,9 @@ class ChatManagerActivity : AppCompatActivity() {
         for (i in from until data.length()) {
             val match = data.getJSONObject(i)
 
-            // TODO Rajouter photo quand ce sera prêt
             val lastMessage = match.getJSONObject("lastMessage")
             list_messages.add(PreviewMessage(Integer.valueOf(match.getString("id")), lastMessage.getString("message"), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image")), lastMessage.getString("sendTime")))
-            Log.i("my_log", "message?? " + match.getString("id"))
 
-            //Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())
-            //Log.i("my_log",ZonedDateTime.parse(lastMessage.getString("sendTime").toString()).toString())
-            //Log.i("my_log", LocalDateTime.parse(lastMessage.getString("sendTime")).toString())
         }
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)
     }
@@ -187,13 +104,18 @@ class ChatManagerActivity : AppCompatActivity() {
                     }
                 },
                 Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to get matches\n"
-                            + error.toString() + "\n"
-                            + "networkResponse " + error.networkResponse + "\n"
-                            + "localizedMessage " + error.localizedMessage + "\n"
-                            + "message " + error.message + "\n"
-                            + "cause " + error.cause + "\n"
-                            + "stackTrace " + error.stackTrace.toString())
+                    if (error.toString().equals("com.android.volley.AuthFailureError")) {
+                        Log.i("my_log", "Invalid token")
+                    }
+                    else {
+                        Log.i("my_log", "error while trying to get matches\n"
+                                + error.toString() + "\n"
+                                + "networkResponse " + error.networkResponse + "\n"
+                                + "localizedMessage " + error.localizedMessage + "\n"
+                                + "message " + error.message + "\n"
+                                + "cause " + error.cause + "\n"
+                                + "stackTrace " + error.stackTrace.toString())
+                    }
                 }
         ) {
             @Throws(AuthFailureError::class)
@@ -219,13 +141,18 @@ class ChatManagerActivity : AppCompatActivity() {
                     }
                 },
                 Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to get matches\n"
-                            + error.toString() + "\n"
-                            + "networkResponse " + error.networkResponse + "\n"
-                            + "localizedMessage " + error.localizedMessage + "\n"
-                            + "message " + error.message + "\n"
-                            + "cause " + error.cause + "\n"
-                            + "stackTrace " + error.stackTrace.toString())
+                    if (error.toString().equals("com.android.volley.AuthFailureError")) {
+                        Log.i("my_log", "Invalid token")
+                    }
+                    else {
+                        Log.i("my_log", "error while trying to get matches\n"
+                                + error.toString() + "\n"
+                                + "networkResponse " + error.networkResponse + "\n"
+                                + "localizedMessage " + error.localizedMessage + "\n"
+                                + "message " + error.message + "\n"
+                                + "cause " + error.cause + "\n"
+                                + "stackTrace " + error.stackTrace.toString())
+                    }
                 }
         ) {
             @Throws(AuthFailureError::class)
@@ -258,14 +185,8 @@ class ChatManagerActivity : AppCompatActivity() {
         recyclerViewMessagePreview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    /*TODO load messages*/
                     requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
-                    /*val size = listMessages.size
-                    listMessages.add(PreviewMessage("Le refresh a fonctionné :)", "Jeanne", (0..3).random()))
-                    previewMessagesAdapter.notifyItemInserted(size)*/
-
                 }
             }
         })
@@ -278,22 +199,13 @@ class ChatManagerActivity : AppCompatActivity() {
         recyclerViewMatches.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
                 if (!recyclerView.canScrollHorizontally(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    /*TODO load matches */
                     requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches.size / SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
-                    /*val size = listMatches.size
-                    listMatches.add(Match())
-                    matchesAdapter.notifyItemInserted(size)*/
-
                 }
             }
         })
 
-
-        Log.i("my_log", "dans 2nd acti  " + token)
         requestVerifyConnect(queue, token)
-        //requestGetMatches(queue, token, 4, 0, list_matches, list_messages, matchesAdapter, previewMessagesAdapter)
         requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, 0, listMatches, matchesAdapter)
         requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
 

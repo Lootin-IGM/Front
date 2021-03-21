@@ -29,13 +29,18 @@ class MainActivity : AppCompatActivity() {
 
                 },
                 Response.ErrorListener { error ->
-                    Log.i("my_log", "error while trying to connect\n"
-                            + error.toString() + "\n"
-                            + error.networkResponse + "\n"
-                            + error.localizedMessage + "\n"
-                            + error.message + "\n"
-                            + error.cause + "\n"
-                            + error.stackTrace.toString())
+                    if (error.toString().equals("com.android.volley.AuthFailureError")) {
+                        Log.i("my_log", "Auth failed: wrong login and password combination")
+                    }
+                    else {
+                        Log.i("my_log", "error while trying to connect\n"
+                                + error.toString() + "\n"
+                                + error.networkResponse + "\n"
+                                + error.localizedMessage + "\n"
+                                + error.message + "\n"
+                                + error.cause + "\n"
+                                + error.stackTrace.toString())
+                    }
                 }
         )
         queue.add(jsonObjectRequest)
