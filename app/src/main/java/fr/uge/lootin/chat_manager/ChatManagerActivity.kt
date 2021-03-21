@@ -146,7 +146,7 @@ class ChatManagerActivity : AppCompatActivity() {
             // TODO A traiter quand ce sera prêt (photo + id)
             if (match.isNull("lastMessage")) {
                 Log.i("my_log", "match?? " + match.getString("id"))
-                list_matches.add(Match(Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
+                list_matches.add(Match(Integer.valueOf(match.getString("id")), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
             }
         }
         matchAdapter.notifyItemInserted(matchesSize)
@@ -165,7 +165,7 @@ class ChatManagerActivity : AppCompatActivity() {
 
             // TODO Rajouter photo quand ce sera prêt
             val lastMessage = match.getJSONObject("lastMessage")
-            list_messages.add(PreviewMessage(lastMessage.getString("message"), match.getJSONObject("user").getString("login"), (0..3).random(), fromStringToBitmap(match.getJSONObject("user").getString("image"))))
+            list_messages.add(PreviewMessage(Integer.valueOf(match.getString("id")), lastMessage.getString("message"), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image")), lastMessage.getString("sendTime")))
             Log.i("my_log", "message?? " + match.getString("id"))
 
             //Log.i("my_log",lastMessage.getString("sendTime").toString().indexOf("+").toString())

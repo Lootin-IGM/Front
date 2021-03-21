@@ -3,6 +3,7 @@ package fr.uge.lootin.chat_manager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.icu.number.IntegerWidth
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,7 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         private var pseudo: TextView = itemView.findViewById(R.id.pseudo)
         private var layout: ConstraintLayout = itemView.findViewById(R.id.layoutId)
         private var photo: CircleImageView = itemView.findViewById(R.id.conversation_photo)
-        fun update(newMessage: String, newPseudo: String, color: Int, id_photo: Int, image: Bitmap) {
+        fun update(newMessage: String, newPseudo: String, color: Int, image: Bitmap) {
             message.text = newMessage
             pseudo.text = newPseudo
             layout.setBackgroundColor(color)
@@ -60,7 +61,8 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         else {
             color = Color.parseColor("#2C2F33")
         }
-        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].id_photo, previewMessages[position].photo)
+        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].photo)
+        holder.itemView.setOnClickListener { Log.i("my_log", "on a cliqué sur message: " + previewMessages[position].sender + " - " + previewMessages[position].message) }
 
     }
 }

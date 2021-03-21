@@ -1,6 +1,7 @@
 package fr.uge.lootin.chat_manager
 
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,5 +52,9 @@ class MatchAdapter (private var matches: ArrayList<Match>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.update(matches[position].image)
+
+        holder.itemView.setOnClickListener {
+            Log.i("my_log", "on a cliqué sur match : " + matches[position].pseudo + " - id matcher : " + matches[position].id_matcher)
+        }
     }
 }
