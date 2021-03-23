@@ -1,21 +1,15 @@
-package fr.uge.lootin.dto
+package fr.uge.lootin.chat.models
 
+import java.time.LocalDateTime
 import java.util.*
 
 class MessagesResponse(val data : List<Message>) {
 
 
 
-    class Message(val id : Long, val sendTime : Date, val message : String, val sender: User){
+    class Message(val id : Long, val sendTime : String, val message : String, val sender: Long){
 
 
-
-        class User(val id: Long, val login: String){
-
-            override fun toString(): String {
-                return "Message(login=$login)"
-            }
-        }
 
         override fun toString(): String {
             return "Message(sendTime=$sendTime, message='$message', sender=$sender)"

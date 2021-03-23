@@ -7,16 +7,13 @@ import java.util.*
  * [MessageTextResponse] represents a notification model
  */
 data class MessageTextResponse(
-    val content: String,
+    val message: String,
     val id_author: Long,
-    val date: Date,
+    val sendTime: Date,
     val id: Long
 
+
     ) {
-
-    fun toJSON() : String =
-        "{\"content\": \"$content\", \"id_author\": \"$id_author\", \"date\": \"$date\", \"id\": \"$id\"}"
-
 
     companion object {
         /**

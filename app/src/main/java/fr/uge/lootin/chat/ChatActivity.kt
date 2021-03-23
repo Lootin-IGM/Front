@@ -48,8 +48,8 @@ class ChatActivity : AppCompatActivity() {
         //TODO val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
         //create web sockets services
-        val messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
-        //TODO pictureService = MessagePictureService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT/websocket", idUser)
+        val messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
+        //TODO pictureService = MessagePictureService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -71,6 +71,7 @@ class ChatActivity : AppCompatActivity() {
             val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
                 messageService.sendMessage(message)
+                findViewById<TextView>(R.id.zoneText).text = ""
             }
         }
 

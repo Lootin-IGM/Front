@@ -1,16 +1,17 @@
 package fr.uge.lootin.chat.models
 
 import com.google.gson.GsonBuilder
+import java.time.LocalDate
 import java.util.*
 
 /**
  * [MessageTextResponse] represents a notification model
  */
 data class MessagePictureResponse(
-    val byte: ByteArray,
-    val id_author: Long,
-    val date: Date,
-    val id: Long
+        val byte: ByteArray,
+        val id_author: Long,
+        val date: LocalDate,
+        val id: Long
 
     ) {
 

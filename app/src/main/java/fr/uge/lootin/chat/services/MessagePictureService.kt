@@ -1,11 +1,9 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +23,6 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import ua.naiksoftware.stomp.dto.StompMessage
-import java.time.Instant
 import java.util.*
 
 
@@ -38,6 +35,7 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
     /**
      * Create stomp web socket
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun createStomp(){
         mStompClient = Stomp.over(
             Stomp.ConnectionProvider.OKHTTP,
@@ -110,6 +108,7 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
     /**
      * Connect to topic and receive messages
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun connectTopic(){
         val dispTopic = mStompClient!!.topic(TOPIC)
             .subscribeOn(Schedulers.io())
@@ -139,15 +138,18 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
      * Add a picture message to recyclerview
      * TODO changer le model pour qu'il accepte des bitmap
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addItem(message: MessagePictureResponse) {
         val bitmap = BitmapFactory.decodeByteArray(message.byte , 0, message.byte.size);
-        adapter.pushMessage(MessageItemUi.factoryPictureItemUI(
+       /* adapter.pushMessage(MessageItemUi.factoryPictureItemUI(
             bitmap,
             message.id,
             message.date,
             myId == message.id_author
         ))
         recyclerView.scrollToPosition(adapter.itemCount - 1)
+        LocalDate
+        */
         Log.d(TAG, "on push un element")
     }
 

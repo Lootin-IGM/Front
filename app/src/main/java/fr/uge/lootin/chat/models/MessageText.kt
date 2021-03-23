@@ -7,12 +7,12 @@ import java.util.*
  * [MessageText] represents a notification model
  */
 data class MessageText(
-    val content: String,
-    val id_author: Long,
+    val text: String,
+    val matchId: Long,
     ) {
 
     fun toJSON() : String =
-        "{\"content\": \"$content\", \"id_author\": \"$id_author\"}"
+        "{\"text\": \"$text\", \"matchId\": \"$matchId\"}"
 
 
     companion object {

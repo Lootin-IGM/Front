@@ -2,15 +2,18 @@ package fr.uge.lootin.chat.adapter
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import java.util.*
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class MessageItemUi private constructor(
-    val content: String? = null,
-    val picture: Bitmap? = null,
-    val textColor:Int,
-    val messageType:Int,
-    val id: Long,
-    val date: Date){
+        val content: String? = null,
+        val picture: Bitmap? = null,
+        val textColor:Int,
+        val messageType:Int,
+        val id: Long,
+        val date: String){
 
 
     override fun equals(other: Any?): Boolean {
@@ -30,16 +33,20 @@ class MessageItemUi private constructor(
 
     companion object {
 
-        fun factoryMessageItemUI( content:String, id: Long, date : Date, iAuthor : Boolean): MessageItemUi {
+        fun factoryMessageItemUI(content:String, id: Long, date: String, iAuthor: Boolean): MessageItemUi {
             if( iAuthor)return MessageItemUi(content,null, MY_COLOR, TYPE_MY_MESSAGE, id, date)
             return MessageItemUi(content, null, FRIEND_COLOR, TYPE_FRIEND_MESSAGE, id, date)
         }
 
-        fun factoryPictureItemUI( bitmap: Bitmap, id: Long, date : Date, iAuthor : Boolean): MessageItemUi {
+        /*
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun factoryPictureItemUI(bitmap: Bitmap, id: Long, date: LocalDate, iAuthor: Boolean): MessageItemUi {
             if( iAuthor)return MessageItemUi(null,bitmap, MY_COLOR, TYPE_MY_MESSAGE_PICTURE, id, date)
             return MessageItemUi(null, bitmap, FRIEND_COLOR, TYPE_FRIEND_MESSAGE_PICTURE, id, date)
         }
 
+
+         */
         const val TYPE_MY_MESSAGE = 0
         const val TYPE_FRIEND_MESSAGE = 1
         const val TYPE_MY_MESSAGE_PICTURE = 2
