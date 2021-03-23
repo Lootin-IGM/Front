@@ -26,10 +26,10 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZXhlTWFsYWRlIiwiZXhwIjoxNjE2MjA5MDgxLCJpYXQiOjE2MTYxNzMwODF9.O3pb-GA2A7oXSLGUPixhF9glNvj3rZiRPbMHM5RJEAE"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZXhlTWFsYWRlIiwiZXhwIjoxNjE2NTcwNDcwLCJpYXQiOjE2MTY1MzQ0NzB9.yH4uAxqHU3Vt8vCMyRYOdnL2bcsPAOmVoARubXy0mPo"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
-    private val url: String = "http://192.168.1.18:8080"
+    private val url: String = "http://192.168.1.86:8080"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

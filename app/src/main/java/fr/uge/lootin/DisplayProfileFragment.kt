@@ -20,7 +20,7 @@ import fr.uge.lootin.models.Users
 
 class DisplayProfileFragment : DialogFragment() {
 
-    private val url: String = "http://192.168.1.18:8080"
+    private val url: String = "http://192.168.1.86:8080"
     private var userId: String = ""
     private var token: String = ""
     private lateinit var queue: RequestQueue
