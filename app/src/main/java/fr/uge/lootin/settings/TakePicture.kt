@@ -3,9 +3,11 @@ package fr.uge.lootin.settings
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,8 @@ import fr.uge.lootin.R
 import fr.uge.lootin.form.FileDataPart
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.form.VolleyFileUploadRequest
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.models.ImageDto
 import java.io.ByteArrayOutputStream
 
 class TakePicture : Fragment() {
@@ -90,6 +94,34 @@ class TakePicture : Fragment() {
         (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
             .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
             .addToBackStack("settingsFragment").commit()
+    }
+
+    private fun getMyPictureRequest() {
+        val queue = Volley.newRequestQueue(activity?.applicationContext)
+        val url = "http://192.168.1.86:8080/images/my"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        Log.i("test", "get my image request")
+        val request = GsonGETRequest(
+            url, ImageDto::class.java, map,
+            { response ->
+                val imageBytes = Base64.decode(response.image, Base64.DEFAULT)
+                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                val imageView = view?.findViewById<ImageView>(R.id.FragmentImageOnPicturePage)
+                imageView?.setImageBitmap(decodedImage)
+            },
+            { error ->
+                Log.i(
+                    "test", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString()
+                )
+            })
+        queue.add(request)
     }
 
     private fun updatePictureRequest() {
@@ -162,6 +194,7 @@ class TakePicture : Fragment() {
         }
         if (type == "settings") {
             token = requireArguments().getString("token").toString()
+            getMyPictureRequest()
             nextButtonSettings()
         }
         return layout

@@ -22,8 +22,8 @@ import fr.uge.lootin.R
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.form.Game
 import fr.uge.lootin.form.GameAdapter
-import fr.uge.lootin.form.GameListDto
 import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.models.GameListDto
 import org.json.JSONObject
 
 

@@ -1,4 +1,4 @@
-package fr.uge.lootin.form
+package fr.uge.lootin.models
 
 class GameListDto(val games: List<GameDto>) {
     override fun toString(): String {
