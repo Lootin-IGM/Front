@@ -3,6 +3,8 @@
     package="fr.uge.lootin">
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,9 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".form.FormActivity" />
         <activity android:name=".register.RegisterActivity" />
         <activity android:name=".ProfilesSwipingActivity" />
+        <activity android:name=".chat_manager.MainActivity"/>
+        <activity android:name=".chat_manager.ChatManagerActivity"/>
     </application>
 
 
