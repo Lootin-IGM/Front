@@ -26,7 +26,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZXhlTWFsYWRlIiwiZXhwIjoxNjE2MjA5MDgxLCJpYXQiOjE2MTYxNzMwODF9.O3pb-GA2A7oXSLGUPixhF9glNvj3rZiRPbMHM5RJEAE"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTY1NzE4NTAsImlhdCI6MTYxNjUzNTg1MH0.ss9k9l6jV2GNvZ8_bj0o3lOuVxvTGcvKP1SO5B_9Os4"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private val url: String = "http://192.168.1.18:8080"

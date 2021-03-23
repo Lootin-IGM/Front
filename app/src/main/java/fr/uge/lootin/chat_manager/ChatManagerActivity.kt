@@ -17,7 +17,7 @@ import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
 import org.json.JSONObject
 
-const val URL = "http://192.168.56.1:8080"
+const val URL = "http://192.168.1.18:8080"
 
 
 const val SIZE_PAGE_MATCHES = 6

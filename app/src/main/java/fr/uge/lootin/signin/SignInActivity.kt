@@ -52,7 +52,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun login(queue: RequestQueue) {
-        val url = "http://192.168.1.86:8080/login"
+        val url = "http://192.168.1.18:8080/login"
         Log.i("test", "login request")
         Log.i("test", "username=${this.username}, password=${this.password}")
         val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, JSONObject("{\"username\":\"${this.username}\",\"password\":\"${this.password}\"}"),

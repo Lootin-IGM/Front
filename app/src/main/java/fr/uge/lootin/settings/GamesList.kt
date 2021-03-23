@@ -36,7 +36,7 @@ class GamesList : Fragment() {
     private var type: String = ""
 
     private fun getAllGames() {
-        val url = "http://192.168.1.86:8080/games/"
+        val url = "http://192.168.1.18:8080/games/"
         val map = HashMap<String, String>()
         Log.i("test", "get all games request")
         val request = GsonGETRequest(
@@ -103,7 +103,7 @@ class GamesList : Fragment() {
     }
 
     private fun getActualUserGames() {
-        val url = "http://192.168.1.86:8080/games/my"
+        val url = "http://192.168.1.18:8080/games/my"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
         Log.i("test", "get actual user games request")
@@ -135,7 +135,7 @@ class GamesList : Fragment() {
     }
 
     private fun updateGamesRequest(games: List<String>) {
-        val url = "http://192.168.1.86:8080/profile/games"
+        val url = "http://192.168.1.18:8080/profile/games"
         Log.i(
             "test",
             "verify connexion request " + JSONObject("{\"games\": " + Gson().toJson(games) + "}")

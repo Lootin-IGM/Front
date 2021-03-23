@@ -41,7 +41,7 @@ class FormActivity : AppCompatActivity() {
 
     fun registerRequest(games: List<String>, gl: GamesList) {
         val queue = Volley.newRequestQueue(this.applicationContext)
-        val url = "http://192.168.1.86:8080/register"
+        val url = "http://192.168.1.18:8080/register"
         Log.i("test", "post upload image request")
         val jsonObjectRequest = object : VolleyFileUploadRequest(Method.POST, url,
             Response.Listener { response ->

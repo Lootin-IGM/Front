@@ -94,7 +94,7 @@ class TakePicture : Fragment() {
 
     private fun updatePictureRequest() {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.86:8080/profile/image"
+        val url = "http://192.168.1.18:8080/profile/image"
         Log.i("test", "post update picture request")
         val jsonObjectRequest = object : VolleyFileUploadRequest(Method.POST, url,
             Response.Listener { response ->

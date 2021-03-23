@@ -59,7 +59,7 @@ class Description : Fragment() {
 
     private fun updateDescriptionRequest(description: String) {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.86:8080/profile/description"
+        val url = "http://192.168.1.18:8080/profile/description"
         Log.i(
             "test",
             "verify connexion request " + JSONObject(

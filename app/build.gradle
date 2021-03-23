@@ -61,4 +61,5 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
 
     implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:1.2.1'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
