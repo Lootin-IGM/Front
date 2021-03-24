@@ -36,7 +36,7 @@
         android:paddingEnd="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/grey_lootin"
+        android:textColor="@color/white"
         android:textColorHint="@color/grey_lootin"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/FragmentNextButtonDescription"
