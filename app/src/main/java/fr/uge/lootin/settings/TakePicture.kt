@@ -117,6 +117,7 @@ class TakePicture : Fragment() {
                 val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                 val imageView = view?.findViewById<ImageView>(R.id.FragmentImageOnPicturePage)
                 imageView?.setImageBitmap(decodedImage)
+                picture = decodedImage
             },
             { error ->
                 Log.i(
