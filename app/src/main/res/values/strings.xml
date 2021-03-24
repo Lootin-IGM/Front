@@ -41,6 +41,7 @@
     <string name="registerTextOnSignInPage"><u>S\'inscrire</u></string>
     <string name="OuOnSignInPage">OU</string>
     <string name="loginMessageError">Veuillez entrer un login et un mot de passe pour vous connecter</string>
+    <string name="incorrectLogin">Identifiants incorrects, veuillez réessayer</string>
     <string name="settings">Réglages</string>
     <string name="changeDescription">Modifier ma description</string>
     <string name="changePP">Modifier ma photo de profil</string>

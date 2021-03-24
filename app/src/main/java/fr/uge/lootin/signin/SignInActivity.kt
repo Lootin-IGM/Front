@@ -23,15 +23,19 @@ class SignInActivity : AppCompatActivity() {
     private var username: String = ""
     private var password: String = ""
 
+    private fun showToast(msg: Int) {
+        Toast.makeText(
+            applicationContext,
+            applicationContext.getString(msg),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     private fun checkParams(): Boolean {
         username = findViewById<EditText>(R.id.UsernameOnsignInPage).text.toString()
         password = findViewById<EditText>(R.id.PasswordOnsignInPage).text.toString()
         if (username == "" || password == "") {
-            Toast.makeText(
-                    applicationContext,
-                    applicationContext.getString(R.string.loginMessageError),
-                    Toast.LENGTH_SHORT
-            ).show()
+            showToast(R.string.loginMessageError)
             return false
         }
         return true
@@ -52,20 +56,28 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun login(queue: RequestQueue) {
-        val url = "http://192.168.1.18:8080/login"
+        val url = "http://192.168.1.2:8080/login"
         Log.i("test", "login request")
         Log.i("test", "username=${this.username}, password=${this.password}")
-        val jsonObjectRequest = object : JsonObjectRequest(Method.POST, url, JSONObject("{\"username\":\"${this.username}\",\"password\":\"${this.password}\"}"),
-                Response.Listener { response -> saveJWT(response.getString("jwt")) },
-                Response.ErrorListener { error ->
-                    Log.i("test", "error while trying to login\n"
+        val jsonObjectRequest = object : JsonObjectRequest(Method.POST,
+            url,
+            JSONObject("{\"username\":\"${this.username}\",\"password\":\"${this.password}\"}"),
+            Response.Listener { response -> saveJWT(response.getString("jwt")) },
+            Response.ErrorListener { error ->
+                Log.i(
+                    "test", "error while trying to login\n"
                             + error.toString() + "\n"
+                            + "code " + error.networkResponse.statusCode + "\n"
                             + "networkResponse " + error.networkResponse + "\n"
                             + "localizedMessage " + error.localizedMessage + "\n"
                             + "message " + error.message + "\n"
                             + "cause " + error.cause + "\n"
-                            + "stackTrace " + error.stackTrace.toString())
-                }) {
+                            + "stackTrace " + error.stackTrace.toString()
+                )
+                if (error.networkResponse.statusCode == 403) {
+                    showToast(R.string.incorrectLogin)
+                }
+            }) {
             override fun getHeaders(): Map<String, String>? {
                 val params: MutableMap<String, String> = HashMap()
                 params["Content-Type"] = "application/json"
