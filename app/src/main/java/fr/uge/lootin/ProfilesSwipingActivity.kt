@@ -2,6 +2,7 @@ package fr.uge.lootin
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.widget.ImageButton
@@ -25,15 +26,16 @@ import org.json.JSONObject
 class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
-    var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTY1NzE4NTAsImlhdCI6MTYxNjUzNTg1MH0.ss9k9l6jV2GNvZ8_bj0o3lOuVxvTGcvKP1SO5B_9Os4"
+    var token: String = ""
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
-    private val url: String = "http://192.168.1.18:8080"
+    private val url: String = "http://192.168.1.2:8080"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        token = prefs.getString("jwt", "").toString()
         setContentView(R.layout.activity_profiles_swiping)
         this.queue = Volley.newRequestQueue(this)
         displayNextProfile()

@@ -18,15 +18,15 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
 import fr.uge.lootin.form.Game
 import fr.uge.lootin.form.GameAdapter
-import fr.uge.lootin.models.GameListDto
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils
+import fr.uge.lootin.models.GameListDto
 import fr.uge.lootin.models.UserFull
 import fr.uge.lootin.models.Users
 
 class DisplayProfileFragment : DialogFragment() {
 
-    private val url: String = "http://192.168.1.18:8080"
+    private val url: String = "http://192.168.1.2:8080"
     private var userId: String = ""
     private var token: String = ""
     private lateinit var queue: RequestQueue
