@@ -2,10 +2,6 @@ package fr.uge.lootin.chat.adapter
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 class MessageItemUi private constructor(
         val content: String? = null,
@@ -38,15 +34,14 @@ class MessageItemUi private constructor(
             return MessageItemUi(content, null, FRIEND_COLOR, TYPE_FRIEND_MESSAGE, id, date)
         }
 
-        /*
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun factoryPictureItemUI(bitmap: Bitmap, id: Long, date: LocalDate, iAuthor: Boolean): MessageItemUi {
+
+        fun factoryPictureItemUI(bitmap: Bitmap, id: Long, date: String, iAuthor: Boolean): MessageItemUi {
             if( iAuthor)return MessageItemUi(null,bitmap, MY_COLOR, TYPE_MY_MESSAGE_PICTURE, id, date)
             return MessageItemUi(null, bitmap, FRIEND_COLOR, TYPE_FRIEND_MESSAGE_PICTURE, id, date)
         }
 
 
-         */
+
         const val TYPE_MY_MESSAGE = 0
         const val TYPE_FRIEND_MESSAGE = 1
         const val TYPE_MY_MESSAGE_PICTURE = 2

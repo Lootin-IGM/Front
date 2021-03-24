@@ -4,27 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
-import fr.uge.lootin.chat.services.MessagePictureService
 import fr.uge.lootin.chat.services.MessageTextService
-import fr.uge.lootin.chat.services.RestService
 import java.io.ByteArrayOutputStream
 import java.util.*
 
 
 class ChatActivity : AppCompatActivity() {
 
-    lateinit var pictureService : MessagePictureService
+    lateinit var messageService : MessageTextService
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
@@ -48,8 +44,7 @@ class ChatActivity : AppCompatActivity() {
         //TODO val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
         //create web sockets services
-        val messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
-        //TODO pictureService = MessagePictureService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
+        messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -108,8 +103,12 @@ class ChatActivity : AppCompatActivity() {
         res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val array = stream.toByteArray()
 
+        val base64String: String? = res?.let { ImageUtil.convert(it) }
+
         //send picture with web socket
-        //TODO pictureService.sendMessage(array)
+        if (array != null) {
+            messageService.sendPicture(base64String)
+        }
     }
 
     companion object {

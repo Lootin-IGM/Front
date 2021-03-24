@@ -7,31 +7,14 @@ import java.util.*
  * [MessageTextResponse] represents a notification model
  */
 data class MessagePicture(
-    val byte: ByteArray,
-    val id_author: Long,
+    val picture: String,
+    val matchID: Long,
 
     ) {
 
     fun toJSON() : String =
-        "{\"byte\": \"$byte\", \"id_author\": \"$id_author\"}"
+        "{\"picture\": \"${picture.replace("\n","\\n" )}\", \"matchID\": $matchID}"
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as MessagePicture
-
-        if (!byte.contentEquals(other.byte)) return false
-        if (id_author != other.id_author) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = byte.contentHashCode()
-        result = 31 * result + id_author.hashCode()
-        return result
-    }
 
 
     companion object {

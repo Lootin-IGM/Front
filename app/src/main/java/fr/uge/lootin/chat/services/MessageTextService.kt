@@ -1,14 +1,15 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
-import android.os.Build
+import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
+import fr.uge.lootin.chat.ImageUtil
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
+import fr.uge.lootin.chat.models.MessagePicture
 import fr.uge.lootin.chat.models.MessageText
 import fr.uge.lootin.chat.models.MessagesResponse
 import io.reactivex.Completable
@@ -21,7 +22,6 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import ua.naiksoftware.stomp.dto.StompMessage
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -42,6 +42,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
         resetSubscriptions()
         connectStomp()
         connectTopic()
+        connectTopicPicture()
+        mStompClient!!.connect(headers)
     }
 
     /**
@@ -52,7 +54,6 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
                 mStompClient!!.send(
-                        //TODO ou est-ce qu'on envoie
                         DEST_MESSAGE,
                         m.toJSON()
                 )
@@ -69,6 +70,37 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                             Log.e(TAG, "Error send STOMP echo", throwable)
                             toast(throwable.message)
                         })
+    }
+
+    /**
+     * Send web socket messages
+     */
+    fun sendPicture(byteArray: String?) {
+        val m : MessagePicture? = byteArray?.let { MessagePicture(it, myId) }
+        if (!mStompClient?.isConnected!!) return;
+        if (m != null) {
+            Log.d(TAG, "picture send => " + m.toJSON())
+        }
+        if (m != null) {
+            compositeDisposable!!.add(
+                    mStompClient!!.send(
+                            //TODO ou est-ce qu'on envoie
+                            DEST_PICTURE,
+                            m.toJSON()
+                    )
+                            .compose(applySchedulers())
+                            .subscribe(
+                                    {
+                                        Log.d(
+                                                TAG,
+                                                "STOMP text message send successfully"
+                                        )
+                                    }
+                            ) { throwable: Throwable ->
+                                Log.e(TAG, "Error send STOMP echo", throwable)
+                                toast(throwable.message)
+                            })
+        }
     }
 
     /**
@@ -133,7 +165,36 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
             }
         Log.d(TAG, "subscribe in channel : /user/$myId/text")
         compositeDisposable!!.add(dispTopic)
-        mStompClient!!.connect(headers)
+
+    }
+
+    /**
+     * Connect to topic and receive messages
+     */
+    private fun connectTopicPicture(){
+        val dispTopic = mStompClient!!.topic("/user/$myId/picture")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { topicMessage: StompMessage ->
+                            Log.d(
+                                    TAG,
+                                    "Received picture " + topicMessage.payload
+                            )
+                            Log.d(TAG, "on push dans connectstomp")
+
+
+                            addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Picture::class.java))
+                        }
+                ) { throwable: Throwable? ->
+                    Log.e(
+                            TAG,
+                            "Error on subscribe topic",
+                            throwable
+                    )
+                }
+        Log.d(TAG, "subscribe in channel : /user/$myId/picture")
+        compositeDisposable!!.add(dispTopic)
     }
 
     /**
@@ -143,11 +204,27 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
         adapter.pushMessage(MessageItemUi.factoryMessageItemUI(
                 message.message,
                 1L,
-                "L'heure d'aller se coucher",
+                message.sendTime,
                 myId == message.sender
         ))
         recyclerView.scrollToPosition(adapter.itemCount - 1)
         Log.d(TAG, "on push un element")
+    }
+
+    /**
+     * Add a text message to recyclerview
+     */
+    private fun addItemPicture(message: MessagesResponse.Picture) {
+
+        val bitmap: Bitmap = ImageUtil.convert(message.picture)
+        adapter.pushMessage(MessageItemUi.factoryPictureItemUI(
+                bitmap,
+                message.id,
+                message.sendTime,
+                myId == message.sender
+        ))
+         recyclerView.scrollToPosition(adapter.itemCount - 1)
+
     }
 
 
@@ -186,5 +263,6 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
         private const val TOPIC = "/user/queue/specific-user-user"
 
         private const val DEST_MESSAGE = "/spring-security-mvc-socket/bonjour"
+        private const val DEST_PICTURE = "/spring-security-mvc-socket/picture"
     }
 }
