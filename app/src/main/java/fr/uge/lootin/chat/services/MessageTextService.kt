@@ -49,8 +49,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Send web socket messages
      */
-    fun sendMessage(message: String) {
-        val m : MessageText = MessageText(message, myId)
+    fun sendMessage(message: String, matchID: Long, sendTo: Long) {
+        val m : MessageText = MessageText(message, matchID, sendTo, myId)
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
                 mStompClient!!.send(
@@ -75,8 +75,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Send web socket messages
      */
-    fun sendPicture(byteArray: String?) {
-        val m : MessagePicture? = byteArray?.let { MessagePicture(it, myId) }
+    fun sendPicture(byteArray: String?, matchID : Long, sendTo : Long) {
+        val m : MessagePicture? = byteArray?.let { MessagePicture(it, matchID, sendTo, myId) }
         if (!mStompClient?.isConnected!!) return;
         if (m != null) {
             Log.d(TAG, "picture send => " + m.toJSON())
@@ -107,7 +107,6 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      * Connect stomp web socket to the server
      */
     private fun connectStomp() {
-        //headers.add(StompHeader(ChatActivity.LOGIN, "guest"))
         headers.add(StompHeader("X-Authorization", "Bearer $myId"))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
@@ -206,7 +205,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                 message.sendTime,
                 myId == message.sender
         ))
-        recyclerView.scrollToPosition(adapter.itemCount - 1)
+        recyclerView.scrollToPosition(0)
         Log.d(TAG, "on push un element")
     }
 
@@ -222,7 +221,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                 message.sendTime,
                 myId == message.sender
         ))
-         recyclerView.scrollToPosition(adapter.itemCount - 1)
+         recyclerView.scrollToPosition(0)
 
     }
 

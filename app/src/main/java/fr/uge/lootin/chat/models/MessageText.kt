@@ -1,18 +1,19 @@
 package fr.uge.lootin.chat.models
 
 import com.google.gson.GsonBuilder
-import java.util.*
 
 /**
  * [MessageText] represents a notification model
  */
 data class MessageText(
-    val text: String,
-    val matchId: Long,
+        val text: String,
+        val matchId: Long,
+        val sendTo: Long,
+        val sender: Long
     ) {
 
     fun toJSON() : String =
-        "{\"text\": \"$text\", \"matchId\": \"$matchId\"}"
+        "{\"text\": \"$text\", \"matchId\": \"$matchId\", \"sendTo\": $sendTo, \"sender\": $sender}"
 
 
     companion object {

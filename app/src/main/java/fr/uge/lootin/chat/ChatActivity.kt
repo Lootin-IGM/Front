@@ -21,6 +21,11 @@ import java.util.*
 class ChatActivity : AppCompatActivity() {
 
     lateinit var messageService : MessageTextService
+    lateinit var recycler: RecyclerView
+    lateinit var adapter: ChatAdapter
+    var idUser : Long = 0
+    var matchId: Long = -1
+    var sendTo : Long = 1
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
@@ -31,12 +36,13 @@ class ChatActivity : AppCompatActivity() {
 
         // GET INFO from other activity
         val token = intent.getStringExtra(TOKEN_VALUE).toString()
-        val matchId = intent.getLongExtra(MATCH_ID, -1)
-        val idUser = intent.getLongExtra(USER_ID, -1)
+        //matchId = intent.getLongExtra(MATCH_ID, -1)
+        //val idUser = 1L //intent.getLongExtra(USER_ID, -1)
+        //sendTo = 1L
 
         // Create recycler and adapter
-        val recycler: RecyclerView = findViewById(R.id.reclyclerChat)
-        val adapter = ChatAdapter(ArrayList(), PAGE_SIZE)
+        recycler= findViewById(R.id.reclyclerChat)
+        adapter = ChatAdapter(ArrayList(), PAGE_SIZE)
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
 
@@ -53,7 +59,7 @@ class ChatActivity : AppCompatActivity() {
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //TODO restService.getMessages()
-                    recycler.scrollToPosition(0)
+                    //recycler.scrollToPosition(adapter.getItemCount() - 1)
                 }
             }
         })
@@ -65,8 +71,9 @@ class ChatActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
             val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
-                messageService.sendMessage(message)
+                messageService.sendMessage(message, matchId, sendTo)
                 findViewById<TextView>(R.id.zoneText).text = ""
+                //recycler.scrollToPosition(adapter.getItemCount() - 1)
             }
         }
 
@@ -107,7 +114,8 @@ class ChatActivity : AppCompatActivity() {
 
         //send picture with web socket
         if (array != null) {
-            messageService.sendPicture(base64String)
+            messageService.sendPicture(base64String, matchId , sendTo)
+            recycler.scrollToPosition(0)
         }
     }
 

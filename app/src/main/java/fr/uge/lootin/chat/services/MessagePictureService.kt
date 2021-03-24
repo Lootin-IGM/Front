@@ -1,7 +1,6 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -25,7 +24,7 @@ import java.security.spec.PSSParameterSpec.DEFAULT
 import java.util.*
 
 
-class MessagePictureService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long) {
+class MessagePictureService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val otherId: Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -49,7 +48,7 @@ class MessagePictureService(private val adapter: ChatAdapter, private val recycl
      * Send web socket messages
      */
     fun sendMessage(byteArray: String) {
-        val m : MessagePicture = MessagePicture(byteArray, myId)
+        val m : MessagePicture = MessagePicture(byteArray, myId, otherId, 0L)
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
                 mStompClient!!.send(
