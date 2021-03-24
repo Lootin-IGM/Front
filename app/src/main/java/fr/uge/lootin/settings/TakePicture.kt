@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -32,6 +33,13 @@ class TakePicture : Fragment() {
     lateinit var type: String
     lateinit var layout: View
     lateinit var picture: Bitmap
+    private var baseUrl = ""
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val ip = prefs.getString("ip", "").toString()
+        baseUrl = "http://$ip:8080"
+    }
 
     private fun capturePhoto() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -98,7 +106,7 @@ class TakePicture : Fragment() {
 
     private fun getMyPictureRequest() {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.86:8080/images/my"
+        val url = "$baseUrl/images/my"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
         Log.i("test", "get my image request")
@@ -126,7 +134,7 @@ class TakePicture : Fragment() {
 
     private fun updatePictureRequest() {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.18:8080/profile/image"
+        val url = "$baseUrl/profile/image"
         Log.i("test", "post update picture request")
         val jsonObjectRequest = object : VolleyFileUploadRequest(Method.POST, url,
             Response.Listener { response ->
@@ -182,6 +190,7 @@ class TakePicture : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        getIpFromPreferences()
         layout =
             inflater.inflate(R.layout.fragment_take_picture, container, false)
         type = requireArguments().getString("type").toString()

@@ -2,6 +2,7 @@ package fr.uge.lootin
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +27,7 @@ import fr.uge.lootin.models.Users
 
 class DisplayProfileFragment : DialogFragment() {
 
-    private val url: String = "http://192.168.1.2:8080"
+    private var url: String = ""
     private var userId: String = ""
     private var token: String = ""
     private lateinit var queue: RequestQueue
@@ -34,6 +35,12 @@ class DisplayProfileFragment : DialogFragment() {
     lateinit var gameRV: RecyclerView
     lateinit var gameAdapter: GameAdapter
     lateinit var cards: List<Game>
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val ip = prefs.getString("ip", "").toString()
+        url = "http://$ip:8080"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +65,7 @@ class DisplayProfileFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getIpFromPreferences()
         this.queue = Volley.newRequestQueue(activity?.applicationContext)
         view?.findViewById<TextView>(R.id.userBiography)?.text = "ok"
         token = arguments?.getString("TOKEN").toString()

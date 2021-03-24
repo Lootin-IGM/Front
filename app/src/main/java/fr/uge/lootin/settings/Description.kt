@@ -1,6 +1,7 @@
 package fr.uge.lootin.settings
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,13 @@ class Description : Fragment() {
     lateinit var layout: View
     private var token: String = ""
     lateinit var type: String
+    private var baseUrl = ""
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val ip = prefs.getString("ip", "").toString()
+        baseUrl = "http://$ip:8080"
+    }
 
     private fun loadFragmentPicture(description: String) {
         (activity as FormActivity).setDescription(description)
@@ -59,7 +67,7 @@ class Description : Fragment() {
 
     private fun updateDescriptionRequest(description: String) {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.18:8080/profile/description"
+        val url = "$baseUrl/profile/description"
         Log.i(
             "test",
             "verify connexion request " + JSONObject(
@@ -120,6 +128,7 @@ class Description : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        getIpFromPreferences()
         layout = inflater.inflate(R.layout.fragment_description, container, false)
         type = requireArguments().getString("type").toString()
         if (type == "register") setNextButtonRegister()

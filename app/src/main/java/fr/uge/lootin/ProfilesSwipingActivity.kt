@@ -29,11 +29,17 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     var token: String = ""
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
-    private val url: String = "http://192.168.1.2:8080"
+    private var url: String = ""
 
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val ip = prefs.getString("ip", "").toString()
+        url = "http://$ip:8080"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getIpFromPreferences()
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
         setContentView(R.layout.activity_profiles_swiping)
