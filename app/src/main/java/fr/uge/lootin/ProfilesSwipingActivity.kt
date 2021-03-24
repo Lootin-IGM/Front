@@ -53,15 +53,18 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             val firstFrag = DisplayProfileFragment();
             firstFrag.arguments = bundle
             supportFragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.slide_in,
-                R.anim.fade_out, R.anim.fade_in, R.anim.slide_out
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_l_r, R.anim.fade_in_r_l, R.anim.slide_out_r_l
             ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
                 .addToBackStack("userMoreFragment").commit()
         }
 
         findViewById<ImageButton>(R.id.settingsButton).setOnClickListener {
             val settingsFrag = DisplaySettingsFragment.newInstance(token)
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                R.anim.slide_in_l_r,
+                R.anim.fade_out_l_r, R.anim.fade_in_l_r, R.anim.slide_out_l_r
+            )
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
         }

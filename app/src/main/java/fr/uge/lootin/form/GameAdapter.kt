@@ -7,7 +7,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 
-class GameAdapter(val gameList: List<Game>) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
+class GameAdapter(val gameList: List<Game>, val clickable: Boolean = true) : RecyclerView.Adapter<GameAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val cardImage: ImageView = itemView.findViewById(R.id.gameImage)
 
@@ -23,9 +23,11 @@ class GameAdapter(val gameList: List<Game>) : RecyclerView.Adapter<GameAdapter.V
         fun update(game: Game, position: Int) {
             cardImage.setImageBitmap(game.getBitmap())
             changeImage(position)
-            itemView.setOnClickListener {
-                game.clicked()
-                changeImage(position)
+            if (clickable){
+                itemView.setOnClickListener {
+                    game.clicked()
+                    changeImage(position)
+                }
             }
         }
     }
