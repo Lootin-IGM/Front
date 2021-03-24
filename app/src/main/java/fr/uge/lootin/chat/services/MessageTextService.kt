@@ -183,7 +183,6 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                             )
                             Log.d(TAG, "on push dans connectstomp")
 
-
                             addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Picture::class.java))
                         }
                 ) { throwable: Throwable? ->
