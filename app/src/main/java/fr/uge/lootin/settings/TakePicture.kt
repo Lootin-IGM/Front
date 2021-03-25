@@ -75,10 +75,13 @@ class TakePicture : Fragment() {
     }
 
     private fun loadGamesFragment() {
-        (activity as FormActivity).supportFragmentManager.beginTransaction().remove(this).commit()
         val gamesFrag = GamesList.registerInstance()
         (activity as FormActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.form_fragment, gamesFrag, "GamesFragment").addToBackStack("GamesFragment")
+            .setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+            .replace(R.id.form_fragment, gamesFrag, "GamesFragment").addToBackStack("GamesFragment")
             .commit()
     }
 

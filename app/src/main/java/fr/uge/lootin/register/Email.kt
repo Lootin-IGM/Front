@@ -22,11 +22,13 @@ class Email : Fragment() {
     }
 
     private fun loadNameFragment() {
-        (activity as RegisterActivity).supportFragmentManager.beginTransaction().remove(this)
-            .commit()
         val firstFrag = Name.registerInstance()
         (activity as RegisterActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.register_fragment, firstFrag, "nameFragment")
+            .setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+            .replace(R.id.register_fragment, firstFrag, "nameFragment")
             .addToBackStack("nameFragment").commit()
     }
 
