@@ -2,6 +2,7 @@ package fr.uge.lootin.settings
 
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,8 @@ import com.google.gson.Gson
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.form.FormActivity
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.models.DescriptionDto
 import org.json.JSONObject
 
 class Description : Fragment() {
@@ -123,6 +126,33 @@ class Description : Fragment() {
         }
     }
 
+    private fun getMyDescriptionRequest() {
+        val queue = Volley.newRequestQueue(activity?.applicationContext)
+        val url = "$baseUrl/profile/myDescription"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        Log.i("test", "get my description request")
+        val request = GsonGETRequest(
+            url, DescriptionDto::class.java, map,
+            { response ->
+                val description = response.description
+                layout.findViewById<EditText>(R.id.FragmentDescriptionText).text =
+                    Editable.Factory.getInstance().newEditable(description)
+            },
+            { error ->
+                Log.i(
+                    "test", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString()
+                )
+            })
+        queue.add(request)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -134,6 +164,7 @@ class Description : Fragment() {
         if (type == "register") setNextButtonRegister()
         if (type == "settings") {
             token = requireArguments().getString("token").toString()
+            getMyDescriptionRequest()
             setNextButtonSettings()
         }
         return layout
