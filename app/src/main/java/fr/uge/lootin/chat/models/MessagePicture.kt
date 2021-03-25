@@ -8,14 +8,13 @@ import java.util.*
  */
 data class MessagePicture(
     val picture: String,
-    val matchID: Long,
-    val sendTo: Long,
+    val matchId: Long,
     val sender: Long
 
     ) {
 
     fun toJSON() : String =
-        "{\"picture\": \"${picture.replace("\n","\\n" )}\", \"matchID\": $matchID, \"sendTo\": $sendTo, \"sender\": $sender}}"
+        "{\"picture\": \"${picture.replace("\n","\\n" )}\", \"matchId\": $matchId, \"sender\": $sender}}"
 
 
 

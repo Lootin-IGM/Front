@@ -25,7 +25,7 @@ import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
 
 
-class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long) {
+class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val matchId : Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -49,8 +49,9 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Send web socket messages
      */
-    fun sendMessage(message: String, matchID: Long, sendTo: Long) {
-        val m : MessageText = MessageText(message, matchID, sendTo, myId)
+    fun sendMessage(message: String) {
+        val m : MessageText = MessageText(message, matchId, myId)
+        Log.d(TAG, m.toJSON())
         if (!mStompClient?.isConnected!!) return;
         compositeDisposable!!.add(
                 mStompClient!!.send(
@@ -75,8 +76,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Send web socket messages
      */
-    fun sendPicture(byteArray: String?, matchID : Long, sendTo : Long) {
-        val m : MessagePicture? = byteArray?.let { MessagePicture(it, matchID, sendTo, myId) }
+    fun sendPicture(byteArray: String?) {
+        val m : MessagePicture? = byteArray?.let { MessagePicture(it, matchId, myId) }
         if (!mStompClient?.isConnected!!) return;
         if (m != null) {
             Log.d(TAG, "picture send => " + m.toJSON())
@@ -142,7 +143,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      * Connect to topic and receive messages
      */
     private fun connectTopic(){
-        val dispTopic = mStompClient!!.topic("/user/$myId/text")
+        val dispTopic = mStompClient!!.topic("/user/$matchId/text")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -162,7 +163,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                         throwable
                 )
             }
-        Log.d(TAG, "subscribe in channel : /user/$myId/text")
+        Log.d(TAG, "subscribe in channel : /user/$matchId/text")
         compositeDisposable!!.add(dispTopic)
 
     }
@@ -171,7 +172,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      * Connect to topic and receive messages
      */
     private fun connectTopicPicture(){
-        val dispTopic = mStompClient!!.topic("/user/$myId/picture")
+        val dispTopic = mStompClient!!.topic("/user/$matchId/picture")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -191,7 +192,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                             throwable
                     )
                 }
-        Log.d(TAG, "subscribe in channel : /user/$myId/picture")
+        Log.d(TAG, "subscribe in channel : /user/$matchId/picture")
         compositeDisposable!!.add(dispTopic)
     }
 

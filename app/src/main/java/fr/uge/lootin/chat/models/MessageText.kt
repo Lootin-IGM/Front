@@ -8,12 +8,11 @@ import com.google.gson.GsonBuilder
 data class MessageText(
         val text: String,
         val matchId: Long,
-        val sendTo: Long,
         val sender: Long
     ) {
 
     fun toJSON() : String =
-        "{\"text\": \"$text\", \"matchId\": \"$matchId\", \"sendTo\": $sendTo, \"sender\": $sender}"
+        "{\"text\": \"$text\", \"matchId\": \"$matchId\", \"sender\": $sender}"
 
 
     companion object {

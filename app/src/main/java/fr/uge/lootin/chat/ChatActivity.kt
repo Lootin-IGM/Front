@@ -23,8 +23,8 @@ class ChatActivity : AppCompatActivity() {
     lateinit var messageService : MessageTextService
     lateinit var recycler: RecyclerView
     lateinit var adapter: ChatAdapter
-    var idUser : Long = 0
-    var matchId: Long = -1
+    var idUser : Long = 56
+    var matchId: Long = 1
     var sendTo : Long = 1
 
     /**
@@ -50,7 +50,7 @@ class ChatActivity : AppCompatActivity() {
         //TODO val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
 
         //create web sockets services
-        messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser)
+        messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser, matchId)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -71,9 +71,8 @@ class ChatActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
             val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
-                messageService.sendMessage(message, matchId, sendTo)
+                messageService.sendMessage(message)
                 findViewById<TextView>(R.id.zoneText).text = ""
-                //recycler.scrollToPosition(adapter.getItemCount() - 1)
             }
         }
 
@@ -114,7 +113,7 @@ class ChatActivity : AppCompatActivity() {
 
         //send picture with web socket
         if (array != null) {
-            messageService.sendPicture(base64String, matchId , sendTo)
+            messageService.sendPicture(base64String)
             recycler.scrollToPosition(0)
         }
     }
