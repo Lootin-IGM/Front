@@ -19,7 +19,7 @@
     </de.hdodenhof.circleimageview.CircleImageView>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/nameUser"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"

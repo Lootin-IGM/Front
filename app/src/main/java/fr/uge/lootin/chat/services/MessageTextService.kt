@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
-import fr.uge.lootin.chat.ImageUtil
+import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessagePicture
