@@ -14,6 +14,11 @@ class RegisterActivity : AppCompatActivity() {
     private var age: Int = 0
     private var gender: String = ""
     private var attraction: String = ""
+    private var email: String = ""
+
+    fun setEmail(email: String) {
+        this.email = email
+    }
 
     fun setUsername(username: String) {
         this.username = username
@@ -52,6 +57,7 @@ class RegisterActivity : AppCompatActivity() {
             putExtra("age", age)
             putExtra("gender", gender)
             putExtra("attraction", attraction)
+            putExtra("email", email)
         }
         startActivity(intent)
     }

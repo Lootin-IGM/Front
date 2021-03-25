@@ -47,13 +47,13 @@ class Pseudo : Fragment() {
         return true
     }
 
-    private fun loadNameFragment() {
+    private fun loadEmailFragment() {
         (activity as RegisterActivity).supportFragmentManager.beginTransaction().remove(this)
             .commit()
-        val firstFrag = Name.registerInstance()
+        val firstFrag = Email.registerInstance()
         (activity as RegisterActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.register_fragment, firstFrag, "nameFragment")
-            .addToBackStack("nameFragment").commit()
+            .add(R.id.register_fragment, firstFrag, "emailFragment")
+            .addToBackStack("emailFragment").commit()
     }
 
     override fun onCreateView(
@@ -64,7 +64,7 @@ class Pseudo : Fragment() {
         layout = inflater.inflate(R.layout.register_layout, container, false)
         layout.findViewById<Button>(R.id.nextButtonChoosePseudo).setOnClickListener {
             if (checkParamsRegister()) {
-                loadNameFragment()
+                loadEmailFragment()
             }
         }
         return layout

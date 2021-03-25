@@ -46,6 +46,9 @@
     <string name="changeDescription">Modifier ma description</string>
     <string name="changePP">Modifier ma photo de profil</string>
     <string name="changeGames">Modifier mes jeux</string>
+    <string name="whatsMyEmail">Ton email</string>
+    <string name="emailExample">my@mail.com</string>
+    <string name="emailError">Veuillez entrer un email valide</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

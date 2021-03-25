@@ -25,6 +25,7 @@ class FormActivity : AppCompatActivity() {
     private var age: Int = 0
     private var gender: String = ""
     private var attraction: String = ""
+    private var email: String = ""
     private var baseUrl = ""
 
     private fun getIpFromPreferences() {
@@ -78,6 +79,7 @@ class FormActivity : AppCompatActivity() {
                 params["age"] = age.toString()
                 params["gender"] = gender
                 params["attraction"] = attraction
+                params["email"] = email
                 params["games"] = games.joinToString()
 
                 return params
@@ -103,6 +105,7 @@ class FormActivity : AppCompatActivity() {
         this.age = intent.getIntExtra("age", -1)
         this.gender = intent.getStringExtra("gender").toString()
         this.attraction = intent.getStringExtra("attraction").toString()
+        this.email = intent.getStringExtra("email").toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
