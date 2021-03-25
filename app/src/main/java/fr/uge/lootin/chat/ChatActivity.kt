@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.services.MessageTextService
+import fr.uge.lootin.chat.utils.ImageUtil
 import java.io.ByteArrayOutputStream
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class ChatActivity : AppCompatActivity() {
@@ -23,9 +25,8 @@ class ChatActivity : AppCompatActivity() {
     lateinit var messageService : MessageTextService
     lateinit var recycler: RecyclerView
     lateinit var adapter: ChatAdapter
-    var idUser : Long = 56
-    var matchId: Long = 1
-    var sendTo : Long = 1
+    var idUser by Delegates.notNull<Long>()
+    var matchId by Delegates.notNull<Long>()
 
     /**
      * Checker si on est bien connecté, sinon pop up + exit(0)
@@ -36,9 +37,14 @@ class ChatActivity : AppCompatActivity() {
 
         // GET INFO from other activity
         val token = intent.getStringExtra(TOKEN_VALUE).toString()
-        //matchId = intent.getLongExtra(MATCH_ID, -1)
-        //val idUser = 1L //intent.getLongExtra(USER_ID, -1)
-        //sendTo = 1L
+        val nameOther = intent.getStringExtra(OTHER_NAME).toString()
+        matchId = intent.getLongExtra(MATCH_ID, -1)
+        idUser = intent.getLongExtra(USER_ID, -1)
+
+        if (matchId == -1L || idUser == -1L){
+            //TODO Stop
+            Log.e(TAG, "Problem avec données récupérées")
+        }
 
         // Create recycler and adapter
         recycler= findViewById(R.id.reclyclerChat)
@@ -59,7 +65,7 @@ class ChatActivity : AppCompatActivity() {
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //TODO restService.getMessages()
-                    //recycler.scrollToPosition(adapter.getItemCount() - 1)
+                    recycler.scrollToPosition(adapter.getItemCount() - 1)
                 }
             }
         })
@@ -71,25 +77,26 @@ class ChatActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
             val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
-                messageService.sendMessage(message)
+                messageService.sendMessage(message.replace("\\","\\\\" ))
                 findViewById<TextView>(R.id.zoneText).text = ""
             }
         }
 
-        //TODO Send Picture messages (WS)
-        findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
+        // Send camera picture messages (WS)
+        findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
             Toast.makeText(this, "Send my picture", Toast.LENGTH_LONG).show()
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(cameraIntent, 200)
         }
 
-        //TODO Send camera picture messages (WS)
-        findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
+        // Send picture messages (WS)
+        findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
             Toast.makeText(this, "Send camera pictures", Toast.LENGTH_LONG).show()
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 100)
         }
+        findViewById<TextView>(R.id.nameUser).text = nameOther
     }
 
     /**
@@ -120,19 +127,17 @@ class ChatActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "--ACTIVITY--MAIN"
-        const val LOGIN = "login"
-        const val PASSCODE = "passcode"
 
         const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
         const val MATCH_ID = "fr.uge.lootin.MATCHID"
         const val USER_ID = "fr.uge.lootin.USER_ID"
+        const val USER_NAME = "fr.uge.lootin.USER_NAME"
+        const val OTHER_NAME = "fr.uge.lootin.OTHER_NAME"
 
         const val PAGE_SIZE: Long = 10
 
         const val LOCALHOST: String = "192.168.1.58"
         const val PORT:String = "8080"
         const val ENPOINT: String = "secured/room"
-
-        //const val ENPOINT: String = "gs-guide-websocket"
     }
 }

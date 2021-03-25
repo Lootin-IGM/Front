@@ -1,4 +1,4 @@
-package fr.uge.lootin.chat
+package fr.uge.lootin.chat.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
