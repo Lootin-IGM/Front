@@ -50,6 +50,9 @@
     <string name="whatsMyEmail">Ton email</string>
     <string name="emailExample">my@mail.com</string>
     <string name="emailError">Veuillez entrer un email valide</string>
+    <string name="myGames">Mes jeux:</string>
+    <string name="male">Homme</string>
+    <string name="female">Femme</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

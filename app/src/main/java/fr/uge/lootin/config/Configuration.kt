@@ -1,7 +1,7 @@
 package fr.uge.lootin.config
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import android.preference.PreferenceManager
 
 class Configuration {
     companion object {

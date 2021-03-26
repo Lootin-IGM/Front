@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -12,7 +13,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
@@ -42,6 +42,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         url = Configuration.getUrl(this)
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
         setContentView(R.layout.activity_profiles_swiping)
@@ -78,13 +79,14 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
         }
-        launchNotificationService(SharingCommand.START)
+        setNotificationService(SharingCommand.START)
     }
 
-    private fun launchNotificationService(action: SharingCommand) {
+    private fun setNotificationService(action: SharingCommand) {
         Intent(this, NotificationsService::class.java).also {
             it.action = action.name
             it.putExtra("userToken", "4")
+            it.putExtra("url", url)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(it)
                 return
@@ -105,7 +107,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     }
 
     private fun loadUsers() {
-        val url = "$url/profile"
+        val url = Configuration.getUrl(this) + "/profile"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
@@ -114,7 +116,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                     enableButtons()
                     firstRequest = false
                 }
-
                 Log.i("result", "result : $response")
                 onResult(response)
                 usersList.clear()
@@ -124,8 +125,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             },
             { error ->
                 onError(error)
-                launchNotificationService(SharingCommand.STOP)
-                restartSignIn()
+                if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                    DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
+                }
             }
         )
         queue.add(request)
@@ -159,7 +161,11 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                     onResult(response)
                     val jsonResponse = JSONObject(response.toString());
                 },
-                { error -> onError(error) }
+                { error -> onError(error)
+                    if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                        DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
+                    }
+                }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     var header = getAuthenticatedHeader()

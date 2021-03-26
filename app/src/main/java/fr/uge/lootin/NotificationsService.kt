@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -33,7 +34,7 @@ class NotificationsService : Service() {
     private var compositeDisposable: CompositeDisposable? = null
     private val headers: MutableList<StompHeader> = ArrayList()
     private lateinit var instance: NotificationsService
-    private var notifNumber = 0
+    private var notifyNumber = 0
     private val NOTIFICATION_CHANNEL_ID = "com.example.simpleapp"
     private val channelName = "My Background Service"
     private lateinit var userToken: String
@@ -51,7 +52,7 @@ class NotificationsService : Service() {
             val action = intent.action
             Log.i("test", "using an intent with action $action")
             when (action) {
-                SharingCommand.START.name -> startService()
+                SharingCommand.START.name -> startService(intent.getStringExtra("url").toString())
                 SharingCommand.STOP.name -> stopService()
                 else -> Log.i("test", "This should never happen. No action in the received intent")
             }
@@ -61,7 +62,6 @@ class NotificationsService : Service() {
                 "with a null intent. It has been probably restarted by the system."
             )
         }
-        // by returning this we make sure the service is restarted if the system kills the service
         return START_STICKY
     }
 
@@ -108,22 +108,19 @@ class NotificationsService : Service() {
         Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show()
     }
 
-    private fun startService() {
+    private fun startService(url: String) {
         if (isServiceStarted) {
             return
         }
         Log.i("test", "Starting the foreground service task")
         Toast.makeText(this, "Service starting its task", Toast.LENGTH_SHORT).show()
         isServiceStarted = true
-        // setServiceState(this, ServiceState.STARTED)
-
-        // we need this lock so our service gets not affected by Doze Mode
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
                 acquire()
             }
         }
-        startWebSocketListener()
+        startWebSocketListener(url)
     }
 
     private fun stopService() {
@@ -141,14 +138,15 @@ class NotificationsService : Service() {
             Log.i("test", "Service stopped without being started: ${e.message}")
         }
         isServiceStarted = false
-        //this.s(this, ServiceState.STOPPED)
     }
 
-    private fun startWebSocketListener() {
+    private fun startWebSocketListener(url: String) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
 
         mStompClient = Stomp.over(
             Stomp.ConnectionProvider.OKHTTP,
-            "ws://192.168.1.18:8080/secured/room"
+            "ws://$url:8080/secured/room"
         )
         resetSubscriptions()
         connectStomp()
@@ -156,9 +154,6 @@ class NotificationsService : Service() {
         mStompClient!!.connect(headers)
     }
 
-    /**
-     * Connect stomp web socket to the server
-     */
     private fun connectStomp() {
         headers.add(StompHeader("X-Authorization", "Bearer " + userToken))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
@@ -202,9 +197,6 @@ class NotificationsService : Service() {
         Log.i("okay", "bite")
     }
 
-    /**
-     * Connect to topic and receive messages
-     */
     private fun connectTopic() {
         val dispTopic = mStompClient!!.topic("/user/" + userToken + "/notification")
             .subscribeOn(Schedulers.io())
@@ -276,9 +268,9 @@ class NotificationsService : Service() {
             Intent(this, ProfilesSwipingActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
         )
         builder.setContentIntent(contentIntent)
-        managerCompat.notify(notifNumber, builder.build())
+        managerCompat.notify(notifyNumber, builder.build())
 
-        notifNumber++
+        notifyNumber++
     }
 
 

@@ -1,8 +1,10 @@
 package fr.uge.lootin
 
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +74,6 @@ class DisplayProfileFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<MaterialButton>(R.id.lessButton).setOnClickListener {
-            // activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit();
             activity?.supportFragmentManager?.popBackStack();
         }
 
@@ -88,7 +89,11 @@ class DisplayProfileFragment : DialogFragment() {
                 WebRequestUtils.onResult(response)
                 displayUserGames(response)
             },
-            { error -> WebRequestUtils.onError(error) }
+            { error -> WebRequestUtils.onError(error)
+                if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                }
+            }
         )
         queue.add(request)
     }
@@ -97,9 +102,13 @@ class DisplayProfileFragment : DialogFragment() {
         gameRV = view.findViewById(R.id.gameFragmentRecyclerView)
         view.findViewById<TextView>(R.id.userName).text = user.login + ", " + user.age
         view.findViewById<TextView>(R.id.userBiography).text = user.description
-        view.findViewById<TextView>(R.id.userGender).text = user.gender
-
+        if (user.gender.toLowerCase().contains("female")){
+            view.findViewById<TextView>(R.id.userGender).text = "(" + getString(R.string.female) + ")"
+        }else{
+           view.findViewById<TextView>(R.id.userGender).text = "(" +  getString(R.string.male) + ")"
+        }
     }
+
     private fun displayUserGames(user: UserFull) {
         var gameListDto = GameListDto(user.games)
         cards = Game.loadCards(activity?.applicationContext, gameListDto)!!
