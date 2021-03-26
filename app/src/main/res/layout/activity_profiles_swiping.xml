@@ -43,7 +43,7 @@
                android:layout_marginStart="24dp"
                android:layout_marginEnd="24dp"
                android:layout_marginBottom="8dp"
-               android:text="TextView"
+               android:text=""
                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                android:textColor="@color/white"
                app:layout_constraintBottom_toBottomOf="parent"
@@ -66,10 +66,25 @@
                app:icon="@drawable/ic_baseline_chevron_right_24"
                app:iconGravity="textStart"
                app:iconPadding="0dp"
+               android:visibility="invisible"
                app:iconSize="@android:dimen/app_icon_size"
                app:iconTint="@null"
                app:layout_constraintBottom_toBottomOf="@+id/userPicture"
                app:layout_constraintEnd_toEndOf="parent" />
+
+           <RelativeLayout
+               android:id="@+id/loadingPanel"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:gravity="center">
+
+               <ProgressBar
+                   android:indeterminateTint="@color/red_lootin"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:indeterminate="true" />
+           </RelativeLayout>
+
 
            <ImageView
                android:id="@+id/userPicture"
@@ -79,7 +94,7 @@
                android:layout_marginBottom="8dp"
                android:background="@color/blue_lootin"
                android:scaleType="centerCrop"
-               android:visibility="visible"
+               android:visibility="invisible"
                app:layout_constraintBottom_toTopOf="@+id/username_textView"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintHorizontal_bias="0.0"
@@ -94,7 +109,7 @@
                android:layout_marginStart="24dp"
                android:layout_marginEnd="24dp"
                android:layout_marginBottom="16dp"
-               android:text="TextView"
+               android:text=""
                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                android:textColor="@color/white"
                android:textStyle="bold"
@@ -195,8 +210,8 @@
                 android:layout_height="30dp"
                 android:background="@drawable/ic_lootin"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-                app:layout_constraintStart_toEndOf="@+id/settingsButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 

@@ -16,11 +16,11 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Lootin">
         <service
-            android:name=".EndlessService"
+            android:name=".NotificationsService"
             android:enabled="true"
             android:exported="false">
         </service>
-        <activity android:name=".signin.SignInActivity">
+        <activity android:name=".ProfilesSwipingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +35,7 @@
         </receiver>
         <activity android:name=".form.FormActivity" />
         <activity android:name=".register.RegisterActivity" />
-        <activity android:name=".ProfilesSwipingActivity" />
+        <activity android:name=".signin.SignInActivity" />
         <activity android:name=".chat_manager.MainActivity"/>
         <activity android:name=".chat_manager.ChatManagerActivity"/>
     </application>

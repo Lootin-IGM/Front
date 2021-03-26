@@ -12,30 +12,31 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.SharingCommand
-import java.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.SharingCommand
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import ua.naiksoftware.stomp.dto.StompMessage
+import java.util.*
 
-class EndlessService : Service() {
+
+class NotificationsService : Service() {
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
     private var mStompClient: StompClient? = null
     private var compositeDisposable: CompositeDisposable? = null
     private val headers: MutableList<StompHeader> = ArrayList()
-    private lateinit var instance : EndlessService
+    private lateinit var instance: NotificationsService
     private var notifNumber = 0
     private val NOTIFICATION_CHANNEL_ID = "com.example.simpleapp"
     private val channelName = "My Background Service"
-    private lateinit var userToken : String
+    private lateinit var userToken: String
 
     override fun onBind(intent: Intent): IBinder? {
         Log.i("test", "Some component want to bind with the service")
@@ -93,6 +94,11 @@ class EndlessService : Service() {
             .setCategory(Notification.CATEGORY_SERVICE)
             .setSmallIcon(R.drawable.ic_lootin_logo)
             .build()
+        val contentIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, ProfilesSwipingActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        notificationBuilder.setContentIntent(contentIntent)
         startForeground(2, notification)
     }
 
@@ -113,10 +119,10 @@ class EndlessService : Service() {
 
         // we need this lock so our service gets not affected by Doze Mode
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
-                    acquire()
-                }
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
+                acquire()
             }
+        }
         startWebSocketListener()
     }
 
@@ -193,7 +199,7 @@ class EndlessService : Service() {
     }
 
     private fun relaunchLoop() {
-        Log.i("okay","bite")
+        Log.i("okay", "bite")
     }
 
     /**
@@ -247,14 +253,14 @@ class EndlessService : Service() {
     }
 
     private fun notificator(payload: String) {
-        val builder = NotificationCompat.Builder(this@EndlessService, NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this@NotificationsService, NOTIFICATION_CHANNEL_ID)
         var contentTitle = ""
         var contentText = ""
-        if (payload.contains("message")){
+        if (payload.contains("message")) {
             contentTitle = "New message"
             contentText = "You have a new message !"
         }
-        if (payload.contains("loot")){
+        if (payload.contains("loot")) {
             contentTitle = "New loot"
             contentText = "You have a new loot !"
         }
@@ -262,12 +268,18 @@ class EndlessService : Service() {
         builder.setContentText(contentText)
         builder.setSmallIcon(R.drawable.ic_lootin_logo)
         builder.setAutoCancel(true);
-        val managerCompat = NotificationManagerCompat.from(this@EndlessService)
+        val managerCompat = NotificationManagerCompat.from(this@NotificationsService)
+
+
+        val contentIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, ProfilesSwipingActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        builder.setContentIntent(contentIntent)
         managerCompat.notify(notifNumber, builder.build())
+
         notifNumber++
     }
-
-
 
 
 }

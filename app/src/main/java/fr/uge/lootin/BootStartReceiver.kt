@@ -11,7 +11,7 @@ class BootStartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Intent(context, EndlessService::class.java).also {
+            Intent(context, NotificationsService::class.java).also {
                 it.action = SharingCommand.START.name
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Log.i("Lootin boot","Starting the service in >=26 Mode from a BroadcastReceiver")
