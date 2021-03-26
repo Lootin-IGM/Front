@@ -41,13 +41,7 @@ class DisplaySettingsFragment : Fragment() {
     }
 
     private fun closeSettingsFragment() {
-        val emptyFragment = EmptyFragment()
-        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_r_l,
-                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
-            ).replace(R.id.fragment_container_view, emptyFragment, "emptyFragment")
-            .remove(emptyFragment).commit()
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     override fun onCreateView(
