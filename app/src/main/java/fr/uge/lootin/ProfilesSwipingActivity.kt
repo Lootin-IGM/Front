@@ -24,8 +24,8 @@ import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
-import fr.uge.lootin.register.RegisterActivity
 import fr.uge.lootin.settings.DisplaySettingsFragment
+import fr.uge.lootin.signin.SignInActivity
 import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
 
@@ -110,7 +110,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
             { response ->
-                if (firstRequest){
+                if (firstRequest) {
                     enableButtons()
                     firstRequest = false
                 }
@@ -122,9 +122,10 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 currentUser = 0
                 displayNextUser()
             },
-            { error -> onError(error)
+            { error ->
+                onError(error)
                 launchNotificationService(SharingCommand.STOP)
-                restartRegister()
+                restartSignIn()
             }
         )
         queue.add(request)
@@ -137,8 +138,8 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     }
 
-    private fun restartRegister() {
-        val intent = Intent(this, RegisterActivity::class.java)
+    private fun restartSignIn() {
+        val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
     }
 
