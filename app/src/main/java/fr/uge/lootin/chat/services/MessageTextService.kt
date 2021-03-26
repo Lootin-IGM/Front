@@ -183,7 +183,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                             )
                             Log.d(TAG, "on push dans connectstomp")
 
-                            addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Picture::class.java))
+                            addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Message::class.java))
                         }
                 ) { throwable: Throwable? ->
                     Log.e(
@@ -213,9 +213,9 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
     /**
      * Add a text message to recyclerview
      */
-    private fun addItemPicture(message: MessagesResponse.Picture) {
+    private fun addItemPicture(message: MessagesResponse.Message) {
 
-        val bitmap: Bitmap = ImageUtil.convert(message.picture)
+        val bitmap: Bitmap = ImageUtil.convert(message.message)
         adapter.pushMessage(MessageItemUi.factoryPictureItemUI(
                 bitmap,
                 message.id,

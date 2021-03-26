@@ -1,17 +1,20 @@
 package fr.uge.lootin.chat.adapter
 
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE_PICTURE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE_PICTURE
+import java.lang.Long.max
 
 class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: Long) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
@@ -137,8 +140,9 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
     /**
      * Return the current page
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     fun onPage(): Long{
-        return data.size / size_page - 1
+        return max(data.size / size_page - 1, 0L)
     }
 
 }

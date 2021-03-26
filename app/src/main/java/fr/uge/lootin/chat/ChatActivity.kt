@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.services.MessageTextService
+import fr.uge.lootin.chat.services.RestService
 import fr.uge.lootin.chat.utils.ImageUtil
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -53,8 +54,8 @@ class ChatActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
 
         //create restService
-        //TODO val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser)
-
+        val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser, this)
+        restService.verifyConnect()
         //create web sockets services
         messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser, matchId)
 
@@ -70,7 +71,7 @@ class ChatActivity : AppCompatActivity() {
             }
         })
 
-        //TODO restService.getMessages()
+        restService.getMessages()
         messageService.createStomp()
 
         // Send Text messages
@@ -126,7 +127,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "--ACTIVITY--MAIN"
+        const val TAG = "--ACTIVITY--MAIN"
 
         const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
         const val MATCH_ID = "fr.uge.lootin.MATCHID"

@@ -16,34 +16,35 @@ import fr.uge.lootin.chat.ChatActivity.Companion.OTHER_NAME
 import fr.uge.lootin.chat.ChatActivity.Companion.TOKEN_VALUE
 import fr.uge.lootin.chat.ChatActivity.Companion.USER_ID
 import fr.uge.lootin.chat.ChatActivity.Companion.USER_NAME
+import fr.uge.lootin.chat.ChatActivity.Companion.TAG
 import org.json.JSONObject
 
 class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
-    var match_id : Long = 0
-    val user_id : Long = 1
+    var match_id : Long = 3
+    val user_id : Long = 4
     val localhost : String = "192.168.1.58"
     val username : String = "Loulou"
     val password : String = "Yvette"
-    val othername : String = "Guigui"
+    val othername : String = "Toto"
 
     private fun connect(queue: RequestQueue){
         val url = "http://$localhost:8080/login"
-        Log.i("my_loge", "connect request hehe")
+        Log.i(TAG, "connect request hehe")
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST,
             url,
             JSONObject("{\"username\": \"$username\",\"password\": \"$password\"}"),
             { response ->
-                Log.i("my_log", "Connect Response: %s".format(response.toString()))
+                Log.i(TAG, "Connect Response: %s".format(response.toString()))
                 val jsonResponse = JSONObject(response.toString())
-                this.token = jsonResponse.getString("jwt")
+                token = jsonResponse.getString("jwt")
                 callChat()
             },
             { error ->
                 Log.i(
-                    "my_log", "error while trying to connect\n"
+                    TAG, "error while trying to connect\n"
                             + error.toString() + "\n"
                             + error.networkResponse + "\n"
                             + error.localizedMessage + "\n"
@@ -70,8 +71,7 @@ class PreChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_chat)
 
-        //TODO val queue : RequestQueue = Volley.newRequestQueue(this)
-        //TODO findViewById<Button>(R.id.buttonGo).setOnClickListener { connect(queue) }
-        callChat()
+         val queue : RequestQueue = Volley.newRequestQueue(this)
+        findViewById<Button>(R.id.buttonGo).setOnClickListener { connect(queue) }
     }
 }
