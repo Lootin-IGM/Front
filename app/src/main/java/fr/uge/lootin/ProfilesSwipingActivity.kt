@@ -18,6 +18,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
@@ -38,15 +39,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     private var url: String = ""
     private var firstRequest = true
 
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val ip = prefs.getString("ip", "").toString()
-        url = "http://$ip:8080"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getIpFromPreferences()
+        url = Configuration.getUrl(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
         setContentView(R.layout.activity_profiles_swiping)

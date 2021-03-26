@@ -3,12 +3,12 @@ package fr.uge.lootin.form
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.R
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.settings.Description
 import fr.uge.lootin.settings.GamesList
 import fr.uge.lootin.signin.SignInActivity
@@ -27,12 +27,6 @@ class FormActivity : AppCompatActivity() {
     private var attraction: String = ""
     private var email: String = ""
     private var baseUrl = ""
-
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val ip = prefs.getString("ip", "").toString()
-        baseUrl = "http://$ip:8080"
-    }
 
     fun setDescription(desc: String) {
         description = desc
@@ -110,7 +104,7 @@ class FormActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getIpFromPreferences()
+        baseUrl = Configuration.getUrl(this)
         getIntentValues()
         setContentView(R.layout.activity_form)
         val firstFrag = Description.registerInstance()

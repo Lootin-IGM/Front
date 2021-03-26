@@ -2,7 +2,6 @@ package fr.uge.lootin
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.form.Game
 import fr.uge.lootin.form.GameAdapter
 import fr.uge.lootin.httpUtils.GsonGETRequest
@@ -34,12 +34,6 @@ class DisplayProfileFragment : DialogFragment() {
     lateinit var gameRV: RecyclerView
     lateinit var gameAdapter: GameAdapter
     lateinit var cards: List<Game>
-
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val ip = prefs.getString("ip", "").toString()
-        url = "http://$ip:8080"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +58,7 @@ class DisplayProfileFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getIpFromPreferences()
+        url = Configuration.getUrl(activity?.applicationContext!!)
         this.queue = Volley.newRequestQueue(activity?.applicationContext)
         view?.findViewById<TextView>(R.id.userBiography)?.text = "ok"
         token = arguments?.getString("TOKEN").toString()
