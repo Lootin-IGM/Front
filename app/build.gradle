@@ -56,7 +56,10 @@ dependencies {
 
     // Material Components for Android. Replace the version with the latest version of Material Components library.
     implementation 'com.google.android.material:material:1.2.0'
-
+    // Stomp
+    implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.6.4'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.5'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     // Optional: Circle Indicator (To fix the xml preview "Missing classes" error)
     implementation 'me.relex:circleindicator:2.1.6'
 

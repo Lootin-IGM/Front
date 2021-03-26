@@ -1,7 +1,13 @@
 package fr.uge.lootin
 
+import android.app.Notification
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech.STOPPED
+import android.support.v4.media.session.PlaybackStateCompat
+import android.telephony.ServiceState
 import android.util.Base64
 import android.util.Log
 import android.widget.ImageButton
@@ -19,6 +25,7 @@ import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
 import fr.uge.lootin.settings.DisplaySettingsFragment
+import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
 
 
@@ -26,7 +33,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     var token: String =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTY1NzE4NTAsImlhdCI6MTYxNjUzNTg1MH0.ss9k9l6jV2GNvZ8_bj0o3lOuVxvTGcvKP1SO5B_9Os4"
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMb3Vsb3UiLCJleHAiOjE2MTY3Mjg3NTcsImlhdCI6MTYxNjY5Mjc1N30.oRc_Vk13CN2mMnjI4d7U9bXQSWCFB-i6s1KPA4SpT8A"
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private val url: String = "http://192.168.1.18:8080"
@@ -68,6 +75,24 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
         }
+
+        actionOnService()
+
+
+    }
+
+    private fun actionOnService() {
+        Intent(this, EndlessService::class.java).also {
+            it.action = SharingCommand.START.name
+            it.putExtra("userToken", "4")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.i("test", "Starting the service in >=26 Mode")
+                startForegroundService(it)
+                return
+            }
+            Log.i("test", "Starting the service in < 26 Mode")
+            startService(it)
+        }
     }
 
     private fun displayImage(image: String) {
@@ -87,7 +112,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
             { response ->
-                Log.i("result", "result : $response")
                 onResult(response)
                 usersList.clear()
                 usersList.addAll(response.users)
