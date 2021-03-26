@@ -47,11 +47,13 @@ class IAm : Fragment() {
     }
 
     private fun loadSearchingForFragment() {
-        (activity as RegisterActivity).supportFragmentManager.beginTransaction().remove(this)
-            .commit()
         val firstFrag = SearchingFor.registerInstance()
         (activity as RegisterActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.register_fragment, firstFrag, "searchingForFragment")
+            .setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+            .replace(R.id.register_fragment, firstFrag, "searchingForFragment")
             .addToBackStack("searchingForFragment").commit()
     }
 

@@ -6,13 +6,13 @@
     android:background="@color/background_dark">
 
     <TextView
-        android:id="@+id/FragmentDescription"
+        android:id="@+id/FragmentEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
-        android:text="@string/description"
+        android:text="@string/whatsMyEmail"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/FragmentDescriptionText"
+        android:id="@+id/FragmentEmailText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -28,8 +28,8 @@
         android:autofillHints=""
         android:background="@drawable/rounded_edit_text"
         android:ems="10"
-        android:hint="@string/descriptionText"
-        android:inputType="textMultiLine"
+        android:hint="@string/emailExample"
+        android:inputType="textEmailAddress"
         android:paddingStart="16dp"
         android:paddingLeft="16dp"
         android:paddingTop="13dp"
@@ -39,13 +39,13 @@
         android:textColor="@color/white"
         android:textColorHint="@color/grey_lootin"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/FragmentNextButtonDescription"
+        app:layout_constraintBottom_toTopOf="@+id/FragmentNextButtonEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FragmentDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/FragmentEmail" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/FragmentNextButtonDescription"
+        android:id="@+id/FragmentNextButtonEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

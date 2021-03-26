@@ -1,6 +1,7 @@
 package fr.uge.lootin.settings
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,9 +35,16 @@ class GamesList : Fragment() {
     lateinit var queue: RequestQueue
     private var token: String = ""
     private var type: String = ""
+    private var baseUrl = ""
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val ip = prefs.getString("ip", "").toString()
+        baseUrl = "http://$ip:8080"
+    }
 
     private fun getAllGames() {
-        val url = "http://192.168.1.18:8080/games/"
+        val url = "$baseUrl/games/"
         val map = HashMap<String, String>()
         Log.i("test", "get all games request")
         val request = GsonGETRequest(
@@ -103,7 +111,7 @@ class GamesList : Fragment() {
     }
 
     private fun getActualUserGames() {
-        val url = "http://192.168.1.18:8080/games/my"
+        val url = "$baseUrl/games/my"
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
         Log.i("test", "get actual user games request")
@@ -127,15 +135,13 @@ class GamesList : Fragment() {
 
     private fun closeSettingsFragment() {
         val settingsFrag = DisplaySettingsFragment.newInstance(token)
-        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().remove(this)
-            .commit()
         (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
+            .replace(R.id.fragment_container_view, settingsFrag, "settingsFragment")
             .addToBackStack("settingsFragment").commit()
     }
 
     private fun updateGamesRequest(games: List<String>) {
-        val url = "http://192.168.1.18:8080/profile/games"
+        val url = "$baseUrl/profile/games"
         Log.i(
             "test",
             "verify connexion request " + JSONObject("{\"games\": " + Gson().toJson(games) + "}")
@@ -192,6 +198,7 @@ class GamesList : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        getIpFromPreferences()
         // Inflate the layout for this fragment
         val layout =
             inflater.inflate(R.layout.fragment_games_list, container, false)

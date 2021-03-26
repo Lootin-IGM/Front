@@ -1,54 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lootin</string>
-    <string name="validateButtonOnFormPage">VALIDATE</string>
-    <string name="next">NEXT</string>
-    <string name="pseudoTextOnFormPage">username</string>
-    <string name="whatIsMyPseudo">What is your username ?</string>
-    <string name="pseudoMessageError">please enter your username</string>
-    <string name="imageError">please import an image</string>
-    <string name="validate">VALIDATE</string>
-    <string name="takePicture">CAMERA</string>
-    <string name="pickPicture">PHOTO GALLERY</string>
-    <string name="iAmPlayingTo">I play...</string>
-    <string name="whatsYourName">What\'s your name ?</string>
-    <string name="firstName">First Name</string>
-    <string name="lastName">Last Name</string>
-    <string name="birthday">Your birthday</string>
-    <string name="day">DD</string>
+    <string name="validateButtonOnFormPage">VALIDER</string>
+    <string name="next">SUIVANT</string>
+    <string name="pseudoTextOnFormPage">pseudo</string>
+    <string name="whatIsMyPseudo">Quel est ton pseudo ?</string>
+    <string name="pseudoMessageError">veuillez entrer votre pseudo</string>
+    <string name="imageError">veuillez importer une image</string>
+    <string name="validate">VALIDER</string>
+    <string name="takePicture">APPAREIL PHOTO</string>
+    <string name="pickPicture">GALERIE PHOTO</string>
+    <string name="iAmPlayingTo">Je joue à...</string>
+    <string name="whatsYourName">Comment tu t\'appelles ?</string>
+    <string name="firstName">Prénom</string>
+    <string name="lastName">Nom</string>
+    <string name="birthday">Ta date d\'anniversaire</string>
+    <string name="day">JJ</string>
     <string name="month">MM</string>
-    <string name="year">YYYY</string>
-    <string name="iAm">I am</string>
-    <string name="man">Man</string>
-    <string name="woman">Woman</string>
-    <string name="manAndWoman">Man and Woman</string>
-    <string name="searchingFor">I look for</string>
-    <string name="formError">Please complete all fields of the form</string>
-    <string name="notSelectedError">Please select one of the fields</string>
-    <string name="choosePseudo">Choose your username</string>
-    <string name="pseudo">Username</string>
-    <string name="password">Password</string>
-    <string name="choosePassword">Choose your password</string>
-    <string name="chooseConfirmPassword">Confirm your password</string>
-    <string name="wrongPassword">Please enter the same password in the fields "Choose your password" and "Confirm your password"</string>
-    <string name="description">Describe yourself</string>
+    <string name="year">AAAA</string>
+    <string name="iAm">Je suis</string>
+    <string name="man">Homme</string>
+    <string name="woman">Femme</string>
+    <string name="manAndWoman">Homme et Femme</string>
+    <string name="searchingFor">Je cherche</string>
+    <string name="formError">Veuillez remplir tous les champs du formulaire</string>
+    <string name="notSelectedError">Veuillez sélectionner un des champs</string>
+    <string name="choosePseudo">Choisis ton pseudo</string>
+    <string name="pseudo">Pseudo</string>
+    <string name="password">Mot de passe</string>
+    <string name="choosePassword">Choisis ton mot de passe</string>
+    <string name="chooseConfirmPassword">Confirmes ton mot de passe</string>
+    <string name="wrongPassword">Veuillez entrer le même mot de passe dans les champs "Choisis ton mot de passe" et "Confirmes ton mot de passe"</string>
+    <string name="description">Décris toi</string>
     <string name="descriptionText">Description...</string>
-    <string name="descriptionError">Please describe yourself</string>
-    <string name="gamesMessageError">Please select at least one game</string>
+    <string name="descriptionError">Veuillez vous décrire</string>
+    <string name="gamesMessageError">Veuillez sélectionner au moins un jeu</string>
     <string name="googleButtonOnSignInPage">Google</string>
-    <string name="loginButtonOnSignInPage">Log in</string>
-    <string name="usernameTextOnSignInPage">Username</string>
-    <string name="passwordTextOnSignInPage">Password</string>
-    <string name="registerTextOnSignInPage"><u>Register</u></string>
-    <string name="OuOnSignInPage">OR</string>
-    <string name="loginMessageError">Please enter a login and password to connect</string>
-    <string name="incorrectLogin">Incorrect credentials, please try again</string>
-    <string name="settings">Settings</string>
-    <string name="changeDescription">Edit my description</string>
-    <string name="changePP">Edit my profile picture</string>
-    <string name="changeGames">Edit my games</string>
-    <string name="whatsMyEmail">Your email</string>
+    <string name="loginButtonOnSignInPage">Se connecter</string>
+    <string name="usernameTextOnSignInPage">Nom d\'utilisateur</string>
+    <string name="passwordTextOnSignInPage">Mot de passe</string>
+    <string name="registerTextOnSignInPage"><u>S\'inscrire</u></string>
+    <string name="OuOnSignInPage">OU</string>
+    <string name="loginMessageError">Veuillez entrer un login et un mot de passe pour vous connecter</string>
+    <string name="incorrectLogin">Identifiants incorrects, veuillez réessayer</string>
+    <string name="settings">Réglages</string>
+    <string name="changeDescription">Modifier ma description</string>
+    <string name="changePP">Modifier ma photo de profil</string>
+    <string name="changeGames">Modifier mes jeux</string>
+    <string name="whatsMyEmail">Ton email</string>
     <string name="emailExample">my@mail.com</string>
-    <string name="emailError">Please enter a valid email</string>
+    <string name="emailError">Veuillez entrer un email valide</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -139,5 +140,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Bonjour blank fragment</string>
 </resources>

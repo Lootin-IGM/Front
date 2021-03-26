@@ -3,6 +3,7 @@ package fr.uge.lootin.form
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
@@ -24,6 +25,14 @@ class FormActivity : AppCompatActivity() {
     private var age: Int = 0
     private var gender: String = ""
     private var attraction: String = ""
+    private var email: String = ""
+    private var baseUrl = ""
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val ip = prefs.getString("ip", "").toString()
+        baseUrl = "http://$ip:8080"
+    }
 
     fun setDescription(desc: String) {
         description = desc
@@ -41,7 +50,7 @@ class FormActivity : AppCompatActivity() {
 
     fun registerRequest(games: List<String>, gl: GamesList) {
         val queue = Volley.newRequestQueue(this.applicationContext)
-        val url = "http://192.168.1.18:8080/register"
+        val url = "$baseUrl/register"
         Log.i("test", "post upload image request")
         val jsonObjectRequest = object : VolleyFileUploadRequest(Method.POST, url,
             Response.Listener { response ->
@@ -70,6 +79,7 @@ class FormActivity : AppCompatActivity() {
                 params["age"] = age.toString()
                 params["gender"] = gender
                 params["attraction"] = attraction
+                params["email"] = email
                 params["games"] = games.joinToString()
 
                 return params
@@ -95,10 +105,12 @@ class FormActivity : AppCompatActivity() {
         this.age = intent.getIntExtra("age", -1)
         this.gender = intent.getStringExtra("gender").toString()
         this.attraction = intent.getStringExtra("attraction").toString()
+        this.email = intent.getStringExtra("email").toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getIpFromPreferences()
         getIntentValues()
         setContentView(R.layout.activity_form)
         val firstFrag = Description.registerInstance()

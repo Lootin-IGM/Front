@@ -1,6 +1,8 @@
 package fr.uge.lootin.settings
 
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +19,21 @@ import com.google.gson.Gson
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.form.FormActivity
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.models.DescriptionDto
 import org.json.JSONObject
 
 class Description : Fragment() {
     lateinit var layout: View
     private var token: String = ""
     lateinit var type: String
+    private var baseUrl = ""
+
+    private fun getIpFromPreferences() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val ip = prefs.getString("ip", "").toString()
+        baseUrl = "http://$ip:8080"
+    }
 
     private fun loadFragmentPicture(description: String) {
         (activity as FormActivity).setDescription(description)
@@ -59,7 +70,7 @@ class Description : Fragment() {
 
     private fun updateDescriptionRequest(description: String) {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
-        val url = "http://192.168.1.18:8080/profile/description"
+        val url = "$baseUrl/profile/description"
         Log.i(
             "test",
             "verify connexion request " + JSONObject(
@@ -115,16 +126,45 @@ class Description : Fragment() {
         }
     }
 
+    private fun getMyDescriptionRequest() {
+        val queue = Volley.newRequestQueue(activity?.applicationContext)
+        val url = "$baseUrl/profile/myDescription"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        Log.i("test", "get my description request")
+        val request = GsonGETRequest(
+            url, DescriptionDto::class.java, map,
+            { response ->
+                val description = response.description
+                layout.findViewById<EditText>(R.id.FragmentDescriptionText).text =
+                    Editable.Factory.getInstance().newEditable(description)
+            },
+            { error ->
+                Log.i(
+                    "test", "error while trying to verify connexion\n"
+                            + error.toString() + "\n"
+                            + error.networkResponse + "\n"
+                            + error.localizedMessage + "\n"
+                            + error.message + "\n"
+                            + error.cause + "\n"
+                            + error.stackTrace.toString()
+                )
+            })
+        queue.add(request)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        getIpFromPreferences()
         layout = inflater.inflate(R.layout.fragment_description, container, false)
         type = requireArguments().getString("type").toString()
         if (type == "register") setNextButtonRegister()
         if (type == "settings") {
             token = requireArguments().getString("token").toString()
+            getMyDescriptionRequest()
             setNextButtonSettings()
         }
         return layout

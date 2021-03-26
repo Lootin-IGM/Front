@@ -1,0 +1,6 @@
+- Registration
+- Login
+- Loots page
+- Profile settings
+- Loot management
+- Chat

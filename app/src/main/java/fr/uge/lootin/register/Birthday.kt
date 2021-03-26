@@ -25,11 +25,13 @@ class Birthday : Fragment() {
     }
 
     private fun loadIAmFragment() {
-        (activity as RegisterActivity).supportFragmentManager.beginTransaction().remove(this)
-            .commit()
         val firstFrag = IAm.registerInstance()
         (activity as RegisterActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.register_fragment, firstFrag, "iAmFragment")
+            .setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+            .replace(R.id.register_fragment, firstFrag, "iAmFragment")
             .addToBackStack("iAmFragment").commit()
     }
 

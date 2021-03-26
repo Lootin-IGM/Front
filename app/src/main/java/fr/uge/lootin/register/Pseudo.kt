@@ -47,13 +47,15 @@ class Pseudo : Fragment() {
         return true
     }
 
-    private fun loadNameFragment() {
-        (activity as RegisterActivity).supportFragmentManager.beginTransaction().remove(this)
-            .commit()
-        val firstFrag = Name.registerInstance()
+    private fun loadEmailFragment() {
+        val firstFrag = Email.registerInstance()
         (activity as RegisterActivity).supportFragmentManager.beginTransaction()
-            .add(R.id.register_fragment, firstFrag, "nameFragment")
-            .addToBackStack("nameFragment").commit()
+            .setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+            .replace(R.id.register_fragment, firstFrag, "emailFragment")
+            .addToBackStack("emailFragment").commit()
     }
 
     override fun onCreateView(
@@ -64,7 +66,7 @@ class Pseudo : Fragment() {
         layout = inflater.inflate(R.layout.register_layout, container, false)
         layout.findViewById<Button>(R.id.nextButtonChoosePseudo).setOnClickListener {
             if (checkParamsRegister()) {
-                loadNameFragment()
+                loadEmailFragment()
             }
         }
         return layout
