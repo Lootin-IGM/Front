@@ -65,7 +65,7 @@ First of all, set your sdk directory in the local.properties: ```sdk.dir=your/sd
 In the src/main/assets/config.json file, set your own IP address in the ip field:
 ```JSON
 {
-  "ip": "" //set here your IP
+  "ip": "XXX.XXX.X.XXX"
 }
 ```
 
