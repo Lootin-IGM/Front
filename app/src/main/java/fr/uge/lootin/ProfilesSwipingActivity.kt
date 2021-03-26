@@ -1,12 +1,16 @@
 package fr.uge.lootin
 
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
@@ -19,7 +23,9 @@ import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
+import fr.uge.lootin.register.RegisterActivity
 import fr.uge.lootin.settings.DisplaySettingsFragment
+import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
 
 
@@ -30,6 +36,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private var url: String = ""
+    private var firstRequest = true
 
     private fun getIpFromPreferences() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -62,7 +69,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             firstFrag.arguments = bundle
             supportFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_in_r_l,
-                R.anim.fade_out_l_r, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
             ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
                 .addToBackStack("userMoreFragment").commit()
         }
@@ -71,10 +78,23 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             val settingsFrag = DisplaySettingsFragment.newInstance(token)
             supportFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_in_l_r,
-                R.anim.fade_out_l_r, R.anim.fade_in_l_r, R.anim.slide_out_l_r
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_l_r
             )
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
+        }
+        launchNotificationService(SharingCommand.START)
+    }
+
+    private fun launchNotificationService(action: SharingCommand) {
+        Intent(this, NotificationsService::class.java).also {
+            it.action = action.name
+            it.putExtra("userToken", "4")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(it)
+                return
+            }
+            startService(it)
         }
     }
 
@@ -95,6 +115,11 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
             { response ->
+                if (firstRequest){
+                    enableButtons()
+                    firstRequest = false
+                }
+
                 Log.i("result", "result : $response")
                 onResult(response)
                 usersList.clear()
@@ -102,9 +127,24 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 currentUser = 0
                 displayNextUser()
             },
-            { error -> onError(error) }
+            { error -> onError(error)
+                launchNotificationService(SharingCommand.STOP)
+                restartRegister()
+            }
         )
         queue.add(request)
+    }
+
+    private fun enableButtons() {
+        findViewById<RelativeLayout>(R.id.loadingPanel).visibility = View.GONE
+        findViewById<ImageView>(R.id.userPicture).visibility = View.VISIBLE
+        findViewById<MaterialButton>(R.id.moreButton).visibility = View.VISIBLE
+
+    }
+
+    private fun restartRegister() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
     }
 
     private fun getAuthenticatedHeader(): HashMap<String, String> {

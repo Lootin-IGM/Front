@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.uge.lootin">
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -14,7 +15,12 @@
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Lootin">
-        <activity android:name=".signin.SignInActivity">
+        <service
+            android:name=".NotificationsService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+        <activity android:name=".ProfilesSwipingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,9 +28,14 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".BootStartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <activity android:name=".form.FormActivity" />
         <activity android:name=".register.RegisterActivity" />
-        <activity android:name=".ProfilesSwipingActivity" />
+        <activity android:name=".signin.SignInActivity" />
         <activity android:name=".chat_manager.MainActivity"/>
         <activity android:name=".chat_manager.ChatManagerActivity"/>
     </application>

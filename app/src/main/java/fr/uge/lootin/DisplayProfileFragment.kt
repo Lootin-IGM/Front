@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,7 +91,6 @@ class DisplayProfileFragment : DialogFragment() {
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserFull::class.java, map,
             { response ->
-                Log.i("result", "result : $response")
                 WebRequestUtils.onResult(response)
                 displayUserGames(response)
             },
