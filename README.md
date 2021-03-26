@@ -16,7 +16,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Clone the Repository</a></li>
+        <li><a href="#clone-repository">Clone the Repository</a></li>
       </ul>
     </li>
     <li>
