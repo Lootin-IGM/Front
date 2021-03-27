@@ -17,7 +17,7 @@ import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
 import org.json.JSONObject
 
-const val URL = "http://192.168.1.18:8080"
+const val URL = "http://192.168.56.1:8080"
 
 
 const val SIZE_PAGE_MATCHES = 6
@@ -92,9 +92,9 @@ class ChatManagerActivity : AppCompatActivity() {
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)
     }
 
-    private fun requestGetEmptyMatches(queue: RequestQueue, token: String, nb_matches: Int, page: Int, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter) {
+    private fun requestGetEmptyMatches(queue: RequestQueue, token: String, nb_matches: Int, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter) {
         val url = URL + "/matches/empty"
-        var page = list_matches.size / SIZE_PAGE_PREVIEW_MESSAGE
+        var page = list_matches.size / SIZE_PAGE_MATCHES
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
                     override fun onResponse(response: JSONObject?) {
@@ -130,7 +130,6 @@ class ChatManagerActivity : AppCompatActivity() {
 
     private fun requestGetLastMessages(queue: RequestQueue, token: String, nb_matches: Int, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter) {
         val url = URL + "/matches/lastMsg"
-
         var page = list_messages.size / SIZE_PAGE_PREVIEW_MESSAGE
         val jsonObjectRequest = object : JsonObjectRequest(Request.Method.POST, url, JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
                 object : Response.Listener<JSONObject?>{
@@ -200,13 +199,13 @@ class ChatManagerActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollHorizontally(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches.size / SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
+                    requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
                 }
             }
         })
 
         requestVerifyConnect(queue, token)
-        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, 0, listMatches, matchesAdapter)
+        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
         requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter)
 
         /*
