@@ -141,6 +141,8 @@ class GamesList : Fragment() {
     }
 
     private fun closeSettingsFragment() {
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().remove(this)
+            .commit()
         val settingsFrag = DisplaySettingsFragment.newInstance(token)
         (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_view, settingsFrag, "settingsFragment")
