@@ -18,6 +18,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.chat_manager.ChatManagerFragment
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
@@ -82,6 +83,12 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             )
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
+        }
+
+        findViewById<ImageButton>(R.id.messageButton).setOnClickListener {
+            val chatManagerFrag = ChatManagerFragment.newInstance(token)
+            supportFragmentManager.beginTransaction().add(R.id.fragment_container_view, chatManagerFrag, "chatManagerFrag")
+                .addToBackStack("chatManagerFrag").commit()
         }
         launchNotificationService(SharingCommand.START)
     }
