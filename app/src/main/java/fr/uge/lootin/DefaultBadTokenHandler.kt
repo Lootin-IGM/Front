@@ -10,14 +10,11 @@ class DefaultBadTokenHandler {
 
     companion object{
         fun handleBadRequest (packageContext : android.content.Context){
-            Log.i("wow","645i bmw")
-
            Intent(packageContext, NotificationsService::class.java).also {
                it.action = SharingCommand.STOP.name
                it.putExtra("userToken", "999")
                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                    packageContext.startForegroundService(it)
-                   return
                }else{
                    packageContext.startService(it)
                }

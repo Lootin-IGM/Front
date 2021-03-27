@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
@@ -90,7 +91,7 @@ class DisplayProfileFragment : DialogFragment() {
                 displayUserGames(response)
             },
             { error -> WebRequestUtils.onError(error)
-                if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                if (error is AuthFailureError){
                     activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
                 }
             }

@@ -7,12 +7,12 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import fr.uge.lootin.config.Configuration
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,21 +38,22 @@ class NotificationsService : Service() {
     private val NOTIFICATION_CHANNEL_ID = "com.example.simpleapp"
     private val channelName = "My Background Service"
     private lateinit var userToken: String
+    private lateinit var url: String
 
     override fun onBind(intent: Intent): IBinder? {
         Log.i("test", "Some component want to bind with the service")
-        // We don't provide binding, so return null
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("test", "onStartCommand executed with startId: $startId")
         if (intent != null) {
+            url = Configuration.getHostNameAndPort(this).toString()
             userToken = intent.getStringExtra("userToken").toString()
             val action = intent.action
             Log.i("test", "using an intent with action $action")
             when (action) {
-                SharingCommand.START.name -> startService(intent.getStringExtra("url").toString())
+                SharingCommand.START.name -> startService()
                 SharingCommand.STOP.name -> stopService()
                 else -> Log.i("test", "This should never happen. No action in the received intent")
             }
@@ -108,7 +109,7 @@ class NotificationsService : Service() {
         Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show()
     }
 
-    private fun startService(url: String) {
+    private fun startService() {
         if (isServiceStarted) {
             return
         }
@@ -120,7 +121,7 @@ class NotificationsService : Service() {
                 acquire()
             }
         }
-        startWebSocketListener(url)
+        startWebSocketListener()
     }
 
     private fun stopService() {
@@ -140,13 +141,10 @@ class NotificationsService : Service() {
         isServiceStarted = false
     }
 
-    private fun startWebSocketListener(url: String) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-
-
+    private fun startWebSocketListener() {
         mStompClient = Stomp.over(
             Stomp.ConnectionProvider.OKHTTP,
-            "ws://$url:8080/secured/room"
+            "ws://$url/secured/room"
         )
         resetSubscriptions()
         connectStomp()
@@ -175,6 +173,9 @@ class NotificationsService : Service() {
                             lifecycleEvent.exception
                         )
                         toast("Stomp connection error")
+                        resetSubscriptions()
+                        relaunchLoop()
+
                     }
                     LifecycleEvent.Type.CLOSED -> {
                         Log.d(TAG, "Stomp connection closed")
@@ -182,11 +183,17 @@ class NotificationsService : Service() {
                         resetSubscriptions()
                         relaunchLoop()
                     }
-                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> Log.d(
-                        TAG,
-                        "Stomp failed server heartbeat"
-                    )
-                    else -> Log.d(TAG, "Error connect stomp MessageTextService")
+                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> {
+                        Log.d(
+                            TAG,
+                            "Stomp failed server heartbeat"
+                        )
+                        relaunchLoop()
+                    }
+                    else -> {
+                        Log.d(TAG, "Error connect stomp MessageTextService")
+                        relaunchLoop()
+                    }
                 }
             }
         compositeDisposable!!.add(dispLifecycle)
@@ -194,13 +201,22 @@ class NotificationsService : Service() {
     }
 
     private fun relaunchLoop() {
-        Log.i("okay", "bite")
+        Log.i("okay", "bite relaunch")
+        Thread.sleep(10000)
+        startWebSocketListener()
     }
 
     private fun connectTopic() {
-        val dispTopic = mStompClient!!.topic("/user/" + userToken + "/notification")
+        val dispTopic = mStompClient!!.topic("/user/" + "4" + "/notification")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError { throwable ->
+                Log.e(
+                    TAG,
+                    "Error on subscribe topic",
+                    throwable
+                )
+            }
             .subscribe(
                 { topicMessage: StompMessage ->
                     Log.d(

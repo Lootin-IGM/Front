@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
@@ -28,6 +29,7 @@ import fr.uge.lootin.settings.DisplaySettingsFragment
 import fr.uge.lootin.signin.SignInActivity
 import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
+import java.nio.charset.StandardCharsets
 
 
 class ProfilesSwipingActivity : AppCompatActivity() {
@@ -42,9 +44,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         url = Configuration.getUrl(this)
-
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
+        Log.i("--OKAY", "jwt : " + token)
         setContentView(R.layout.activity_profiles_swiping)
         this.queue = Volley.newRequestQueue(this)
         displayNextProfile()
@@ -86,7 +88,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         Intent(this, NotificationsService::class.java).also {
             it.action = action.name
             it.putExtra("userToken", "4")
-            it.putExtra("url", url)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(it)
                 return
@@ -109,6 +110,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     private fun loadUsers() {
         val url = Configuration.getUrl(this) + "/profile"
         val map = HashMap<String, String>()
+        Log.i("url" ,url)
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
             { response ->
@@ -124,9 +126,14 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 displayNextUser()
             },
             { error ->
+
                 onError(error)
-                if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                if (error is AuthFailureError){
+                    Log.i("oktamerrrrrrrrrrrrrrr", "errorroror")
                     DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
+                }else{
+                    Thread.sleep(10000)
+                    loadUsers()
                 }
             }
         )
@@ -162,7 +169,8 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                     val jsonResponse = JSONObject(response.toString());
                 },
                 { error -> onError(error)
-                    if (error.toString().contains("403") || error.toString().toLowerCase().contains("forbidden")){
+                    if (error is AuthFailureError){
+
                         DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
                     }
                 }
