@@ -15,6 +15,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.config.Configuration
@@ -91,6 +92,12 @@ class Description : Fragment() {
                             + error.cause + "\n"
                             + error.stackTrace.toString()
                 )
+                if (error is AuthFailureError) {
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                } else {
+                    Thread.sleep(10000)
+                    updateDescriptionRequest(description)
+                }
             }
         ) {
             @Throws(AuthFailureError::class)
@@ -143,6 +150,12 @@ class Description : Fragment() {
                             + error.cause + "\n"
                             + error.stackTrace.toString()
                 )
+                if (error is AuthFailureError) {
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                } else {
+                    Thread.sleep(10000)
+                    getMyDescriptionRequest()
+                }
             })
         queue.add(request)
     }

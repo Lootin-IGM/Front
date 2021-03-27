@@ -16,8 +16,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.config.Configuration
@@ -126,6 +128,12 @@ class TakePicture : Fragment() {
                             + error.cause + "\n"
                             + error.stackTrace.toString()
                 )
+                if (error is AuthFailureError) {
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                } else {
+                    Thread.sleep(10000)
+                    getMyPictureRequest()
+                }
             })
         queue.add(request)
     }
@@ -148,6 +156,12 @@ class TakePicture : Fragment() {
                             + error.cause + "\n"
                             + error.stackTrace.toString()
                 )
+                if (error is AuthFailureError) {
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                } else {
+                    Thread.sleep(10000)
+                    updatePictureRequest()
+                }
             }) {
 
             override fun getHeaders(): MutableMap<String, String> {
