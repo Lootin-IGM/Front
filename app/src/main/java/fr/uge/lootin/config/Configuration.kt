@@ -37,5 +37,18 @@ class Configuration {
             val ip = config.ip
             return "$ip:8080"
         }
+
+        fun getIp(context: Context): String {
+            val jsonFileString = getJsonDataFromAsset(context, "config.json")
+            val gson = Gson()
+            val configType = object : TypeToken<ConfigurationDto>() {}.type
+            var config: ConfigurationDto = gson.fromJson(jsonFileString, configType)
+            val ip = config.ip
+            return "$ip"
+        }
+
+        fun getPort(context: Context): String {
+            return "8080"
+        }
     }
 }

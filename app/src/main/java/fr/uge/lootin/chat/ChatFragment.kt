@@ -19,6 +19,7 @@ import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
 import fr.uge.lootin.chat.utils.ImageUtil
+import fr.uge.lootin.config.Configuration
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.properties.Delegates
@@ -35,6 +36,9 @@ class ChatFragment :  Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layout = inflater.inflate(R.layout.activity_chat, container, false)
+
+        val port = Configuration.getPort(activity?.applicationContext!!)
+        val ip = Configuration.getIp(activity?.applicationContext!!)
 
         // GET INFO from other activity
         val token = requireArguments().getString(TOKEN_VALUE).toString()
@@ -54,10 +58,10 @@ class ChatFragment :  Fragment() {
         recycler.layoutManager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, true)
 
         //create restService
-        val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser, activity?.applicationContext!!)
+        val restService = RestService(ip, matchId, PAGE_SIZE, adapter, token, idUser, activity?.applicationContext!!)
         restService.verifyConnect()
         //create web sockets services
-        messageService = MessageTextService(adapter, recycler, activity?.applicationContext!!, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser, matchId)
+        messageService = MessageTextService(adapter, recycler, activity?.applicationContext!!, "ws://$ip:$port/$ENPOINT", idUser, matchId)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -159,8 +163,6 @@ class ChatFragment :  Fragment() {
 
         const val PAGE_SIZE: Long = 10
 
-        const val LOCALHOST: String = "192.168.1.58"
-        const val PORT:String = "8080"
         const val ENPOINT: String = "secured/room"
     }
 }
