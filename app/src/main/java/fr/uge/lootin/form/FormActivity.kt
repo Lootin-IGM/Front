@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.R
 import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.settings.Description
@@ -60,6 +62,12 @@ class FormActivity : AppCompatActivity() {
                             + error.cause + "\n"
                             + error.stackTrace.toString()
                 )
+                if (error is AuthFailureError) {
+                    DefaultBadTokenHandler.handleBadRequest(this@FormActivity)
+                } else {
+                    Thread.sleep(10000)
+                    registerRequest(games, gl)
+                }
             }) {
 
             override fun getParams(): MutableMap<String, String> {

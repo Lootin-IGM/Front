@@ -10,12 +10,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.config.Configuration
@@ -106,6 +108,12 @@ class SignInActivity : AppCompatActivity() {
                 )
                 if (error.networkResponse.statusCode == 403) {
                     showToast(R.string.incorrectLogin)
+                }
+                if (error is AuthFailureError) {
+                    DefaultBadTokenHandler.handleBadRequest(this@SignInActivity)
+                } else {
+                    Thread.sleep(10000)
+                    login(queue)
                 }
             }) {
             override fun getHeaders(): Map<String, String>? {

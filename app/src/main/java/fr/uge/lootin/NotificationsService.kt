@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import fr.uge.lootin.config.Configuration
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -33,20 +34,21 @@ class NotificationsService : Service() {
     private var compositeDisposable: CompositeDisposable? = null
     private val headers: MutableList<StompHeader> = ArrayList()
     private lateinit var instance: NotificationsService
-    private var notifNumber = 0
+    private var notifyNumber = 0
     private val NOTIFICATION_CHANNEL_ID = "com.example.simpleapp"
     private val channelName = "My Background Service"
     private lateinit var userToken: String
+    private lateinit var url: String
 
     override fun onBind(intent: Intent): IBinder? {
         Log.i("test", "Some component want to bind with the service")
-        // We don't provide binding, so return null
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("test", "onStartCommand executed with startId: $startId")
         if (intent != null) {
+            url = Configuration.getHostNameAndPort(this).toString()
             userToken = intent.getStringExtra("userToken").toString()
             val action = intent.action
             Log.i("test", "using an intent with action $action")
@@ -61,7 +63,6 @@ class NotificationsService : Service() {
                 "with a null intent. It has been probably restarted by the system."
             )
         }
-        // by returning this we make sure the service is restarted if the system kills the service
         return START_STICKY
     }
 
@@ -115,9 +116,6 @@ class NotificationsService : Service() {
         Log.i("test", "Starting the foreground service task")
         Toast.makeText(this, "Service starting its task", Toast.LENGTH_SHORT).show()
         isServiceStarted = true
-        // setServiceState(this, ServiceState.STARTED)
-
-        // we need this lock so our service gets not affected by Doze Mode
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
                 acquire()
@@ -141,14 +139,12 @@ class NotificationsService : Service() {
             Log.i("test", "Service stopped without being started: ${e.message}")
         }
         isServiceStarted = false
-        //this.s(this, ServiceState.STOPPED)
     }
 
     private fun startWebSocketListener() {
-
         mStompClient = Stomp.over(
             Stomp.ConnectionProvider.OKHTTP,
-            "ws://192.168.1.18:8080/secured/room"
+            "ws://$url/secured/room"
         )
         resetSubscriptions()
         connectStomp()
@@ -156,9 +152,6 @@ class NotificationsService : Service() {
         mStompClient!!.connect(headers)
     }
 
-    /**
-     * Connect stomp web socket to the server
-     */
     private fun connectStomp() {
         headers.add(StompHeader("X-Authorization", "Bearer " + userToken))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
@@ -180,6 +173,9 @@ class NotificationsService : Service() {
                             lifecycleEvent.exception
                         )
                         toast("Stomp connection error")
+                        resetSubscriptions()
+                        relaunchLoop()
+
                     }
                     LifecycleEvent.Type.CLOSED -> {
                         Log.d(TAG, "Stomp connection closed")
@@ -187,11 +183,17 @@ class NotificationsService : Service() {
                         resetSubscriptions()
                         relaunchLoop()
                     }
-                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> Log.d(
-                        TAG,
-                        "Stomp failed server heartbeat"
-                    )
-                    else -> Log.d(TAG, "Error connect stomp MessageTextService")
+                    LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> {
+                        Log.d(
+                            TAG,
+                            "Stomp failed server heartbeat"
+                        )
+                        relaunchLoop()
+                    }
+                    else -> {
+                        Log.d(TAG, "Error connect stomp MessageTextService")
+                        relaunchLoop()
+                    }
                 }
             }
         compositeDisposable!!.add(dispLifecycle)
@@ -199,16 +201,22 @@ class NotificationsService : Service() {
     }
 
     private fun relaunchLoop() {
-        Log.i("okay", "bite")
+        Log.i("okay", "bite relaunch")
+        Thread.sleep(10000)
+        startWebSocketListener()
     }
 
-    /**
-     * Connect to topic and receive messages
-     */
     private fun connectTopic() {
-        val dispTopic = mStompClient!!.topic("/user/" + userToken + "/notification")
+        val dispTopic = mStompClient!!.topic("/user/" + "4" + "/notification")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnError { throwable ->
+                Log.e(
+                    TAG,
+                    "Error on subscribe topic",
+                    throwable
+                )
+            }
             .subscribe(
                 { topicMessage: StompMessage ->
                     Log.d(
@@ -276,9 +284,9 @@ class NotificationsService : Service() {
             Intent(this, ProfilesSwipingActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
         )
         builder.setContentIntent(contentIntent)
-        managerCompat.notify(notifNumber, builder.build())
+        managerCompat.notify(notifyNumber, builder.build())
 
-        notifNumber++
+        notifyNumber++
     }
 
 
