@@ -2,6 +2,7 @@ package fr.uge.lootin.chat.adapter
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import fr.uge.lootin.chat.utils.DateConvertor
 
 class MessageItemUi private constructor(
         val content: String? = null,
@@ -30,14 +31,14 @@ class MessageItemUi private constructor(
     companion object {
 
         fun factoryMessageItemUI(content:String, id: Long, date: String, iAuthor: Boolean): MessageItemUi {
-            if( iAuthor)return MessageItemUi(content,null, MY_COLOR, TYPE_MY_MESSAGE, id, date)
-            return MessageItemUi(content, null, FRIEND_COLOR, TYPE_FRIEND_MESSAGE, id, date)
+            if( iAuthor)return MessageItemUi(content,null, MY_COLOR, TYPE_MY_MESSAGE, id, DateConvertor.convert(date))
+            return MessageItemUi(content, null, FRIEND_COLOR, TYPE_FRIEND_MESSAGE, id, DateConvertor.convert(date))
         }
 
 
         fun factoryPictureItemUI(bitmap: Bitmap, id: Long, date: String, iAuthor: Boolean): MessageItemUi {
-            if( iAuthor)return MessageItemUi(null,bitmap, MY_COLOR, TYPE_MY_MESSAGE_PICTURE, id, date)
-            return MessageItemUi(null, bitmap, FRIEND_COLOR, TYPE_FRIEND_MESSAGE_PICTURE, id, date)
+            if( iAuthor)return MessageItemUi(null,bitmap, MY_COLOR, TYPE_MY_MESSAGE_PICTURE, id, DateConvertor.convert(date))
+            return MessageItemUi(null, bitmap, FRIEND_COLOR, TYPE_FRIEND_MESSAGE_PICTURE, id, DateConvertor.convert(date))
         }
 
 

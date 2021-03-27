@@ -65,7 +65,7 @@ class ChatActivity : AppCompatActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    //TODO restService.getMessages()
+                    restService.getMessages()
                     recycler.scrollToPosition(adapter.getItemCount() - 1)
                 }
             }

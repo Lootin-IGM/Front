@@ -14,6 +14,7 @@ import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE_PICTURE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE_PICTURE
+import fr.uge.lootin.chat.utils.DateConvertor
 import java.lang.Long.max
 
 class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: Long) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
@@ -30,9 +31,11 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         private val date = view.findViewById<TextView>(R.id.date_send)
 
         override fun bind(item: MessageItemUi) {
+
             messageContent.text = item.content
             messageContent.highlightColor = item.textColor
-            date.text = item.date.toString()
+            date.text = item.date
+
         }
     }
 
@@ -46,7 +49,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         override fun bind(item: MessageItemUi) {
             messageContent.text = item.content
             messageContent.highlightColor= item.textColor
-            date.text = item.date.toString()
+            date.text = item.date
         }
     }
 
@@ -59,7 +62,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
 
         override fun bind(item: MessageItemUi) {
             picture.setImageBitmap(item.picture)
-            date.text = item.date.toString()
+            date.text = item.date
         }
     }
 
@@ -72,7 +75,7 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
 
         override fun bind(item: MessageItemUi) {
             picture.setImageBitmap(item.picture)
-            date.text = item.date.toString()
+            date.text = item.date
         }
     }
 
