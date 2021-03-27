@@ -1,14 +1,16 @@
 package fr.uge.lootin.chat_manager
 
+
+import fr.uge.lootin.config.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,20 +31,16 @@ import fr.uge.lootin.chat_manager.match.Match
 import fr.uge.lootin.chat_manager.match.MatchAdapter
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
+import fr.uge.lootin.config.Configuration.Companion.getUrl
 import org.json.JSONObject
 
 class ChatManagerFragment : Fragment () {
 
 
-        private var token: String = ""
+    private var token: String = ""
     private var baseUrl = ""
 
 
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val ip = prefs.getString("ip", "").toString()
-        baseUrl = "http://$ip:8080"
-    }
     /*
         private fun launchGameListFragment() {
             val gamesSettingsFrag = GamesList.settingsInstance(token)
@@ -223,13 +221,24 @@ class ChatManagerFragment : Fragment () {
         queue.add(jsonObjectRequest)
     }
 
+
+    private fun closeChatManager() {
+        activity?.supportFragmentManager?.popBackStack()
+    }
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View? {
+
+            baseUrl = Configuration.getUrl(activity?.applicationContext!!)
             token = requireArguments().getString("token").toString()
+
             val layout = inflater.inflate(R.layout.activity_chat_manager, container, false)
+            layout.findViewById<ImageView>(R.id.backButton).setOnClickListener {
+                closeChatManager()
+            }
+
 
             val queue = Volley.newRequestQueue(activity?.applicationContext)
 

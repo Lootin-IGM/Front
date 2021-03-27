@@ -21,11 +21,6 @@
             android:exported="false">
         </service>
         <activity android:name=".ProfilesSwipingActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <receiver android:name=".BootStartReceiver">
@@ -35,7 +30,13 @@
         </receiver>
         <activity android:name=".form.FormActivity" />
         <activity android:name=".register.RegisterActivity" />
-        <activity android:name=".signin.SignInActivity" />
+        <activity android:name=".signin.SignInActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".chat_manager.MainActivity"/>
         <activity android:name=".chat_manager.ChatManagerActivity"/>
     </application>

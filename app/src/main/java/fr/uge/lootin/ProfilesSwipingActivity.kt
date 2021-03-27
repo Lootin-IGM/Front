@@ -4,7 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.chat_manager.ChatManagerFragment
 import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
@@ -80,6 +81,16 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             )
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
+        }
+
+        findViewById<ImageButton>(R.id.messageButton).setOnClickListener {
+            val chatManagerFragment = ChatManagerFragment.newInstance(token)
+            supportFragmentManager.beginTransaction().setCustomAnimations(
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+            )
+                .add(R.id.fragment_container_view, chatManagerFragment, "chatManagerFragment")
+                .addToBackStack("chatManagerFragment").commit()
         }
         setNotificationService(SharingCommand.START)
     }
