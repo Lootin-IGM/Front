@@ -14,7 +14,7 @@ import fr.uge.lootin.R
 import org.json.JSONObject
 
 const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
-const val IP = "192.168.1.18"
+const val IP = "192.168.56.1"
 
 class MainActivity : AppCompatActivity() {
     var token:String = "yesss"

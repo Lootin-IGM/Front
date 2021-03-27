@@ -10,7 +10,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.R
 import kotlin.collections.ArrayList
 
-class MatchAdapter (private var matches: ArrayList<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
+class MatchAdapter (var matches: ArrayList<Match>) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var photo: CircleImageView = itemView.findViewById(R.id.profile_image)
         fun update(image: Bitmap) {
