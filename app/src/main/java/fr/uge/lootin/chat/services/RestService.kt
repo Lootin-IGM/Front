@@ -1,24 +1,20 @@
 package fr.uge.lootin.chat.services
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import fr.uge.lootin.chat.ChatActivity
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessagesResponse
 import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.temporary.GsonGETRequest
 import java.util.HashMap
-import fr.uge.lootin.chat.ChatActivity.Companion.TAG
+import fr.uge.lootin.chat.ChatFragment.Companion.TAG
 
 
 class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long, context : Context) {

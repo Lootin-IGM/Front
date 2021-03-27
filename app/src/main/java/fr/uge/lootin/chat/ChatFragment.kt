@@ -7,8 +7,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
@@ -21,7 +24,7 @@ import java.util.*
 import kotlin.properties.Delegates
 
 
-class ChatActivity : AppCompatActivity() {
+class ChatFragment :  Fragment() {
 
     lateinit var messageService : MessageTextService
     lateinit var recycler: RecyclerView
@@ -29,35 +32,32 @@ class ChatActivity : AppCompatActivity() {
     var idUser by Delegates.notNull<Long>()
     var matchId by Delegates.notNull<Long>()
 
-    /**
-     * Checker si on est bien connecté, sinon pop up + exit(0)
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val layout = inflater.inflate(R.layout.activity_chat, container, false)
 
         // GET INFO from other activity
-        val token = intent.getStringExtra(TOKEN_VALUE).toString()
-        val nameOther = intent.getStringExtra(OTHER_NAME).toString()
-        matchId = intent.getLongExtra(MATCH_ID, -1)
-        idUser = intent.getLongExtra(USER_ID, -1)
+        val token = requireArguments().getString(TOKEN_VALUE).toString()
+        val nameOther = requireArguments().getString(OTHER_NAME).toString()
+        matchId = requireArguments().getLong(MATCH_ID, -1)
+        idUser = requireArguments().getLong(USER_ID, -1)
 
         if (matchId == -1L || idUser == -1L){
             //TODO Stop
-            Log.e(TAG, "Problem avec données récupérées")
+            Log.e(TAG, "Probleme avec données récupérées")
         }
 
         // Create recycler and adapter
-        recycler= findViewById(R.id.reclyclerChat)
+        recycler= layout.findViewById(R.id.reclyclerChat)
         adapter = ChatAdapter(ArrayList(), PAGE_SIZE)
         recycler.adapter = adapter
-        recycler.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
+        recycler.layoutManager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, true)
 
         //create restService
-        val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser, this)
+        val restService = RestService(LOCALHOST, matchId, PAGE_SIZE, adapter, token, idUser, activity?.applicationContext!!)
         restService.verifyConnect()
         //create web sockets services
-        messageService = MessageTextService(adapter, recycler, this, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser, matchId)
+        messageService = MessageTextService(adapter, recycler, activity?.applicationContext!!, "ws://$LOCALHOST:$PORT/$ENPOINT", idUser, matchId)
 
         // Create scrollListener on recyclerview
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -75,30 +75,39 @@ class ChatActivity : AppCompatActivity() {
         messageService.createStomp()
 
         // Send Text messages
-        findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
-            val message : String = findViewById<TextView>(R.id.zoneText).text.toString()
+        layout.findViewById<ImageButton>(R.id.imageButtonsendText).setOnClickListener {
+            val message : String = layout.findViewById<TextView>(R.id.zoneText).text.toString()
             if (message.isNotEmpty()) {
-                messageService.sendMessage(message.replace("\\","\\\\" ))
-                findViewById<TextView>(R.id.zoneText).text = ""
+                messageService.sendMessage(message.replace("\\", "\\\\"))
+                layout.findViewById<TextView>(R.id.zoneText).text = ""
             }
         }
 
         // Send camera picture messages (WS)
-        findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
-            Toast.makeText(this, "Send my picture", Toast.LENGTH_LONG).show()
+        layout.findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
+            Toast.makeText(activity?.applicationContext!!, "Send my picture", Toast.LENGTH_LONG).show()
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(cameraIntent, 200)
         }
 
         // Send picture messages (WS)
-        findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-            Toast.makeText(this, "Send camera pictures", Toast.LENGTH_LONG).show()
+        layout.findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
+            Toast.makeText(activity?.applicationContext!!, "Send camera pictures", Toast.LENGTH_LONG).show()
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 100)
         }
-        findViewById<TextView>(R.id.nameUser).text = nameOther
+        layout.findViewById<TextView>(R.id.nameUser).text = nameOther
+
+        layout.findViewById<Button>(R.id.retour).setOnClickListener {
+            //TODO ça marche peut etre
+            activity?.supportFragmentManager?.popBackStack()
+
+        }
+
+        return layout
     }
+
 
     /**
      * retour en fonction de la galerie ou de la capture
@@ -127,6 +136,19 @@ class ChatActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        fun chatInstance(token: String, match_id: Long, user_id: Long, username : String, othername : String): ChatFragment {
+            var fragment = ChatFragment()
+            val args = Bundle()
+            args.putString(TOKEN_VALUE, token)
+            args.putLong(MATCH_ID, match_id)
+            args.putLong(USER_ID, user_id)
+            args.putString(USER_NAME, username)
+            args.putString(OTHER_NAME, othername)
+            fragment.arguments = args
+            return fragment
+        }
+
         const val TAG = "--ACTIVITY--MAIN"
 
         const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"

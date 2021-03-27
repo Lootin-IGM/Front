@@ -79,8 +79,6 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         }
     }
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder<*> {
         val context = parent.context
         return when (viewType) {
@@ -139,7 +137,6 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         notifyItemInserted(0)
     }
 
-
     /**
      * Return the current page
      */
@@ -149,5 +146,4 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         }
         return 0;
     }
-
 }

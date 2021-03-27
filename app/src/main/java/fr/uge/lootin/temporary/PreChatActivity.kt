@@ -10,13 +10,13 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.R
-import fr.uge.lootin.chat.ChatActivity
-import fr.uge.lootin.chat.ChatActivity.Companion.MATCH_ID
-import fr.uge.lootin.chat.ChatActivity.Companion.OTHER_NAME
-import fr.uge.lootin.chat.ChatActivity.Companion.TOKEN_VALUE
-import fr.uge.lootin.chat.ChatActivity.Companion.USER_ID
-import fr.uge.lootin.chat.ChatActivity.Companion.USER_NAME
-import fr.uge.lootin.chat.ChatActivity.Companion.TAG
+import fr.uge.lootin.chat.ChatFragment
+import fr.uge.lootin.chat.ChatFragment.Companion.MATCH_ID
+import fr.uge.lootin.chat.ChatFragment.Companion.OTHER_NAME
+import fr.uge.lootin.chat.ChatFragment.Companion.TOKEN_VALUE
+import fr.uge.lootin.chat.ChatFragment.Companion.USER_ID
+import fr.uge.lootin.chat.ChatFragment.Companion.USER_NAME
+import fr.uge.lootin.chat.ChatFragment.Companion.TAG
 import org.json.JSONObject
 
 class PreChatActivity : AppCompatActivity() {
@@ -58,13 +58,21 @@ class PreChatActivity : AppCompatActivity() {
     }
 
     private fun callChat(){
-        val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra(TOKEN_VALUE, token)
+        val intent = Intent(this, ChatFragment::class.java)
+       /* intent.putExtra(TOKEN_VALUE, token)
         intent.putExtra(MATCH_ID, match_id)
         intent.putExtra(USER_ID, user_id)
         intent.putExtra(USER_NAME, username)
         intent.putExtra(OTHER_NAME, othername)
         startActivityForResult(intent, 1)
+
+        */
+
+        val settingsFrag = ChatFragment.chatInstance(token, match_id, user_id, username, othername)
+        supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
+                .addToBackStack("settingsFragment").commit()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
