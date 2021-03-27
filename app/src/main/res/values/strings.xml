@@ -143,4 +143,8 @@
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chat_hint_text_zone">Aa</string>
+    <string name="chat_descr_take_picture">take picture</string>
+    <string name="chat_descr_my_picturtes">my picturtes</string>
+    <string name="chat_descr_send_text">send text</string>
 </resources>

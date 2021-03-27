@@ -23,6 +23,14 @@
         <activity android:name=".ProfilesSwipingActivity">
         </activity>
 
+        <activity android:name=".temporary.PreChatActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <receiver android:name=".BootStartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
