@@ -1,7 +1,6 @@
 package fr.uge.lootin.settings
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.models.DescriptionDto
@@ -28,12 +28,6 @@ class Description : Fragment() {
     private var token: String = ""
     lateinit var type: String
     private var baseUrl = ""
-
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val ip = prefs.getString("ip", "").toString()
-        baseUrl = "http://$ip:8080"
-    }
 
     private fun loadFragmentPicture(description: String) {
         (activity as FormActivity).setDescription(description)
@@ -158,7 +152,7 @@ class Description : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getIpFromPreferences()
+        baseUrl = Configuration.getUrl(activity?.applicationContext!!)
         layout = inflater.inflate(R.layout.fragment_description, container, false)
         type = requireArguments().getString("type").toString()
         if (type == "register") setNextButtonRegister()

@@ -1,7 +1,6 @@
 package fr.uge.lootin.settings
 
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +19,7 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.form.Game
 import fr.uge.lootin.form.GameAdapter
@@ -36,12 +36,6 @@ class GamesList : Fragment() {
     private var token: String = ""
     private var type: String = ""
     private var baseUrl = ""
-
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val ip = prefs.getString("ip", "").toString()
-        baseUrl = "http://$ip:8080"
-    }
 
     private fun getAllGames() {
         val url = "$baseUrl/games/"
@@ -198,7 +192,7 @@ class GamesList : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getIpFromPreferences()
+        baseUrl = Configuration.getUrl(activity?.applicationContext!!)
         // Inflate the layout for this fragment
         val layout =
             inflater.inflate(R.layout.fragment_games_list, container, false)

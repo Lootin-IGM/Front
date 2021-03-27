@@ -3,13 +3,13 @@ package fr.uge.lootin.signin
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.config.Configuration
+import fr.uge.lootin.config.ConfigurationDto
 import fr.uge.lootin.register.RegisterActivity
 import org.json.JSONObject
 import java.io.IOException
@@ -27,7 +28,7 @@ import java.io.IOException
 class SignInActivity : AppCompatActivity() {
     private var username: String = ""
     private var password: String = ""
-    private var ip: String = ""
+    private var baseUrl: String = ""
 
     private fun showToast(msg: Int) {
         Toast.makeText(
@@ -75,21 +76,16 @@ class SignInActivity : AppCompatActivity() {
     private fun readConfigurationFile() {
         val jsonFileString = getJsonDataFromAsset(applicationContext, "config.json")
         val gson = Gson()
-        val configType = object : TypeToken<Configuration>() {}.type
-        var persons: Configuration = gson.fromJson(jsonFileString, configType)
+        val configType = object : TypeToken<ConfigurationDto>() {}.type
+        var persons: ConfigurationDto = gson.fromJson(jsonFileString, configType)
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = preferences.edit()
         editor.putString("ip", persons.ip)
         editor.commit()
     }
 
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        ip = prefs.getString("ip", "").toString()
-    }
-
     private fun login(queue: RequestQueue) {
-        val url = "http://$ip:8080/login"
+        val url = "$baseUrl/login"
         Log.i("test", "login request")
         Log.i("test", "username=${this.username}, password=${this.password}")
         val jsonObjectRequest = object : JsonObjectRequest(
@@ -124,7 +120,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readConfigurationFile()
-        getIpFromPreferences()
+        baseUrl = Configuration.getUrl(this)
         setContentView(R.layout.activity_sign_in)
         val queue = Volley.newRequestQueue(this)
         //connection button

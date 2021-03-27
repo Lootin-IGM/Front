@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -21,6 +20,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.form.FileDataPart
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.form.VolleyFileUploadRequest
@@ -34,12 +34,6 @@ class TakePicture : Fragment() {
     lateinit var layout: View
     lateinit var picture: Bitmap
     private var baseUrl = ""
-
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val ip = prefs.getString("ip", "").toString()
-        baseUrl = "http://$ip:8080"
-    }
 
     private fun capturePhoto() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -194,7 +188,7 @@ class TakePicture : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getIpFromPreferences()
+        baseUrl = Configuration.getUrl(activity?.applicationContext!!)
         layout =
             inflater.inflate(R.layout.fragment_take_picture, container, false)
         type = requireArguments().getString("type").toString()

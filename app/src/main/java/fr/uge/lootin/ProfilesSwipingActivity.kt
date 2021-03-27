@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -13,19 +12,20 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.button.MaterialButton
-import fr.uge.lootin.chat_manager.ChatManagerFragment
+import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.GsonGETRequest
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onError
 import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
-import fr.uge.lootin.register.RegisterActivity
 import fr.uge.lootin.settings.DisplaySettingsFragment
+import fr.uge.lootin.signin.SignInActivity
 import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
 
@@ -39,15 +39,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     private var url: String = ""
     private var firstRequest = true
 
-    private fun getIpFromPreferences() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val ip = prefs.getString("ip", "").toString()
-        url = "http://$ip:8080"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getIpFromPreferences()
+        url = Configuration.getUrl(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
         setContentView(R.layout.activity_profiles_swiping)
@@ -78,17 +72,11 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.settingsButton).setOnClickListener {
             val settingsFrag = DisplaySettingsFragment.newInstance(token)
             supportFragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.slide_in_l_r,
-                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_l_r
+                R.anim.slide_in_r_l,
+                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
             )
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
-        }
-
-        findViewById<ImageButton>(R.id.messageButton).setOnClickListener {
-            val chatManagerFrag = ChatManagerFragment.newInstance(token)
-            supportFragmentManager.beginTransaction().add(R.id.fragment_container_view, chatManagerFrag, "chatManagerFrag")
-                .addToBackStack("chatManagerFrag").commit()
         }
         launchNotificationService(SharingCommand.START)
     }
@@ -122,7 +110,7 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         map["Authorization"] = "Bearer $token"
         val request = GsonGETRequest(url, UserList::class.java, map,
             { response ->
-                if (firstRequest){
+                if (firstRequest) {
                     enableButtons()
                     firstRequest = false
                 }
@@ -134,9 +122,10 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 currentUser = 0
                 displayNextUser()
             },
-            { error -> onError(error)
+            { error ->
+                onError(error)
                 launchNotificationService(SharingCommand.STOP)
-                restartRegister()
+                restartSignIn()
             }
         )
         queue.add(request)
@@ -149,8 +138,8 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     }
 
-    private fun restartRegister() {
-        val intent = Intent(this, RegisterActivity::class.java)
+    private fun restartSignIn() {
+        val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
     }
 
