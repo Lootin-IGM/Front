@@ -143,9 +143,11 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
     /**
      * Return the current page
      */
-    @RequiresApi(Build.VERSION_CODES.N)
     fun onPage(): Long{
-        return max(data.size / size_page - 1, 0L)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return max(data.size / size_page, 0L)
+        }
+        return 0;
     }
 
 }
