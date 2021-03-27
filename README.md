@@ -35,7 +35,8 @@
 
 ## About The Project
 <p align="center">
-    <img src="./fastlane/metadata/android/en-US/images/connection_page.png" alt="Screen" width="270">
+    <img src="./fastlane/metadata/android/en-US/images/profile_page.png" alt="Screen" height="450">
+    <img src="./fastlane/metadata/android/en-US/images/matchs_page.png" alt="Screen" height="450">
 </p>
 🎮 Lootin, this is THE gamers meeting place.
 Lootin allows you to meet gamers who match your criteria. Create an account, select your favorite games and join the game !
