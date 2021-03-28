@@ -109,14 +109,14 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             findViewById<RelativeLayout>(R.id.refreshPanel).visibility = View.GONE
             loadUsers()
         }
-        //setNotificationService(SharingCommand.START)
+        setNotificationService(SharingCommand.START)
     }
 
     private fun setNotificationService(action: SharingCommand) {
         Intent(this, NotificationsService::class.java).also {
             it.action = action.name
-            it.putExtra("userId", "2")
-            it.putExtra("notifToken", "44444444")
+            it.putExtra("userId", id)
+            it.putExtra("notifToken", notifToken)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(it)
