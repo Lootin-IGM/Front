@@ -29,6 +29,7 @@ import fr.uge.lootin.chat_manager.match.Match
 import fr.uge.lootin.chat_manager.match.MatchAdapter
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
+import fr.uge.lootin.chat_manager.preview_message.TypeMessage
 import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.WebRequestUtils
 import fr.uge.lootin.settings.*
@@ -127,6 +128,11 @@ class ChatManagerFragment : Fragment () {
             val match = data.getJSONObject(i)
 
             val lastMessage = match.getJSONObject("lastMessage")
+            var type: TypeMessage = TypeMessage.TEXT
+            //TODO A CHANGER!!!
+            if (lastMessage.getString("typeMessage").equals("AUDIO")) {
+                type = TypeMessage.PHOTO
+            }
             list_messages.add(
                 PreviewMessage(
                     Integer.valueOf(match.getString("id")),
@@ -142,7 +148,8 @@ class ChatManagerFragment : Fragment () {
                     fromStringToBitmap(match.getJSONObject("user").getString("image")),
                     lastMessage.getString(
                         "sendTime"
-                    )
+                    ),
+                    type
                 )
             )
 

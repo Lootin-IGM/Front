@@ -86,7 +86,7 @@ class ChatManagerActivity : AppCompatActivity() {
             val match = data.getJSONObject(i)
 
             val lastMessage = match.getJSONObject("lastMessage")
-            list_messages.add(PreviewMessage(Integer.valueOf(match.getString("id")), lastMessage.getString("message"), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image")), lastMessage.getString("sendTime")))
+            //list_messages.add(PreviewMessage(Integer.valueOf(match.getString("id")), lastMessage.getString("message"), match.getJSONObject("user").getString("login"), Integer.valueOf(match.getJSONObject("user").getString("id")), fromStringToBitmap(match.getJSONObject("user").getString("image")), lastMessage.getString("sendTime")))
 
         }
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)

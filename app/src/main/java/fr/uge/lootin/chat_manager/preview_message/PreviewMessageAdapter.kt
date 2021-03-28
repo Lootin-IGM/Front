@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.R
+import java.lang.reflect.Type
 
 class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessage>) : RecyclerView.Adapter<PreviewMessageAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,24 +19,16 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         private var pseudo: TextView = itemView.findViewById(R.id.pseudo)
         private var layout: ConstraintLayout = itemView.findViewById(R.id.layoutId)
         private var photo: CircleImageView = itemView.findViewById(R.id.conversation_photo)
-        fun update(newMessage: String, newPseudo: String, color: Int, image: Bitmap) {
-            message.text = newMessage
+        fun update(newMessage: String, newPseudo: String, color: Int, image: Bitmap, type: TypeMessage) {
+            if (type == TypeMessage.PHOTO) {
+                message.text = "[Photo]"
+            }
+            else {
+                message.text = newMessage
+            }
             pseudo.text = newPseudo
             layout.setBackgroundColor(color)
             photo.setImageBitmap(image)
-            /*if (id_photo == 0) {
-                photo.setImageResource(R.drawable.aarmand)
-                //photo.setBackgroundResource()
-            }
-            if (id_photo == 1) {
-                photo.setImageResource(R.drawable.armand_dort)
-            }
-            if (id_photo == 2) {
-                photo.setImageResource(R.drawable.loulou)
-            }
-            if (id_photo == 3) {
-                photo.setImageResource(R.drawable.loulou_content)
-            }*/
         }
 
     }
@@ -60,7 +53,7 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         else {
             color = Color.parseColor("#2C2F33")
         }
-        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].photo)
+        holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].photo, previewMessages[position].type)
         holder.itemView.setOnClickListener { Log.i("my_log", "on a cliqué sur message: " + previewMessages[position].sender + " - " + previewMessages[position].message) }
 
     }
