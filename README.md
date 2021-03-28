@@ -10,13 +10,14 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Developed with</a></li>
+        <li><a href="#developed-with">Developed with</a></li>
+        <li><a href="#dependencies-used">Dependencies used</a></li>
       </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#clone-repository">Clone the Repository</a></li>
+        <li><a href="#clone-the-repository">Clone the Repository</a></li>
       </ul>
     </li>
     <li>
@@ -50,6 +51,17 @@ So what are you waiting for? Enter the game!
 
 ### Developed with
 * [Kotlin](https://kotlinlang.org/)
+
+### Dependencies used
+This project uses the following dependencies
+* [Material Components](https://github.com/material-components/material-components-android)
+* [Volley](https://developer.android.com/training/volley)
+* [Gson](https://github.com/google/gson)
+* [Fragment](https://developer.android.com/jetpack/androidx/releases/fragment)
+* [NaikSoftware StompProtocol](https://github.com/NaikSoftware/StompProtocolAndroid)
+* [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+* [CircleIndicator](https://github.com/ongakuer/CircleIndicator)
+* [CircleImageView](https://github.com/hdodenhof/CircleImageView)
 
 ## Getting Started
 ### Clone the Repository

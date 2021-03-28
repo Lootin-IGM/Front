@@ -17,20 +17,22 @@ import fr.uge.lootin.chat.ChatFragment.Companion.TOKEN_VALUE
 import fr.uge.lootin.chat.ChatFragment.Companion.USER_ID
 import fr.uge.lootin.chat.ChatFragment.Companion.USER_NAME
 import fr.uge.lootin.chat.ChatFragment.Companion.TAG
+import fr.uge.lootin.config.Configuration
 import org.json.JSONObject
 
 class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
-    var match_id : Long = 3
-    val user_id : Long = 4
-    val localhost : String = "192.168.1.58"
+    var match_id : Long = 0
+    val user_id : Long = 2
+    var localhost : String = "lootin.duckdns.org"
     val username : String = "Loulou"
     val password : String = "Yvette"
     val othername : String = "Toto"
+    var port = "1234"
 
     private fun connect(queue: RequestQueue){
-        val url = "http://$localhost:8080/login"
+        val url = "http://$localhost:$port/login"
         Log.i(TAG, "connect request hehe")
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST,
@@ -79,6 +81,8 @@ class PreChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_chat)
 
+        port = Configuration.getPort(this)
+        localhost = Configuration.getIp(this)
          val queue : RequestQueue = Volley.newRequestQueue(this)
         findViewById<Button>(R.id.buttonGo).setOnClickListener { connect(queue) }
     }

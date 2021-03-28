@@ -1,7 +1,6 @@
 package fr.uge.lootin.chat_manager
 
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,7 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +29,9 @@ import fr.uge.lootin.chat_manager.match.Match
 import fr.uge.lootin.chat_manager.match.MatchAdapter
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessage
 import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
+import fr.uge.lootin.chat_manager.preview_message.TypeMessage
 import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.WebRequestUtils
-import fr.uge.lootin.settings.*
 import org.json.JSONObject
 
 
@@ -78,7 +79,8 @@ class ChatManagerFragment : Fragment () {
         response: JSONObject,
         list_matches: ArrayList<Match>,
         matchAdapter: MatchAdapter,
-        page: Int
+        page: Int,
+        layout: View
     ) {
         val data = response.getJSONArray("data")
         val matchesSize = list_matches.size
@@ -100,6 +102,10 @@ class ChatManagerFragment : Fragment () {
                 )
             }
         }
+        if (matchesSize == 0 && list_matches.size > 0) {
+            layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.GONE
+            layout.findViewById<RecyclerView>(R.id.matchRecyclerView).visibility = View.VISIBLE
+        }
         matchAdapter.notifyItemInserted(matchesSize)
     }
 
@@ -107,7 +113,8 @@ class ChatManagerFragment : Fragment () {
         response: JSONObject,
         list_messages: ArrayList<PreviewMessage>,
         previewMessageAdapter: PreviewMessageAdapter,
-        page: Int
+        page: Int,
+        layout: View
     ) {
         val data = response.getJSONArray("data")
         val previewMessagesSize = list_messages.size
@@ -120,6 +127,11 @@ class ChatManagerFragment : Fragment () {
             val match = data.getJSONObject(i)
 
             val lastMessage = match.getJSONObject("lastMessage")
+            var type: TypeMessage = TypeMessage.TEXT
+            //TODO A CHANGER!!!
+            if (lastMessage.getString("typeMessage").equals("AUDIO")) {
+                type = TypeMessage.PHOTO
+            }
             list_messages.add(
                 PreviewMessage(
                     Integer.valueOf(match.getString("id")),
@@ -135,21 +147,20 @@ class ChatManagerFragment : Fragment () {
                     fromStringToBitmap(match.getJSONObject("user").getString("image")),
                     lastMessage.getString(
                         "sendTime"
-                    )
+                    ),
+                    type
                 )
             )
 
         }
+        if (previewMessagesSize == 0 && list_messages.size > 0) {
+            layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.GONE
+            layout.findViewById<RecyclerView>(R.id.previewMessagesId).visibility = View.VISIBLE
+        }
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)
     }
 
-    private fun requestGetEmptyMatches(
-        queue: RequestQueue,
-        token: String,
-        nb_matches: Int,
-        list_matches: ArrayList<Match>,
-        matchAdapter: MatchAdapter
-    ) {
+    private fun requestGetEmptyMatches(queue: RequestQueue, token: String, nb_matches: Int, list_matches: ArrayList<Match>, matchAdapter: MatchAdapter, layout: View) {
         val url = baseUrl + "/matches/empty"
         var page = list_matches.size / SIZE_PAGE_MATCHES
         val jsonObjectRequest = object : JsonObjectRequest(
@@ -159,7 +170,7 @@ class ChatManagerFragment : Fragment () {
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
                     if (response != null) {
-                        treatEmptyMatches(response, list_matches, matchAdapter, page)
+                        treatEmptyMatches(response, list_matches, matchAdapter, page, layout)
                     }
                 }
             },
@@ -168,8 +179,16 @@ class ChatManagerFragment : Fragment () {
                 if (error is AuthFailureError) {
                     DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 } else {
-                    Thread.sleep(10000)
-                    requestGetEmptyMatches(queue, token, nb_matches, list_matches, matchAdapter)
+                    layout.findViewById<CardView>(R.id.retryPanelMatches).visibility = View.VISIBLE
+                    layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.GONE
+                    layout.findViewById<RecyclerView>(R.id.matchRecyclerView).visibility = View.GONE
+
+                    layout.findViewById<Button>(R.id.retryMatches).setOnClickListener {
+                        Log.i("my_log", "on a cliqué")
+                        layout.findViewById<CardView>(R.id.retryPanelMatches).visibility = View.GONE
+                        layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.VISIBLE
+                        requestGetEmptyMatches(queue, token, nb_matches, list_matches, matchAdapter, layout)
+                    }
                 }
             }
         ) {
@@ -183,13 +202,7 @@ class ChatManagerFragment : Fragment () {
         queue.add(jsonObjectRequest)
     }
 
-    private fun requestGetLastMessages(
-        queue: RequestQueue,
-        token: String,
-        nb_matches: Int,
-        list_messages: ArrayList<PreviewMessage>,
-        previewMessageAdapter: PreviewMessageAdapter
-    ) {
+    private fun requestGetLastMessages(queue: RequestQueue, token: String,  nb_matches: Int, list_messages: ArrayList<PreviewMessage>, previewMessageAdapter: PreviewMessageAdapter, layout: View) {
         val url = baseUrl + "/matches/lastMsg"
 
         var page = list_messages.size / SIZE_PAGE_PREVIEW_MESSAGE
@@ -199,24 +212,26 @@ class ChatManagerFragment : Fragment () {
             JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
-                    if (response != null) {
-                        treatLastMessage(response, list_messages, previewMessageAdapter, page)
+                        if (response != null) {
+                            treatLastMessage(response, list_messages, previewMessageAdapter, page, layout)
+                        }
                     }
-                }
-            },
-            Response.ErrorListener { error ->
-                WebRequestUtils.onError(error)
-                if (error is AuthFailureError) {
-                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
-                } else {
-                    Thread.sleep(10000)
-                    requestGetLastMessages(
-                        queue,
-                        token,
-                        nb_matches,
-                        list_messages,
-                        previewMessageAdapter
-                    )
+                },
+                Response.ErrorListener { error ->
+                    WebRequestUtils.onError(error)
+                    if (error is AuthFailureError) {
+                        DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
+                    } else {
+                        layout.findViewById<CardView>(R.id.retryPanelPreviewMessage).visibility = View.VISIBLE
+                        layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.GONE
+                        layout.findViewById<RecyclerView>(R.id.previewMessagesId).visibility = View.GONE
+
+                        layout.findViewById<Button>(R.id.retryPreviewMessage).setOnClickListener {
+                            Log.i("my_log", "on a cliqué")
+                            layout.findViewById<CardView>(R.id.retryPanelPreviewMessage).visibility = View.GONE
+                            layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.VISIBLE
+                            requestGetLastMessages(queue, token, nb_matches, list_messages, previewMessageAdapter, layout)
+                        }
                 }
             }
         ) {
@@ -271,7 +286,8 @@ class ChatManagerFragment : Fragment () {
                         token,
                         SIZE_PAGE_PREVIEW_MESSAGE,
                         listMessages,
-                        previewMessagesAdapter
+                        previewMessagesAdapter,
+                        layout
                     )
                 }
             }
@@ -291,29 +307,14 @@ class ChatManagerFragment : Fragment () {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollHorizontally(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    requestGetEmptyMatches(
-                        queue,
-                        token,
-                        SIZE_PAGE_MATCHES,
-                        listMatches,
-                        matchesAdapter
-                    )
+                    requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter, layout)
                 }
             }
         })
 
         requestVerifyConnect(queue, token)
-        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
-        requestGetLastMessages(
-            queue,
-            token,
-            SIZE_PAGE_PREVIEW_MESSAGE,
-            listMessages,
-            previewMessagesAdapter
-        )
-
-
-
+        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter, layout)
+        requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter, layout)
         return layout
     }
 

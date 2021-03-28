@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_manager_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/chat_manager_id"
     android:background="#2C2F33"
     tools:context=".chat_manager.ChatManagerActivity">
 
@@ -37,6 +38,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,21 +57,44 @@
             android:translationZ="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loadingPanelMatches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/match_title">
+
+            <ProgressBar
+                android:id="@+id/progressBarMatches"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#12B0D0"
+                android:indeterminateTint="#FFFFFF" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/retryPanelMatches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:cardBackgroundColor="#00FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/match_title">
+            <Button
+                android:id="@+id/retryMatches"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#12B0D0"
-        app:cardBackgroundColor="#12B0D0"
-        app:layout_constraintBottom_toTopOf="@+id/header_guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
 
-
-    </androidx.cardview.widget.CardView> -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/header_guideline"
         android:layout_width="wrap_content"
@@ -77,29 +102,20 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.09" />
 
+
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/match_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.26" />
-    <!--
-    <iammert.com.expandablelib.ExpandableLayout
-        android:id="@+id/expandable_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:childLayout="@layout/layout_expandable_child"
-        app:layout_constraintBottom_toTopOf="@+id/match_guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/header_guideline"
-        app:parentLayout="@layout/layout_expandable_parent" /> -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/previewMessagesId"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,10 +127,47 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        android:src="@drawable/ic_arrow_back" />
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/loadingPanelChatManager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/previewMessagesId"
+        app:layout_constraintEnd_toEndOf="@+id/previewMessagesId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <ProgressBar
+            android:id="@+id/progressBarChatManager"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#2C2F33"
+            android:indeterminateTint="#FFFFFF"
+        />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/retryPanelPreviewMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/previewMessagesId"
+        app:layout_constraintEnd_toEndOf="@+id/previewMessagesId"
+        app:layout_constraintStart_toStartOf="@+id/previewMessagesId"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <Button
+            android:id="@+id/retryPreviewMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry" />
+    </androidx.cardview.widget.CardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
