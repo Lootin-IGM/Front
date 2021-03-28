@@ -26,7 +26,8 @@ class Configuration {
             val configType = object : TypeToken<ConfigurationDto>() {}.type
             var config: ConfigurationDto = gson.fromJson(jsonFileString, configType)
             val ip = config.ip
-            return "http://$ip:8080"
+            val port = config.port
+            return "http://$ip:$port"
         }
 
         fun getHostNameAndPort(context: Context): String?{
@@ -35,7 +36,8 @@ class Configuration {
             val configType = object : TypeToken<ConfigurationDto>() {}.type
             var config: ConfigurationDto = gson.fromJson(jsonFileString, configType)
             val ip = config.ip
-            return "$ip:8080"
+            val port = config.port
+            return "$ip:$port"
         }
 
         fun getIp(context: Context): String {
@@ -48,7 +50,12 @@ class Configuration {
         }
 
         fun getPort(context: Context): String {
-            return "8080"
+            val jsonFileString = getJsonDataFromAsset(context, "config.json")
+            val gson = Gson()
+            val configType = object : TypeToken<ConfigurationDto>() {}.type
+            var config: ConfigurationDto = gson.fromJson(jsonFileString, configType)
+            val port = config.port
+            return "$port"
         }
     }
 }

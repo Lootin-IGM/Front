@@ -58,7 +58,7 @@ class ChatFragment :  Fragment() {
         recycler.layoutManager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, true)
 
         //create restService
-        val restService = RestService(ip, matchId, PAGE_SIZE, adapter, token, idUser, activity?.applicationContext!!)
+        val restService = RestService(ip, port, matchId, PAGE_SIZE, adapter, token, idUser, activity?.applicationContext!!)
         restService.verifyConnect()
         //create web sockets services
         messageService = MessageTextService(adapter, recycler, activity?.applicationContext!!, "ws://$ip:$port/$ENPOINT", idUser, matchId)

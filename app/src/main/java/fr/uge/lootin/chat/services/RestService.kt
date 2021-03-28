@@ -17,7 +17,7 @@ import java.util.HashMap
 import fr.uge.lootin.chat.ChatFragment.Companion.TAG
 
 
-class RestService(private val localhost: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long, context : Context) {
+class RestService(private val localhost: String, private val port: String, private val match_id: Long, private val size_page : Long, private val adapter: ChatAdapter, private val token : String, private val idUser: Long, context : Context) {
 
     private val queue : RequestQueue = Volley.newRequestQueue(context)
 
@@ -26,7 +26,7 @@ class RestService(private val localhost: String, private val match_id: Long, pri
      * Send a rest request to verify that the client is authenticated
      */
     fun verifyConnect(){
-        val url = "http://$localhost:8080/showLogin"
+        val url = "http://$localhost:$port/showLogin"
 
         Log.i(TAG, "verify connexion request")
         val stringRequest = object : StringRequest(
@@ -61,7 +61,7 @@ class RestService(private val localhost: String, private val match_id: Long, pri
     fun getMessages() {
         Log.d(TAG,"GET messages")
         val page = adapter.onPage()
-        val url = "http://$localhost:8080/messages/$match_id/$size_page/$page"
+        val url = "http://$localhost:$port/messages/$match_id/$size_page/$page"
         Log.d(TAG, "on requête à $url")
         val map = HashMap<String, String>()
         map["Authorization"] = "Bearer $token"
