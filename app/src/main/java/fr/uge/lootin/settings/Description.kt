@@ -1,5 +1,6 @@
 package fr.uge.lootin.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -29,6 +30,7 @@ class Description : Fragment() {
     private var token: String = ""
     lateinit var type: String
     private var baseUrl = ""
+    private var contextActivity: Context? = null
 
     private fun loadFragmentPicture(description: String) {
         (activity as FormActivity).setDescription(description)
@@ -93,10 +95,7 @@ class Description : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    updateDescriptionRequest(description)
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             }
         ) {
@@ -127,6 +126,11 @@ class Description : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        contextActivity = context
+    }
+
     private fun getMyDescriptionRequest() {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
         val url = "$baseUrl/profile/myDescription"
@@ -151,10 +155,7 @@ class Description : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    getMyDescriptionRequest()
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             })
         queue.add(request)

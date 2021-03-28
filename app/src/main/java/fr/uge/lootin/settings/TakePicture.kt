@@ -1,6 +1,7 @@
 package fr.uge.lootin.settings
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -36,6 +37,7 @@ class TakePicture : Fragment() {
     lateinit var layout: View
     lateinit var picture: Bitmap
     private var baseUrl = ""
+    private var contextActivity: Context? = null
 
     private fun capturePhoto() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -68,6 +70,11 @@ class TakePicture : Fragment() {
             if (type == "register") (activity as FormActivity).setProfileImage((imageView?.drawable as BitmapDrawable).bitmap)
             else picture = (imageView?.drawable as BitmapDrawable).bitmap
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        contextActivity = context
     }
 
     private fun loadGamesFragment() {
@@ -129,10 +136,7 @@ class TakePicture : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    getMyPictureRequest()
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             })
         queue.add(request)
@@ -157,10 +161,7 @@ class TakePicture : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    updatePictureRequest()
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             }) {
 

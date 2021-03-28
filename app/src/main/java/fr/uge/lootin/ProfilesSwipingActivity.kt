@@ -94,6 +94,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.messageButton).setOnClickListener {
             val chatManagerFragment = ChatManagerFragment.newInstance(token)
+
+            chatManagerFragment.onAttach(applicationContext)
+
             supportFragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.slide_in_r_l,
                 R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l

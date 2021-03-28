@@ -1,5 +1,6 @@
 package fr.uge.lootin.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ class GamesList : Fragment() {
     private var token: String = ""
     private var type: String = ""
     private var baseUrl = ""
+    private var contextActivity: Context? = null
 
     private fun getAllGames() {
         val url = "$baseUrl/games/"
@@ -62,13 +64,15 @@ class GamesList : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    getAllGames()
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             })
         queue.add(request)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        contextActivity = context
     }
 
     private fun setRegisterButton(layout: View) {
@@ -131,10 +135,7 @@ class GamesList : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    getActualUserGames()
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             })
         queue.add(request)
@@ -173,10 +174,7 @@ class GamesList : Fragment() {
                             + error.stackTrace.toString()
                 )
                 if (error is AuthFailureError) {
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
-                } else {
-                    Thread.sleep(10000)
-                    updateGamesRequest(games)
+                    DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 }
             }
         ) {
