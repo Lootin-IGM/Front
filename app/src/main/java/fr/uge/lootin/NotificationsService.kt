@@ -37,7 +37,8 @@ class NotificationsService : Service() {
     private var notifyNumber = 0
     private val NOTIFICATION_CHANNEL_ID = "com.example.simpleapp"
     private val channelName = "My Background Service"
-    private lateinit var userToken: String
+    private var userId: String = ""
+    private var notifToken = ""
     private lateinit var url: String
 
     override fun onBind(intent: Intent): IBinder? {
@@ -49,7 +50,8 @@ class NotificationsService : Service() {
         Log.i("test", "onStartCommand executed with startId: $startId")
         if (intent != null) {
             url = Configuration.getHostNameAndPort(this).toString()
-            userToken = intent.getStringExtra("userToken").toString()
+            userId = intent.getStringExtra("userId").toString()
+            notifToken = intent.getStringExtra("notifToken").toString()
             val action = intent.action
             Log.i("test", "using an intent with action $action")
             when (action) {
@@ -152,8 +154,13 @@ class NotificationsService : Service() {
         mStompClient!!.connect(headers)
     }
 
+    private fun retryConnect(){
+        Thread.sleep(15000)
+        mStompClient!!.connect(headers)
+    }
+
     private fun connectStomp() {
-        headers.add(StompHeader("X-Authorization", "Bearer " + userToken))
+        headers.add(StompHeader("X-Authorization", "Bearer " + "2" + "_" + notifToken))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
         Log.d(TAG, "try connect stomp")
@@ -174,25 +181,25 @@ class NotificationsService : Service() {
                         )
                         toast("Stomp connection error")
                         resetSubscriptions()
-                        relaunchLoop()
+                        retryConnect()
 
                     }
                     LifecycleEvent.Type.CLOSED -> {
                         Log.d(TAG, "Stomp connection closed")
                         toast("Stomp connection closed")
                         resetSubscriptions()
-                        relaunchLoop()
+                        retryConnect()
                     }
                     LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT -> {
                         Log.d(
                             TAG,
                             "Stomp failed server heartbeat"
                         )
-                        relaunchLoop()
+                        retryConnect()
                     }
                     else -> {
                         Log.d(TAG, "Error connect stomp MessageTextService")
-                        relaunchLoop()
+                        retryConnect()
                     }
                 }
             }
@@ -207,7 +214,7 @@ class NotificationsService : Service() {
     }
 
     private fun connectTopic() {
-        val dispTopic = mStompClient!!.topic("/user/" + "4" + "/notification")
+        val dispTopic = mStompClient!!.topic("/user/$userId/notification")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnError { throwable ->
