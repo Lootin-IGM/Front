@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -78,7 +79,8 @@ class ChatManagerFragment : Fragment () {
         response: JSONObject,
         list_matches: ArrayList<Match>,
         matchAdapter: MatchAdapter,
-        page: Int
+        page: Int,
+        layout: View
     ) {
         val data = response.getJSONArray("data")
         val matchesSize = list_matches.size
@@ -100,6 +102,10 @@ class ChatManagerFragment : Fragment () {
                 )
             }
         }
+        if (matchesSize == 0 && list_matches.size > 0) {
+            layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.GONE
+            layout.findViewById<RecyclerView>(R.id.matchRecyclerView).visibility = View.VISIBLE
+        }
         matchAdapter.notifyItemInserted(matchesSize)
     }
 
@@ -107,7 +113,8 @@ class ChatManagerFragment : Fragment () {
         response: JSONObject,
         list_messages: ArrayList<PreviewMessage>,
         previewMessageAdapter: PreviewMessageAdapter,
-        page: Int
+        page: Int,
+        layout: View
     ) {
         val data = response.getJSONArray("data")
         val previewMessagesSize = list_messages.size
@@ -140,6 +147,10 @@ class ChatManagerFragment : Fragment () {
             )
 
         }
+        if (previewMessagesSize == 0 && list_messages.size > 0) {
+            layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.GONE
+            layout.findViewById<RecyclerView>(R.id.previewMessagesId).visibility = View.VISIBLE
+        }
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)
     }
 
@@ -148,7 +159,8 @@ class ChatManagerFragment : Fragment () {
         token: String,
         nb_matches: Int,
         list_matches: ArrayList<Match>,
-        matchAdapter: MatchAdapter
+        matchAdapter: MatchAdapter,
+        layout: View
     ) {
         val url = baseUrl + "/matches/empty"
         var page = list_matches.size / SIZE_PAGE_MATCHES
@@ -159,7 +171,7 @@ class ChatManagerFragment : Fragment () {
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
                     if (response != null) {
-                        treatEmptyMatches(response, list_matches, matchAdapter, page)
+                        treatEmptyMatches(response, list_matches, matchAdapter, page, layout)
                     }
                 }
             },
@@ -169,7 +181,7 @@ class ChatManagerFragment : Fragment () {
                     DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
                 } else {
                     Thread.sleep(10000)
-                    requestGetEmptyMatches(queue, token, nb_matches, list_matches, matchAdapter)
+                    requestGetEmptyMatches(queue, token, nb_matches, list_matches, matchAdapter, layout)
                 }
             }
         ) {
@@ -188,7 +200,8 @@ class ChatManagerFragment : Fragment () {
         token: String,
         nb_matches: Int,
         list_messages: ArrayList<PreviewMessage>,
-        previewMessageAdapter: PreviewMessageAdapter
+        previewMessageAdapter: PreviewMessageAdapter,
+        layout: View
     ) {
         val url = baseUrl + "/matches/lastMsg"
 
@@ -200,7 +213,7 @@ class ChatManagerFragment : Fragment () {
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
                     if (response != null) {
-                        treatLastMessage(response, list_messages, previewMessageAdapter, page)
+                        treatLastMessage(response, list_messages, previewMessageAdapter, page, layout)
                     }
                 }
             },
@@ -215,7 +228,8 @@ class ChatManagerFragment : Fragment () {
                         token,
                         nb_matches,
                         list_messages,
-                        previewMessageAdapter
+                        previewMessageAdapter,
+                        layout
                     )
                 }
             }
@@ -271,7 +285,8 @@ class ChatManagerFragment : Fragment () {
                         token,
                         SIZE_PAGE_PREVIEW_MESSAGE,
                         listMessages,
-                        previewMessagesAdapter
+                        previewMessagesAdapter,
+                        layout
                     )
                 }
             }
@@ -296,24 +311,16 @@ class ChatManagerFragment : Fragment () {
                         token,
                         SIZE_PAGE_MATCHES,
                         listMatches,
-                        matchesAdapter
+                        matchesAdapter,
+                        layout
                     )
                 }
             }
         })
 
         requestVerifyConnect(queue, token)
-        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter)
-        requestGetLastMessages(
-            queue,
-            token,
-            SIZE_PAGE_PREVIEW_MESSAGE,
-            listMessages,
-            previewMessagesAdapter
-        )
-
-
-
+        requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter, layout)
+        requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter, layout)
         return layout
     }
 

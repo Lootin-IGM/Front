@@ -76,14 +76,32 @@
                android:id="@+id/loadingPanel"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
+               android:visibility="invisible"
                android:gravity="center">
 
                <ProgressBar
-                   android:indeterminateTint="@color/red_lootin"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
+                   android:indeterminateTint="@color/white"
                    android:indeterminate="true" />
            </RelativeLayout>
+
+           <RelativeLayout
+               android:id="@+id/refreshPanel"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:visibility="invisible"
+               android:gravity="center">
+
+               <ImageView
+                   android:id="@+id/refreshButton"
+                   android:layout_width="60dp"
+                   android:backgroundTint="@color/button_dark"
+                   android:layout_height="60dp"
+                   android:clickable="true"
+                   android:src="@drawable/ic_baseline_refresh_24"/>
+           </RelativeLayout>
+
 
 
            <ImageView

@@ -55,10 +55,12 @@ class SignInActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun saveJWT(jwt: String) {
+    private fun saveData(jwt: String, token: String, id: Long) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = preferences.edit()
         editor.putString("jwt", jwt)
+        editor.putString("token", token)
+        editor.putString("id", id.toString())
         editor.commit()
         val intent = Intent(this, ProfilesSwipingActivity::class.java)
         startActivity(intent)
@@ -94,7 +96,10 @@ class SignInActivity : AppCompatActivity() {
             Method.POST,
             url,
             JSONObject("{\"username\":\"${this.username}\",\"password\":\"${this.password}\"}"),
-            Response.Listener { response -> saveJWT(response.getString("jwt")) },
+            Response.Listener { response ->
+                Log.i("result", "channelToken =" +response.getString("channelToken") + " id = " +response.getLong("id"))
+
+                saveData(response.getString("jwt"),  response.getString("channelToken"), response.getLong("id"))},
             Response.ErrorListener { error ->
                 Log.i(
                     "test", "error while trying to login\n"
