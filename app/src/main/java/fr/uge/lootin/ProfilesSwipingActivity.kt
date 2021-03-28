@@ -36,27 +36,36 @@ import java.nio.charset.StandardCharsets
 class ProfilesSwipingActivity : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
-    var token: String = ""
+    private var token: String = ""
     private val usersList: ArrayList<Users> = ArrayList()
     private var currentUser: Int = 0
     private var url: String = ""
     private var firstRequest = true
+    private var id: String = ""
+    private var notifToken = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         url = Configuration.getUrl(this)
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         token = prefs.getString("jwt", "").toString()
-        Log.i("--OKAY", "jwt : " + token)
+        id = prefs.getString("id", "").toString()
+        notifToken = prefs.getString("token", "").toString()
+
+        Log.i("--OKAY", "jwt : $token")
+        Log.i("--OKAY", "id : $id")
+        Log.i("--OKAY", "token : $notifToken")
+
         setContentView(R.layout.activity_profiles_swiping)
         this.queue = Volley.newRequestQueue(this)
         displayNextProfile()
         findViewById<MaterialButton>(R.id.likeButton).setOnClickListener {
             likeCurrentUser()
-            currentUser++
+            if (usersList.size > 0 && currentUser < usersList.size) currentUser++
             displayNextProfile()
         }
         findViewById<MaterialButton>(R.id.nextButton).setOnClickListener {
+            if (usersList.size > 0 && currentUser < usersList.size) currentUser++
             currentUser++
             displayNextProfile()
         }
@@ -92,13 +101,20 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 .add(R.id.fragment_container_view, chatManagerFragment, "chatManagerFragment")
                 .addToBackStack("chatManagerFragment").commit()
         }
-        setNotificationService(SharingCommand.START)
+        findViewById<ImageView>(R.id.refreshButton).setOnClickListener{
+            findViewById<RelativeLayout>(R.id.loadingPanel).visibility = View.VISIBLE
+            findViewById<RelativeLayout>(R.id.refreshPanel).visibility = View.GONE
+            loadUsers()
+        }
+        //setNotificationService(SharingCommand.START)
     }
 
     private fun setNotificationService(action: SharingCommand) {
         Intent(this, NotificationsService::class.java).also {
             it.action = action.name
-            it.putExtra("userToken", "4")
+            it.putExtra("userId", "2")
+            it.putExtra("notifToken", "44444444")
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(it)
                 return
@@ -137,14 +153,12 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 displayNextUser()
             },
             { error ->
-
                 onError(error)
                 if (error is AuthFailureError){
-                    Log.i("oktamerrrrrrrrrrrrrrr", "errorroror")
                     DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
                 }else{
-                    Thread.sleep(10000)
-                    loadUsers()
+                    findViewById<RelativeLayout>(R.id.loadingPanel).visibility = View.GONE
+                    findViewById<RelativeLayout>(R.id.refreshPanel).visibility = View.VISIBLE
                 }
             }
         )
@@ -158,10 +172,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
 
     }
 
-    private fun restartSignIn() {
-        val intent = Intent(this, SignInActivity::class.java)
-        startActivity(intent)
-    }
 
     private fun getAuthenticatedHeader(): HashMap<String, String> {
         val map = HashMap<String, String>()
@@ -177,11 +187,9 @@ class ProfilesSwipingActivity : AppCompatActivity() {
                 JSONObject("{\"userLikedId\": " + usersList[currentUser].id + "}"),
                 { response ->
                     onResult(response)
-                    val jsonResponse = JSONObject(response.toString());
                 },
                 { error -> onError(error)
                     if (error is AuthFailureError){
-
                         DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
                     }
                 }
@@ -197,7 +205,6 @@ class ProfilesSwipingActivity : AppCompatActivity() {
     }
 
     private fun displayNextUser() {
-
         if (usersList.size > 0 && currentUser < usersList.size) {
             var user = usersList[currentUser]
             var bio = truncateDescription(user.description)

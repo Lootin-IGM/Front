@@ -1,5 +1,7 @@
 package fr.uge.lootin
 
+import android.app.Activity
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -37,6 +39,7 @@ class DisplayProfileFragment : DialogFragment() {
     lateinit var gameRV: RecyclerView
     lateinit var gameAdapter: GameAdapter
     lateinit var cards: List<Game>
+    lateinit var parentContext: Context
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +56,13 @@ class DisplayProfileFragment : DialogFragment() {
         return view
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Activity){
+            parentContext = context
+        }
+    }
+
     fun displayUserImage(user: Users, view: View){
         val decodedString: ByteArray = Base64.decode(user.image, Base64.DEFAULT)
         val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
@@ -63,7 +73,6 @@ class DisplayProfileFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         url = Configuration.getUrl(activity?.applicationContext!!)
         this.queue = Volley.newRequestQueue(activity?.applicationContext)
-        view?.findViewById<TextView>(R.id.userBiography)?.text = "ok"
         token = arguments?.getString("TOKEN").toString()
 
     }
@@ -92,7 +101,7 @@ class DisplayProfileFragment : DialogFragment() {
             },
             { error -> WebRequestUtils.onError(error)
                 if (error is AuthFailureError){
-                    activity?.let { DefaultBadTokenHandler.handleBadRequest(it.applicationContext) }
+                    activity?.let { DefaultBadTokenHandler.handleBadRequest(parentContext) }
                 }
             }
         )
