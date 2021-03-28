@@ -111,9 +111,6 @@ class SignInActivity : AppCompatActivity() {
                 }
                 if (error is AuthFailureError) {
                     DefaultBadTokenHandler.handleBadRequest(this@SignInActivity)
-                } else {
-                    Thread.sleep(10000)
-                    login(queue)
                 }
             }) {
             override fun getHeaders(): Map<String, String>? {

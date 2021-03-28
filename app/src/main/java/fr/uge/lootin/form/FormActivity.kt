@@ -64,9 +64,6 @@ class FormActivity : AppCompatActivity() {
                 )
                 if (error is AuthFailureError) {
                     DefaultBadTokenHandler.handleBadRequest(this@FormActivity)
-                } else {
-                    Thread.sleep(10000)
-                    registerRequest(games, gl)
                 }
             }) {
 
