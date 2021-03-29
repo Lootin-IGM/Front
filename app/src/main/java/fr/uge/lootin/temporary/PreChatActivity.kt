@@ -24,10 +24,10 @@ class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
     var match_id : Long = 0
-    val user_id : Long = 2
+    val user_id : Long = 24
     var localhost : String = "lootin.duckdns.org"
-    val username : String = "Loulou"
-    val password : String = "Yvette"
+    val username : String = "tototaka"
+    val password : String = "0000"
     val othername : String = "Toto"
     var port = "1234"
 
