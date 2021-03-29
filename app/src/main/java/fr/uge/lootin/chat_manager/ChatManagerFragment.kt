@@ -294,7 +294,7 @@ class ChatManagerFragment : Fragment () {
         })
 
         val listMatches = ArrayList<Match>()
-        val matchesAdapter = MatchAdapter(listMatches)
+        val matchesAdapter = MatchAdapter(listMatches, requireActivity())
         var recyclerViewMatches : RecyclerView = layout.findViewById(R.id.matchRecyclerView)
         recyclerViewMatches.adapter = matchesAdapter
         recyclerViewMatches.layoutManager = GridLayoutManager(

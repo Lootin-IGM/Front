@@ -66,10 +66,6 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()
-
-
-
-
         }
     }
 }
