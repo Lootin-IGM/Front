@@ -177,7 +177,7 @@ class ChatManagerActivity : AppCompatActivity() {
         }
 
         val listMessages = ArrayList<PreviewMessage>()
-        val previewMessagesAdapter = PreviewMessageAdapter(listMessages)
+        val previewMessagesAdapter = PreviewMessageAdapter(listMessages, this)
         var recyclerViewMessagePreview : RecyclerView = findViewById(R.id.previewMessagesId)
         recyclerViewMessagePreview.adapter = previewMessagesAdapter
         recyclerViewMessagePreview.layoutManager = GridLayoutManager(this, 1, RecyclerView.VERTICAL, false)

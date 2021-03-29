@@ -1,6 +1,7 @@
 package fr.uge.lootin.chat
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,8 +14,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.services.MessageTextService
@@ -33,6 +36,8 @@ class ChatFragment :  Fragment() {
     lateinit var adapter: ChatAdapter
     var idUser by Delegates.notNull<Long>()
     var matchId by Delegates.notNull<Long>()
+    private var contextActivity: Context? = null
+
 
 
     override fun onCreateView(
@@ -46,11 +51,22 @@ class ChatFragment :  Fragment() {
         val ip = Configuration.getIp(activity?.applicationContext!!)
 
         // GET INFO from other activity
-        val token = requireArguments().getString(TOKEN_VALUE).toString()
         val nameOther = requireArguments().getString(OTHER_NAME).toString()
         matchId = requireArguments().getLong(MATCH_ID, -1)
         idUser = requireArguments().getLong(USER_ID, -1)
 
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+        val token = prefs.getString("jwt", "").toString()
+        val idUserString = (prefs.getString("id", "").toString())
+        val notifToken = prefs.getString("token", "").toString()
+
+        if(token.isEmpty() || idUserString.isEmpty() || notifToken.isEmpty()){
+            Log.d(TAG," ===============ONN INIIIIIITAILISE --------------")
+            DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
+        }
+
+        idUser = idUserString.toLong()
         if (matchId == -1L || idUser == -1L){
             //TODO Stop
             Log.e(TAG, "Probleme avec données récupérées")
@@ -85,6 +101,7 @@ class ChatFragment :  Fragment() {
             activity?.applicationContext!!,
             "ws://$ip:$port/$ENPOINT",
             idUser,
+            nameOther,
             matchId
         )
 
@@ -132,13 +149,18 @@ class ChatFragment :  Fragment() {
         }
         layout.findViewById<TextView>(R.id.nameUser).text = nameOther
 
-        layout.findViewById<Button>(R.id.retour).setOnClickListener {
+        layout.findViewById<ImageView>(R.id.retour).setOnClickListener {
             //TODO ça marche peut etre
             activity?.supportFragmentManager?.popBackStack()
 
         }
 
         return layout
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        contextActivity = context
     }
 
 
@@ -191,18 +213,15 @@ class ChatFragment :  Fragment() {
     companion object {
 
         fun chatInstance(
-            token: String,
             match_id: Long,
-            user_id: Long,
-            username: String,
+            //byteArray: ByteArray,
+            //username: String,
             othername: String
         ): ChatFragment {
             var fragment = ChatFragment()
             val args = Bundle()
-            args.putString(TOKEN_VALUE, token)
             args.putLong(MATCH_ID, match_id)
-            args.putLong(USER_ID, user_id)
-            args.putString(USER_NAME, username)
+            //args.putByteArray(USER_ID, byteArray)
             args.putString(OTHER_NAME, othername)
             fragment.arguments = args
             return fragment
