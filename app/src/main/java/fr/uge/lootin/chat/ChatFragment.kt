@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
@@ -54,6 +56,7 @@ class ChatFragment :  Fragment() {
         val nameOther = requireArguments().getString(OTHER_NAME).toString()
         matchId = requireArguments().getLong(MATCH_ID, -1)
         idUser = requireArguments().getLong(USER_ID, -1)
+        val byteArray = requireArguments().getByteArray(PICTURE_ID)
 
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
@@ -150,9 +153,12 @@ class ChatFragment :  Fragment() {
         layout.findViewById<TextView>(R.id.nameUser).text = nameOther
 
         layout.findViewById<ImageView>(R.id.retour).setOnClickListener {
-            //TODO ça marche peut etre
             activity?.supportFragmentManager?.popBackStack()
+        }
 
+
+        if (byteArray != null) {
+            layout.findViewById<CircleImageView>(R.id.picture).setImageBitmap( BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
         }
 
         return layout
@@ -214,14 +220,13 @@ class ChatFragment :  Fragment() {
 
         fun chatInstance(
             match_id: Long,
-            //byteArray: ByteArray,
-            //username: String,
+            byteArray: ByteArray,
             othername: String
         ): ChatFragment {
             var fragment = ChatFragment()
             val args = Bundle()
             args.putLong(MATCH_ID, match_id)
-            //args.putByteArray(USER_ID, byteArray)
+            args.putByteArray(PICTURE_ID, byteArray)
             args.putString(OTHER_NAME, othername)
             fragment.arguments = args
             return fragment
@@ -232,7 +237,7 @@ class ChatFragment :  Fragment() {
         const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
         const val MATCH_ID = "fr.uge.lootin.MATCHID"
         const val USER_ID = "fr.uge.lootin.USER_ID"
-        const val USER_NAME = "fr.uge.lootin.USER_NAME"
+        const val PICTURE_ID = "fr.uge.lootin.USER_NAME"
         const val OTHER_NAME = "fr.uge.lootin.OTHER_NAME"
 
         const val PAGE_SIZE: Long = 10

@@ -17,6 +17,7 @@ import fr.uge.lootin.R
 import fr.uge.lootin.chat.ChatFragment
 import fr.uge.lootin.form.FormActivity
 import fr.uge.lootin.register.RegisterActivity
+import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 
 class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessage>, private val activity: Activity) : RecyclerView.Adapter<PreviewMessageAdapter.ViewHolder>() {
@@ -61,8 +62,12 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
         }
         holder.update(previewMessages[position].message, previewMessages[position].sender, color, previewMessages[position].photo, previewMessages[position].type)
         holder.itemView.setOnClickListener {
+            val bitmap : Bitmap = previewMessages[position].photo
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            val image = stream.toByteArray()
             Log.i("my_log", "on a cliqué sur message: " + previewMessages[position].sender + " - " + previewMessages[position].message)
-            val settingsFrag = ChatFragment.chatInstance((previewMessages[position].id_match).toLong(), previewMessages[position].sender)
+            val settingsFrag = ChatFragment.chatInstance((previewMessages[position].id_match).toLong(), image, previewMessages[position].sender)
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()

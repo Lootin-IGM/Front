@@ -15,7 +15,6 @@ import fr.uge.lootin.chat.ChatFragment.Companion.MATCH_ID
 import fr.uge.lootin.chat.ChatFragment.Companion.OTHER_NAME
 import fr.uge.lootin.chat.ChatFragment.Companion.TOKEN_VALUE
 import fr.uge.lootin.chat.ChatFragment.Companion.USER_ID
-import fr.uge.lootin.chat.ChatFragment.Companion.USER_NAME
 import fr.uge.lootin.chat.ChatFragment.Companion.TAG
 import fr.uge.lootin.config.Configuration
 import org.json.JSONObject
@@ -69,7 +68,7 @@ class PreChatActivity : AppCompatActivity() {
         startActivityForResult(intent, 1)
         */
 
-        val settingsFrag = ChatFragment.chatInstance( match_id, othername)
+        val settingsFrag = ChatFragment.chatInstance( match_id, byteArrayOf(), othername)
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()

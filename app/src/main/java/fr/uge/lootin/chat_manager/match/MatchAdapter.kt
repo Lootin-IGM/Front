@@ -11,6 +11,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.ChatFragment
+import java.io.ByteArrayOutputStream
 import kotlin.collections.ArrayList
 
 class MatchAdapter (var matches: ArrayList<Match>, private val activity: Activity) : RecyclerView.Adapter<MatchAdapter.ViewHolder>() {
@@ -54,8 +55,11 @@ class MatchAdapter (var matches: ArrayList<Match>, private val activity: Activit
 
         holder.itemView.setOnClickListener {
             Log.i("my_log", "on a cliqué sur match : " + matches[position].pseudo + " - id matcher : " + matches[position].id_matcher)
-
-            val settingsFrag = ChatFragment.chatInstance((matches[position].id_match).toLong(), matches[position].pseudo)
+            val bitmap : Bitmap = matches[position].image
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+            val image = stream.toByteArray()
+            val settingsFrag = ChatFragment.chatInstance((matches[position].id_match).toLong(),image, matches[position].pseudo)
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()
