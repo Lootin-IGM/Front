@@ -191,7 +191,7 @@ class ChatManagerActivity : AppCompatActivity() {
         })
 
         val listMatches = ArrayList<Match>()
-        val matchesAdapter = MatchAdapter(listMatches)
+        val matchesAdapter = MatchAdapter(listMatches, this)
         var recyclerViewMatches : RecyclerView = findViewById(R.id.matchRecyclerView)
         recyclerViewMatches.adapter = matchesAdapter
         recyclerViewMatches.layoutManager = GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
