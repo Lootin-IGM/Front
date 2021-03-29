@@ -61,6 +61,7 @@ class SignInActivity : AppCompatActivity() {
         editor.putString("jwt", jwt)
         editor.putString("token", token)
         editor.putString("id", id.toString())
+        Log.i("BREEEEEEEEEEEEEEEF", "jwt : " + jwt + " token : " + token + " id : " + id.toString())
         editor.commit()
         val intent = Intent(this, ProfilesSwipingActivity::class.java)
         startActivity(intent)

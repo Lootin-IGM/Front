@@ -52,6 +52,7 @@ class NotificationsService : Service() {
             url = Configuration.getHostNameAndPort(this).toString()
             userId = intent.getStringExtra("userId").toString()
             notifToken = intent.getStringExtra("notifToken").toString()
+            Log.i("BROOOOOOOOOOOOOOOOOOOOOOEEEIEF",   " token : " + notifToken + " id : " + userId)
             val action = intent.action
             Log.i("test", "using an intent with action $action")
             when (action) {
@@ -160,7 +161,7 @@ class NotificationsService : Service() {
     }
 
     private fun connectStomp() {
-        headers.add(StompHeader("X-Authorization", "Bearer " + "2" + "_" + notifToken))
+        headers.add(StompHeader("X-Authorization", "Bearer " + userId + "_" + notifToken))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
         Log.d(TAG, "try connect stomp")
