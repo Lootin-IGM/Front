@@ -267,7 +267,7 @@ class ChatManagerFragment : Fragment () {
         val queue = Volley.newRequestQueue(activity?.applicationContext)
 
         val listMessages = ArrayList<PreviewMessage>()
-        val previewMessagesAdapter = PreviewMessageAdapter(listMessages)
+        val previewMessagesAdapter = PreviewMessageAdapter(listMessages, requireActivity())
         var recyclerViewMessagePreview : RecyclerView = layout.findViewById(R.id.previewMessagesId)
         recyclerViewMessagePreview.adapter = previewMessagesAdapter
         recyclerViewMessagePreview.layoutManager = GridLayoutManager(

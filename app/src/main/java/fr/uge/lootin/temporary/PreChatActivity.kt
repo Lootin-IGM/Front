@@ -24,11 +24,10 @@ class PreChatActivity : AppCompatActivity() {
 
     var token : String = ""
     var match_id : Long = 0
-    val user_id : Long = 24
     var localhost : String = "lootin.duckdns.org"
     val username : String = "tototaka"
     val password : String = "0000"
-    val othername : String = "Toto"
+    val othername : String = "GTROS HIEN"
     var port = "1234"
 
     private fun connect(queue: RequestQueue){
@@ -60,22 +59,22 @@ class PreChatActivity : AppCompatActivity() {
     }
 
     private fun callChat(){
+        /*
         val intent = Intent(this, ChatFragment::class.java)
-       /* intent.putExtra(TOKEN_VALUE, token)
+        xintent.putExtra(TOKEN_VALUE, token)
         intent.putExtra(MATCH_ID, match_id)
         intent.putExtra(USER_ID, user_id)
         intent.putExtra(USER_NAME, username)
         intent.putExtra(OTHER_NAME, othername)
         startActivityForResult(intent, 1)
-
         */
 
-        val settingsFrag = ChatFragment.chatInstance(token, match_id, user_id, username, othername)
+        val settingsFrag = ChatFragment.chatInstance( match_id, othername)
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
-
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

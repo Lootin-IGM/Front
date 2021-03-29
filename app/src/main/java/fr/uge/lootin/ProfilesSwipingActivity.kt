@@ -51,6 +51,11 @@ class ProfilesSwipingActivity : AppCompatActivity() {
         token = prefs.getString("jwt", "").toString()
         id = prefs.getString("id", "").toString()
         notifToken = prefs.getString("token", "").toString()
+        if(token.isEmpty() || id.isEmpty() || notifToken.isEmpty()){
+            Log.d("--"," ===============ONN INIIIIIITAILISE --------------")
+            DefaultBadTokenHandler.handleBadRequest(this@ProfilesSwipingActivity)
+            return
+        }
 
         Log.i("--OKAY", "jwt : $token")
         Log.i("--OKAY", "id : $id")

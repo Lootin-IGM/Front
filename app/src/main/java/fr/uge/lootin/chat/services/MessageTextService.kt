@@ -25,7 +25,7 @@ import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
 
 
-class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val matchId : Long) {
+class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val idWS: String, private val matchId : Long) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -108,7 +108,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
      * Connect stomp web socket to the server
      */
     private fun connectStomp() {
-        headers.add(StompHeader("X-Authorization", "Bearer $myId"))
+        headers.add(StompHeader("X-Authorization", "Bearer ${myId}_idWS"))
         mStompClient!!.withClientHeartbeat(1000).withServerHeartbeat(1000)
         resetSubscriptions()
         Log.d(TAG, "try connect stomp")
