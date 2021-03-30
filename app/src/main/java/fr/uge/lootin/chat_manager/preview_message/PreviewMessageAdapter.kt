@@ -20,7 +20,7 @@ import fr.uge.lootin.register.RegisterActivity
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 
-class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessage>, private val activity: Activity) : RecyclerView.Adapter<PreviewMessageAdapter.ViewHolder>() {
+class PreviewMessageAdapter (var previewMessages: ArrayList<PreviewMessage>, private val activity: Activity) : RecyclerView.Adapter<PreviewMessageAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var message: TextView = itemView.findViewById(R.id.last_message)
         private var pseudo: TextView = itemView.findViewById(R.id.pseudo)
