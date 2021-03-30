@@ -35,6 +35,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/IamPlayingTo" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/loadingGameList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/gameFragmentRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gameFragmentRecyclerView">
+
+        <ProgressBar
+            android:id="@+id/progressBarGameList"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#2C2F33"
+            android:indeterminateTint="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/validateButtonOnGameFragmentPage"
         android:layout_width="wrap_content"

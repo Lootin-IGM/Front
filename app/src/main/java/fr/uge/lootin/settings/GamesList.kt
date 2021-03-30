@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,13 +41,14 @@ class GamesList : Fragment() {
     private var baseUrl = ""
     private var contextActivity: Context? = null
 
-    private fun getAllGames() {
+    private fun getAllGames(layout: View) {
         val url = "$baseUrl/games/"
         val map = HashMap<String, String>()
         Log.i("test", "get all games request")
         val request = GsonGETRequest(
             url, GameListDto::class.java, map,
             { response ->
+                layout.findViewById<CardView>(R.id.loadingGameList).visibility = View.GONE
                 cards = Game.loadCards(activity?.applicationContext, response)!!
                 gameAdapter = GameAdapter(cards!!)
                 gameRV.adapter = gameAdapter
@@ -218,7 +220,7 @@ class GamesList : Fragment() {
         type = requireArguments().getString("type").toString()
         queue = Volley.newRequestQueue(activity?.applicationContext)
         gameRV = layout.findViewById(R.id.gameFragmentRecyclerView)!!
-        getAllGames()
+        getAllGames(layout)
         if (type == "register") {
             setRegisterButton(layout)
         }
