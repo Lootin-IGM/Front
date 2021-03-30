@@ -17,7 +17,6 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -42,21 +41,29 @@ import org.json.JSONObject
 class ChatManagerFragment : Fragment() {
     val chatManagerReceiver =  object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
-            TODO("Not yet implemented")
-            Log.i("my_log", "on a reçu")
-            /*
-            var frg : Fragment? = activity!!.supportFragmentManager.findFragmentByTag("chatManagerFragment")
-            val ft: FragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
 
-            ft.detach(frg!!)
-            ft.attach(frg)
-            ft.commit()*/
+            val datapa: String? = intent?.getStringExtra("data")
+            Log.i("my_log", "on a reçu $datapa")
+            refreshMatchButton()
+            refreshPreviewMessageButton()
         }
     }
+
+    fun refreshMatchButton() {
+        layoutActivity?.findViewById<ImageView>(R.id.matchRefreshButton)?.visibility = View.VISIBLE
+        layoutActivity?.findViewById<CardView>(R.id.loadingPanelMatches)?.visibility = View.GONE
+    }
+
+    fun refreshPreviewMessageButton() {
+        layoutActivity?.findViewById<ImageView>(R.id.previewMessageRefreshButton)?.visibility = View.VISIBLE
+        layoutActivity?.findViewById<CardView>(R.id.loadingPanelChatManager)?.visibility = View.GONE
+    }
+
 
     private var token: String = ""
     private var baseUrl = ""
     private var contextActivity: Context? = null
+    private var layoutActivity: View? = null
 
     private fun fromStringToBitmap(image: String) : Bitmap {
         val decodedString: ByteArray = Base64.decode(image, Base64.DEFAULT)
@@ -321,11 +328,12 @@ class ChatManagerFragment : Fragment() {
         layout.findViewById<ImageView>(R.id.backButton).setOnClickListener {
             closeChatManager()
         }
+        layoutActivity = layout
 
 
         val queue = Volley.newRequestQueue(activity?.applicationContext)
 
-        val listMessages = ArrayList<PreviewMessage>()
+        var listMessages = ArrayList<PreviewMessage>()
         val previewMessagesAdapter = PreviewMessageAdapter(listMessages, requireActivity())
         var recyclerViewMessagePreview : RecyclerView = layout.findViewById(R.id.previewMessagesId)
         recyclerViewMessagePreview.adapter = previewMessagesAdapter
@@ -352,7 +360,7 @@ class ChatManagerFragment : Fragment() {
             }
         })
 
-        val listMatches = ArrayList<Match>()
+        var listMatches = ArrayList<Match>()
         val matchesAdapter = MatchAdapter(listMatches, requireActivity())
         var recyclerViewMatches : RecyclerView = layout.findViewById(R.id.matchRecyclerView)
         recyclerViewMatches.adapter = matchesAdapter
@@ -380,18 +388,31 @@ class ChatManagerFragment : Fragment() {
 
         requestVerifyConnect(queue, token)
         requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter, layout)
-        requestGetLastMessages(
-            queue,
-            token,
-            SIZE_PAGE_PREVIEW_MESSAGE,
-            listMessages,
-            previewMessagesAdapter,
-            layout
-        )
+        requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter, layout)
 
         val intentFilter = IntentFilter()
-        //intentFilter.addAction()
-        activity?.registerReceiver(chatManagerReceiver, intentFilter)
+        intentFilter.addAction("fr.uge.lootin.NEWMESSAGE")
+        contextActivity?.registerReceiver(chatManagerReceiver, intentFilter)
+
+        layout.findViewById<ImageView>(R.id.matchRefreshButton).setOnClickListener{
+            matchesAdapter.matches = ArrayList()
+            listMatches = matchesAdapter.matches
+            matchesAdapter.notifyDataSetChanged()
+            layout.findViewById<RecyclerView>(R.id.matchRecyclerView).visibility = View.GONE
+            layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.VISIBLE
+            layout.findViewById<ImageView>(R.id.matchRefreshButton).visibility = View.GONE
+            requestGetEmptyMatches(queue, token, SIZE_PAGE_MATCHES, listMatches, matchesAdapter, layout)
+        }
+
+        layout.findViewById<ImageView>(R.id.previewMessageRefreshButton).setOnClickListener{
+            previewMessagesAdapter.previewMessages = ArrayList()
+            listMessages = previewMessagesAdapter.previewMessages
+            previewMessagesAdapter.notifyDataSetChanged()
+            layout.findViewById<RecyclerView>(R.id.previewMessagesId).visibility = View.GONE
+            layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.VISIBLE
+            layout.findViewById<ImageView>(R.id.previewMessageRefreshButton).visibility = View.GONE
+            requestGetLastMessages(queue, token, SIZE_PAGE_PREVIEW_MESSAGE, listMessages, previewMessagesAdapter, layout)
+        }
 
         return layout
     }
