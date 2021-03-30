@@ -59,7 +59,7 @@ class MatchAdapter (var matches: ArrayList<Match>, private val activity: Activit
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
             val image = stream.toByteArray()
-            val settingsFrag = ChatFragment.chatInstance((matches[position].id_match).toLong(),image, matches[position].pseudo)
+            val settingsFrag = ChatFragment.chatInstance((matches[position].id_match).toLong()/*,image*/, matches[position].pseudo)
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()

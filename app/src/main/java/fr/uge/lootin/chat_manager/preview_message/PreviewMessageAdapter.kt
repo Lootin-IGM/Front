@@ -67,7 +67,7 @@ class PreviewMessageAdapter (private var previewMessages: ArrayList<PreviewMessa
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
             val image = stream.toByteArray()
             Log.i("my_log", "on a cliqué sur message: " + previewMessages[position].sender + " - " + previewMessages[position].message)
-            val settingsFrag = ChatFragment.chatInstance((previewMessages[position].id_match).toLong(), image, previewMessages[position].sender)
+            val settingsFrag = ChatFragment.chatInstance((previewMessages[position].id_match).toLong()/*, image*/, previewMessages[position].sender)
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()
