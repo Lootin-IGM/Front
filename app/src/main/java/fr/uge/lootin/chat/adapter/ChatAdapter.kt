@@ -1,5 +1,6 @@
 package fr.uge.lootin.chat.adapter
 
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,15 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
+import androidx.core.graphics.scale
 import androidx.recyclerview.widget.RecyclerView
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_FRIEND_MESSAGE_PICTURE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE
 import fr.uge.lootin.chat.adapter.MessageItemUi.Companion.TYPE_MY_MESSAGE_PICTURE
-import fr.uge.lootin.chat.utils.DateConvertor
 import java.lang.Long.max
+
 
 class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: Long) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder<*>>() {
 
@@ -61,7 +62,14 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         private val date = view.findViewById<TextView>(R.id.date_send)
 
         override fun bind(item: MessageItemUi) {
-            picture.setImageBitmap(item.picture)
+            val bitmap = item.picture
+            if (bitmap != null) {
+                val scaled = Bitmap.createScaledBitmap(
+                    bitmap, 512,
+                    ((bitmap.height * (512.0 / bitmap.width)).toInt()), true
+                )
+                picture.setImageBitmap(scaled)            }
+            //picture.setImageBitmap(item.picture)
             date.text = item.date
         }
     }
@@ -74,7 +82,14 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         private val date = view.findViewById<TextView>(R.id.date_send)
 
         override fun bind(item: MessageItemUi) {
-            picture.setImageBitmap(item.picture)
+            val bitmap = item.picture
+            if (bitmap != null) {
+                val scaled = Bitmap.createScaledBitmap(
+                    bitmap, 512,
+                    ((bitmap.height * (512.0 / bitmap.width)).toInt()), true
+                )
+                picture.setImageBitmap(scaled)
+            }
             date.text = item.date
         }
     }
@@ -83,19 +98,35 @@ class ChatAdapter(var data: MutableList<MessageItemUi>, private val size_page: L
         val context = parent.context
         return when (viewType) {
             TYPE_MY_MESSAGE -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.my_message_text, parent, false)
+                val view = LayoutInflater.from(context).inflate(
+                    R.layout.my_message_text,
+                    parent,
+                    false
+                )
                 MyMessageViewHolder(view)
             }
             TYPE_FRIEND_MESSAGE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_text, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(
+                    R.layout.friend_message_text,
+                    parent,
+                    false
+                )
                 FriendMessageViewHolder(view)
             }
             TYPE_MY_MESSAGE_PICTURE -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.my_message_picture, parent, false)
+                val view = LayoutInflater.from(context).inflate(
+                    R.layout.my_message_picture,
+                    parent,
+                    false
+                )
                 MyPictureViewHolder(view)
             }
             TYPE_FRIEND_MESSAGE_PICTURE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_message_picture, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(
+                    R.layout.friend_message_picture,
+                    parent,
+                    false
+                )
                 FriendPictureViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")

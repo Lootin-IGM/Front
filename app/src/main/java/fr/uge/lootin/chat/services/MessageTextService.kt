@@ -6,10 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
+import fr.uge.lootin.chat.ChatFragment
 import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessagePicture
+import fr.uge.lootin.chat.models.MessagePictureResponse
 import fr.uge.lootin.chat.models.MessageText
 import fr.uge.lootin.chat.models.MessagesResponse
 import io.reactivex.Completable
@@ -25,7 +27,7 @@ import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
 
 
-class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val idWS: String, private val matchId : Long) {
+class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val idWS: String, private val matchId : Long, private val chatFragment: ChatFragment) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null
@@ -183,7 +185,8 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                             )
                             Log.d(TAG, "on push dans connectstomp")
 
-                            addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Message::class.java))
+                            chatFragment.getPicture(mGson.fromJson(topicMessage.payload, MessagePictureResponse::class.java))
+                            //addItemPicture(mGson.fromJson(topicMessage.payload, MessagesResponse.Message::class.java))
                         }
                 ) { throwable: Throwable? ->
                     Log.e(

@@ -22,6 +22,8 @@ import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
+import fr.uge.lootin.chat.models.MessagePictureResponse
+import fr.uge.lootin.chat.models.MessagesResponse
 import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
 import fr.uge.lootin.chat.utils.ImageUtil
@@ -34,6 +36,7 @@ import kotlin.properties.Delegates
 class ChatFragment :  Fragment() {
 
     lateinit var messageService : MessageTextService
+    lateinit var restService : RestService
     lateinit var recycler: RecyclerView
     lateinit var adapter: ChatAdapter
     var idUser by Delegates.notNull<Long>()
@@ -86,7 +89,7 @@ class ChatFragment :  Fragment() {
         )
 
         //create restService
-        val restService = RestService(
+        restService = RestService(
             ip,
             port,
             matchId,
@@ -96,6 +99,7 @@ class ChatFragment :  Fragment() {
             idUser,
             activity?.applicationContext!!
         )
+
         restService.verifyConnect()
         //create web sockets services
         messageService = MessageTextService(
@@ -105,7 +109,8 @@ class ChatFragment :  Fragment() {
             "ws://$ip:$port/$ENPOINT",
             idUser,
             nameOther,
-            matchId
+            matchId,
+            this
         )
 
         // Create scrollListener on recyclerview
@@ -115,7 +120,7 @@ class ChatFragment :  Fragment() {
                 Log.i(TAG, newState.toString())
                 if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     restService.getMessages()
-                    recycler.scrollToPosition(adapter.getItemCount() - 1)
+                    recycler.scrollToPosition(adapter.itemCount - 1)
                 }
             }
         })
@@ -134,19 +139,13 @@ class ChatFragment :  Fragment() {
 
         // Send camera picture messages (WS)
         layout.findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
-            //Toast.makeText(contextActivity, "Send my picture", Toast.LENGTH_LONG).show()
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA)
         }
 
         // Send picture messages (WS)
         layout.findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-            Toast.makeText(contextActivity, "Send camera pictures", Toast.LENGTH_LONG).show()
 
-            /*val intent =  Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-
-             */
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
 
@@ -159,14 +158,15 @@ class ChatFragment :  Fragment() {
             activity?.supportFragmentManager?.popBackStack()
         }
 
-
         if (byteArray != null) {
             layout.findViewById<CircleImageView>(R.id.header_CIW).setImageBitmap( BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
         }
 
-
-
         return layout
+    }
+
+    fun getPicture(message : MessagePictureResponse){
+        restService.getPicture(message.id, message.matchId, recycler);
     }
 
     override fun onAttach(context: Context) {
@@ -185,45 +185,27 @@ class ChatFragment :  Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CAMERA && data != null) {
             Log.d(TAG, "--------200-------------")
-             res  = data.extras!!.get("data") as Bitmap
+            res = data.extras!!.get("data") as Bitmap
         }
+
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GALLERY  && data != null) {
             Log.d(TAG, "--------100-------------")
 
             val imageView = ImageView(activity?.applicationContext!!)
-            val pickedImage: Uri? = data.getData()
-            // Let's read picked image path using content resolver
-            // Let's read picked image path using content resolver
-            //set the selected image to ImageView
-            //set the selected image to ImageView
+            val pickedImage: Uri? = data.data
+
 
             imageView.setImageURI(pickedImage)
-            //val drawable : BitmapDrawable = mImageView.getDrawable() as BitmapDrawable;
 
             res = imageView.drawable.toBitmap()
-            //val bmap = imageView.drawingCache
-
-
-            //res = (data.data as BitmapDrawable).bitmap // to get bitmap from imageView
-            //res  = data?.extras!!.get("data") as Bitmap
-
-
-
         }
-
 
         val stream = ByteArrayOutputStream()
         res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-        val array = stream.toByteArray()
-        val base64String: String? = res?.let { ImageUtil.convert(it) }
 
-        //send picture with web socket
-        if (array != null) {
-            messageService.sendPicture(base64String)
-            recycler.scrollToPosition(0)
+        if(res != null){
+            restService.sendPictureRequest(res)
         }
-
-
     }
 
     companion object {

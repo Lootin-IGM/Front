@@ -8,11 +8,8 @@ import java.util.*
  * [MessageTextResponse] represents a notification model
  */
 data class MessagePictureResponse(
-        val picture: String,
-        val id_author: Long,
-        val date: String,
-        val id: Long
-
+        val id: Long,
+        val matchId: Long,
     ) {
 
     companion object {
@@ -26,5 +23,4 @@ data class MessagePictureResponse(
                 .create()
                 .fromJson(payload, MessagePictureResponse::class.java)
     }
-
 }

@@ -145,7 +145,7 @@ class ChatManagerFragment : Fragment() {
             val lastMessage = match.getJSONObject("lastMessage")
             var type: TypeMessage = TypeMessage.TEXT
             //TODO A CHANGER!!!
-            if (lastMessage.getString("typeMessage").equals("AUDIO")) {
+            if (lastMessage.getString("typeMessage").equals("PICTURE")) {
                 type = TypeMessage.PHOTO
             }
             list_messages.add(
