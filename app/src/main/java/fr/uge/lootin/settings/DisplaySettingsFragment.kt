@@ -1,17 +1,27 @@
 package fr.uge.lootin.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.google.android.material.button.MaterialButton
+import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 
 class DisplaySettingsFragment : Fragment() {
     private var token: String = ""
+    private var contextActivity: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        contextActivity = context
+    }
 
     private fun launchGameListFragment() {
         val gamesSettingsFrag = GamesList.settingsInstance(token)
@@ -61,6 +71,15 @@ class DisplaySettingsFragment : Fragment() {
         }
         layout.findViewById<MaterialButton>(R.id.backSettingsButton).setOnClickListener {
             closeSettingsFragment()
+        }
+        layout.findViewById<Button>(R.id.DisconnectButton).setOnClickListener {
+            val preferences =
+                PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
+            val editor = preferences.edit()
+            editor.putString("jwt", "")
+            editor.putString("token", "")
+            editor.putString("id", "")
+            DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
         }
         return layout
     }
