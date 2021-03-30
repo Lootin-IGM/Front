@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
@@ -119,6 +120,7 @@ class TakePicture : Fragment() {
         val request = GsonGETRequest(
             url, ImageDto::class.java, map,
             { response ->
+                layout.findViewById<CardView>(R.id.loadingProfilePicture).visibility = View.GONE
                 val imageBytes = Base64.decode(response.image, Base64.DEFAULT)
                 val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                 val imageView = view?.findViewById<ImageView>(R.id.FragmentImageOnPicturePage)
@@ -212,6 +214,7 @@ class TakePicture : Fragment() {
         layout.findViewById<Button>(R.id.FragmentPickPictureButton)
             .setOnClickListener { openGalleryForImage() }
         if (type == "register") {
+            layout.findViewById<CardView>(R.id.loadingProfilePicture).visibility = View.GONE
             nextButtonRegister()
         }
         if (type == "settings") {

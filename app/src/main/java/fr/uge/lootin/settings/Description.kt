@@ -38,7 +38,7 @@ class Description : Fragment() {
         val firstFrag = TakePicture.registerInstance()
         (activity as FormActivity).supportFragmentManager.beginTransaction()
             .add(R.id.form_fragment, firstFrag, "PictureFragment")
-            .addToBackStack("PrictureFragment").commit()
+            .addToBackStack("PictureFragment").commit()
     }
 
     private fun setNextButtonRegister() {

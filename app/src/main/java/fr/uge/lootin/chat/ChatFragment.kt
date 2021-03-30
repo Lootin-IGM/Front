@@ -134,32 +134,37 @@ class ChatFragment :  Fragment() {
 
         // Send camera picture messages (WS)
         layout.findViewById<ImageButton>(R.id.imageButtoncamera).setOnClickListener {
-            Toast.makeText(activity?.applicationContext!!, "Send my picture", Toast.LENGTH_LONG).show()
+            //Toast.makeText(contextActivity, "Send my picture", Toast.LENGTH_LONG).show()
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(cameraIntent, 200)
+            startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA)
         }
 
         // Send picture messages (WS)
         layout.findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-            Toast.makeText(
-                activity?.applicationContext!!,
-                "Send camera pictures",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(contextActivity, "Send camera pictures", Toast.LENGTH_LONG).show()
+
+            /*val intent =  Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+             */
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-            startActivityForResult(intent, 100)
+
+            startActivityForResult(intent, REQUEST_CODE_GALLERY)
         }
         layout.findViewById<TextView>(R.id.nameUser).text = nameOther
 
         layout.findViewById<ImageView>(R.id.retour).setOnClickListener {
+            messageService.disconnect()
             activity?.supportFragmentManager?.popBackStack()
         }
 
 
         if (byteArray != null) {
-            layout.findViewById<CircleImageView>(R.id.picture).setImageBitmap( BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
+            layout.findViewById<CircleImageView>(R.id.header_CIW).setImageBitmap( BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
         }
+
+
 
         return layout
     }
@@ -173,13 +178,18 @@ class ChatFragment :  Fragment() {
     /**
      * retour en fonction de la galerie ou de la capture
      */
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         var res: Bitmap? = null
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 200 && data != null) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CAMERA && data != null) {
+            Log.d(TAG, "--------200-------------")
              res  = data.extras!!.get("data") as Bitmap
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == 100  && data != null) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GALLERY  && data != null) {
+            Log.d(TAG, "--------100-------------")
+
             val imageView = ImageView(activity?.applicationContext!!)
             val pickedImage: Uri? = data.getData()
             // Let's read picked image path using content resolver
@@ -197,16 +207,14 @@ class ChatFragment :  Fragment() {
             //res = (data.data as BitmapDrawable).bitmap // to get bitmap from imageView
             //res  = data?.extras!!.get("data") as Bitmap
 
+
+
         }
-
-
-
 
 
         val stream = ByteArrayOutputStream()
         res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val array = stream.toByteArray()
-
         val base64String: String? = res?.let { ImageUtil.convert(it) }
 
         //send picture with web socket
@@ -214,19 +222,21 @@ class ChatFragment :  Fragment() {
             messageService.sendPicture(base64String)
             recycler.scrollToPosition(0)
         }
+
+
     }
 
     companion object {
 
         fun chatInstance(
             match_id: Long,
-            byteArray: ByteArray,
+            //byteArray: ByteArray,
             othername: String
         ): ChatFragment {
             var fragment = ChatFragment()
             val args = Bundle()
             args.putLong(MATCH_ID, match_id)
-            args.putByteArray(PICTURE_ID, byteArray)
+            //args.putByteArray(PICTURE_ID, byteArray)
             args.putString(OTHER_NAME, othername)
             fragment.arguments = args
             return fragment
@@ -239,6 +249,9 @@ class ChatFragment :  Fragment() {
         const val USER_ID = "fr.uge.lootin.USER_ID"
         const val PICTURE_ID = "fr.uge.lootin.USER_NAME"
         const val OTHER_NAME = "fr.uge.lootin.OTHER_NAME"
+
+        const val REQUEST_CODE_GALLERY = 100
+        const val REQUEST_CODE_CAMERA = 200
 
         const val PAGE_SIZE: Long = 10
 

@@ -37,6 +37,24 @@
         app:layout_constraintStart_toStartOf="@+id/verticalGuideOnPicturePage"
         app:layout_constraintTop_toBottomOf="@+id/FragmentImageOnPicturePage" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/loadingProfilePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/FragmentImageOnPicturePage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBarProfilePicture"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#2C2F33"
+            android:indeterminateTint="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/FragmentPickPictureButton"
         android:layout_width="wrap_content"

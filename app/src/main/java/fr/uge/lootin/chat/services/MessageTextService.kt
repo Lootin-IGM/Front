@@ -94,7 +94,7 @@ class MessageTextService(private val adapter: ChatAdapter, private val recyclerV
                                     {
                                         Log.d(
                                                 TAG,
-                                                "STOMP text message send successfully"
+                                                "STOMP picture message send successfully"
                                         )
                                     }
                             ) { throwable: Throwable ->

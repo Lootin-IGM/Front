@@ -68,7 +68,7 @@ class PreChatActivity : AppCompatActivity() {
         startActivityForResult(intent, 1)
         */
 
-        val settingsFrag = ChatFragment.chatInstance( match_id, byteArrayOf(), othername)
+        val settingsFrag = ChatFragment.chatInstance( match_id, /*byteArrayOf(),*/ othername)
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container_view, settingsFrag, "settingsFragment")
                 .addToBackStack("settingsFragment").commit()
