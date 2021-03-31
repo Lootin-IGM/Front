@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.AuthFailureError
 import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.DefaultBadTokenHandler
 import fr.uge.lootin.DisplayProfileFragment
@@ -27,14 +26,9 @@ import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.models.MessagePictureResponse
-import fr.uge.lootin.chat.models.MessagesResponse
 import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
-import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.config.Configuration
-import fr.uge.lootin.httpUtils.GsonGETRequest
-import fr.uge.lootin.httpUtils.WebRequestUtils
-import fr.uge.lootin.models.UserFull
 import fr.uge.lootin.models.Users
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -164,8 +158,6 @@ class ChatFragment :  Fragment() {
             messageService.disconnect()
             activity?.supportFragmentManager?.popBackStack()
         }
-
-
 
         return layout
     }
