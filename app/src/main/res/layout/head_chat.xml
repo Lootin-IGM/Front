@@ -27,7 +27,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:gravity="center_vertical"
-        android:text="Name"
+        android:text=""
         android:textColor="#FAFAFA"
         android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"

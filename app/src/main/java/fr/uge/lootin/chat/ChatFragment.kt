@@ -19,8 +19,11 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.AuthFailureError
 import de.hdodenhof.circleimageview.CircleImageView
 import fr.uge.lootin.DefaultBadTokenHandler
+import fr.uge.lootin.DisplayProfileFragment
+import fr.uge.lootin.ProfilesSwipingActivity
 import fr.uge.lootin.R
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.models.MessagePictureResponse
@@ -29,6 +32,9 @@ import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
 import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.config.Configuration
+import fr.uge.lootin.httpUtils.GsonGETRequest
+import fr.uge.lootin.httpUtils.WebRequestUtils
+import fr.uge.lootin.models.UserFull
 import fr.uge.lootin.models.Users
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -45,6 +51,7 @@ class ChatFragment :  Fragment() {
     var matchId by Delegates.notNull<Long>()
     private var contextActivity: Context? = null
     lateinit var layout : View
+    lateinit var token : String
 
 
     override fun onCreateView(
@@ -63,7 +70,7 @@ class ChatFragment :  Fragment() {
 
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
-        val token = prefs.getString("jwt", "").toString()
+        token = prefs.getString("jwt", "").toString()
         val idUserString = (prefs.getString("id", "").toString())
         val notifToken = prefs.getString("token", "").toString()
 
@@ -172,8 +179,23 @@ class ChatFragment :  Fragment() {
         val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
         layout.findViewById<CircleImageView>(R.id.header_CIW).setImageBitmap(decodedByte)
         layout.findViewById<TextView>(R.id.nameUser).text = user.login
+        layout.findViewById<TextView>(R.id.nameUser).setOnClickListener {callDisplayUserFragment(user) }
+    }
 
 
+
+    fun callDisplayUserFragment(user: Users){
+        val bundle = Bundle();
+        bundle.putString("TOKEN", token);
+        bundle.putSerializable("USER", user)
+        val firstFrag = DisplayProfileFragment();
+        firstFrag.arguments = bundle
+
+        (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction().setCustomAnimations(
+            R.anim.slide_in_r_l,
+            R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+        ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
+            .addToBackStack("userMoreFragment").commit()
     }
 
 

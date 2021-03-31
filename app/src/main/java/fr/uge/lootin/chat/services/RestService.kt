@@ -144,6 +144,7 @@ class RestService(private val localhost: String, private val port: String, priva
         queue.add(request)
     }
 
+
      fun sendPictureRequest(picture: Bitmap) {
         val url = "http://$localhost:$port/picture"
         Log.i("test", "post send picture request")
