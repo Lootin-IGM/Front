@@ -12,6 +12,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import fr.uge.lootin.DefaultBadTokenHandler
+import fr.uge.lootin.chat.ChatFragment
 import fr.uge.lootin.chat.adapter.ChatAdapter
 import fr.uge.lootin.chat.adapter.MessageItemUi
 import fr.uge.lootin.chat.models.MessagesResponse
@@ -21,6 +22,10 @@ import java.util.HashMap
 import fr.uge.lootin.chat.ChatFragment.Companion.TAG
 import fr.uge.lootin.form.FileDataPart
 import fr.uge.lootin.form.VolleyFileUploadRequest
+import fr.uge.lootin.httpUtils.WebRequestUtils
+import fr.uge.lootin.models.UserFull
+import fr.uge.lootin.models.UserList
+import fr.uge.lootin.models.Users
 import java.io.ByteArrayOutputStream
 
 
@@ -117,6 +122,27 @@ class RestService(private val localhost: String, private val port: String, priva
         queue.add(request)
     }
 
+    fun getUser(otherUser : Long, chatFragment: ChatFragment) {
+        val url = "http://$localhost:$port/profile/full/$otherUser"
+        val map = HashMap<String, String>()
+        map["Authorization"] = "Bearer $token"
+        val request =
+            GsonGETRequest(url, Users::class.java, map,
+            { response ->
+                WebRequestUtils.onResult(response)
+                chatFragment.displayUser(response)
+            },
+            { error -> Log.i(TAG, "error while trying to get user\n"
+                    + error.toString() + "\n"
+                    + error.networkResponse + "\n"
+                    + error.localizedMessage + "\n"
+                    + error.message + "\n"
+                    + error.cause + "\n"
+                    + error.stackTrace.toString())
+            }
+        )
+        queue.add(request)
+    }
 
      fun sendPictureRequest(picture: Bitmap) {
         val url = "http://$localhost:$port/picture"

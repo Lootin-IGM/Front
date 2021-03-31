@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ import fr.uge.lootin.chat.services.MessageTextService
 import fr.uge.lootin.chat.services.RestService
 import fr.uge.lootin.chat.utils.ImageUtil
 import fr.uge.lootin.config.Configuration
+import fr.uge.lootin.models.Users
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.properties.Delegates
@@ -42,7 +44,7 @@ class ChatFragment :  Fragment() {
     var idUser by Delegates.notNull<Long>()
     var matchId by Delegates.notNull<Long>()
     private var contextActivity: Context? = null
-
+    lateinit var layout : View
 
 
     override fun onCreateView(
@@ -50,16 +52,14 @@ class ChatFragment :  Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val layout = inflater.inflate(R.layout.activity_chat, container, false)
+        layout = inflater.inflate(R.layout.activity_chat, container, false)
 
         val port = Configuration.getPort(activity?.applicationContext!!)
         val ip = Configuration.getIp(activity?.applicationContext!!)
 
         // GET INFO from other activity
-        val nameOther = requireArguments().getString(OTHER_NAME).toString()
         matchId = requireArguments().getLong(MATCH_ID, -1)
-        idUser = requireArguments().getLong(USER_ID, -1)
-        val byteArray = requireArguments().getByteArray(PICTURE_ID)
+        val otherID = requireArguments().getLong(ID_OTHER, -1)
 
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext)
@@ -68,14 +68,14 @@ class ChatFragment :  Fragment() {
         val notifToken = prefs.getString("token", "").toString()
 
         if(token.isEmpty() || idUserString.isEmpty() || notifToken.isEmpty()){
-            Log.d(TAG," ===============ONN INIIIIIITAILISE --------------")
             DefaultBadTokenHandler.handleBadRequest(contextActivity!!)
         }
 
         idUser = idUserString.toLong()
         if (matchId == -1L || idUser == -1L){
-            //TODO Stop
             Log.e(TAG, "Probleme avec données récupérées")
+            activity?.supportFragmentManager?.popBackStack()
+
         }
 
         // Create recycler and adapter
@@ -108,7 +108,6 @@ class ChatFragment :  Fragment() {
             activity?.applicationContext!!,
             "ws://$ip:$port/$ENPOINT",
             idUser,
-            nameOther,
             matchId,
             this
         )
@@ -143,24 +142,23 @@ class ChatFragment :  Fragment() {
             startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA)
         }
 
+
         // Send picture messages (WS)
         layout.findViewById<ImageButton>(R.id.imageButtonPicture).setOnClickListener {
-
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-
             startActivityForResult(intent, REQUEST_CODE_GALLERY)
         }
-        layout.findViewById<TextView>(R.id.nameUser).text = nameOther
+
+        restService.getUser(otherID, this)
+
 
         layout.findViewById<ImageView>(R.id.retour).setOnClickListener {
             messageService.disconnect()
             activity?.supportFragmentManager?.popBackStack()
         }
 
-        if (byteArray != null) {
-            layout.findViewById<CircleImageView>(R.id.header_CIW).setImageBitmap( BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size))
-        }
+
 
         return layout
     }
@@ -168,6 +166,16 @@ class ChatFragment :  Fragment() {
     fun getPicture(message : MessagePictureResponse){
         restService.getPicture(message.id, message.matchId, recycler);
     }
+
+    fun displayUser(user: Users){
+        val decodedString: ByteArray = Base64.decode(user.image, Base64.DEFAULT)
+        val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+        layout.findViewById<CircleImageView>(R.id.header_CIW).setImageBitmap(decodedByte)
+        layout.findViewById<TextView>(R.id.nameUser).text = user.login
+
+
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -212,25 +220,24 @@ class ChatFragment :  Fragment() {
 
         fun chatInstance(
             match_id: Long,
-            //byteArray: ByteArray,
-            othername: String
+            other_id: Long
         ): ChatFragment {
+
             var fragment = ChatFragment()
             val args = Bundle()
             args.putLong(MATCH_ID, match_id)
-            //args.putByteArray(PICTURE_ID, byteArray)
-            args.putString(OTHER_NAME, othername)
+            args.putLong(ID_OTHER, other_id)
             fragment.arguments = args
             return fragment
         }
 
+
         const val TAG = "--ACTIVITY--MAIN"
 
-        const val TOKEN_VALUE = "fr.uge.lootin.TOKEN"
+
         const val MATCH_ID = "fr.uge.lootin.MATCHID"
-        const val USER_ID = "fr.uge.lootin.USER_ID"
-        const val PICTURE_ID = "fr.uge.lootin.USER_NAME"
         const val OTHER_NAME = "fr.uge.lootin.OTHER_NAME"
+        const val ID_OTHER = "fr.uge.lootin.OTHER_NAME"
 
         const val REQUEST_CODE_GALLERY = 100
         const val REQUEST_CODE_CAMERA = 200

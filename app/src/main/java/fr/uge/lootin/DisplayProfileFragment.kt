@@ -86,7 +86,6 @@ class DisplayProfileFragment : DialogFragment() {
         view.findViewById<MaterialButton>(R.id.lessButton).setOnClickListener {
             activity?.supportFragmentManager?.popBackStack();
         }
-
     }
 
 

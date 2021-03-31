@@ -27,7 +27,7 @@ import ua.naiksoftware.stomp.dto.StompMessage
 import java.util.*
 
 
-class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val idWS: String, private val matchId : Long, private val chatFragment: ChatFragment) {
+class MessageTextService(private val adapter: ChatAdapter, private val recyclerView: RecyclerView, private val context: Context, private val url: String, private val myId: Long, private val matchId : Long, private val chatFragment: ChatFragment) {
     private var mStompClient: StompClient? = null
     private val mGson = GsonBuilder().create()
     private var compositeDisposable: CompositeDisposable? = null

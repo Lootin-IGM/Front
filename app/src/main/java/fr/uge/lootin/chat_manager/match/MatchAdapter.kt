@@ -55,11 +55,7 @@ class MatchAdapter (var matches: ArrayList<Match>, private val activity: Activit
 
         holder.itemView.setOnClickListener {
             Log.i("my_log", "on a cliqué sur match : " + matches[position].pseudo + " - id matcher : " + matches[position].id_matcher)
-            val bitmap : Bitmap = matches[position].image
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-            val image = stream.toByteArray()
-            val settingsFrag = ChatFragment.chatInstance((matches[position].id_match).toLong()/*,image*/, matches[position].pseudo)
+            val settingsFrag = ChatFragment.chatInstance(matches[position].id_match.toLong(),matches[position].id_matcher.toLong())
             (activity as ProfilesSwipingActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container_view, settingsFrag, "chatFragment")
                 .addToBackStack("chatFragment").commit()
