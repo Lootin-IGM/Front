@@ -176,7 +176,7 @@ class ChatFragment :  Fragment() {
 
 
 
-    fun callDisplayUserFragment(user: Users){
+    private fun callDisplayUserFragment(user: Users){
         val bundle = Bundle();
         bundle.putString("TOKEN", token);
         bundle.putSerializable("USER", user)
@@ -203,30 +203,28 @@ class ChatFragment :  Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        var res: Bitmap? = null
+        //var res: Bitmap? = null
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CAMERA && data != null) {
-            Log.d(TAG, "--------200-------------")
-            res = data.extras!!.get("data") as Bitmap
+
+            val bitmap = data.extras!!.get("data") as Bitmap
+
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+            restService.sendPictureRequest(bitmap)
+
         }
 
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_GALLERY  && data != null) {
-            Log.d(TAG, "--------100-------------")
 
             val imageView = ImageView(activity?.applicationContext!!)
             val pickedImage: Uri? = data.data
-
-
             imageView.setImageURI(pickedImage)
+            val bitmap = imageView.drawable.toBitmap()
 
-            res = imageView.drawable.toBitmap()
-        }
-
-        val stream = ByteArrayOutputStream()
-        res?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-
-        if(res != null){
-            restService.sendPictureRequest(res)
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream)
+            restService.sendPictureRequest(bitmap)
         }
     }
 
@@ -250,7 +248,6 @@ class ChatFragment :  Fragment() {
 
 
         const val MATCH_ID = "fr.uge.lootin.MATCHID"
-        const val OTHER_NAME = "fr.uge.lootin.OTHER_NAME"
         const val ID_OTHER = "fr.uge.lootin.OTHER_NAME"
 
         const val REQUEST_CODE_GALLERY = 100
