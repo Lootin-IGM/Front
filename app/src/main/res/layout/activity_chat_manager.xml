@@ -44,6 +44,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/match_title" />
 
+        <ImageView
+            android:id="@+id/matchRefreshButton"
+            android:layout_width="53dp"
+            android:layout_height="41dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_action_name"
+
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/matchRecyclerView" />
+
         <TextView
             android:id="@+id/match_title"
             android:layout_width="wrap_content"
@@ -51,7 +63,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="10dp"
-            android:text="Match"
+            android:text="Loot"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:translationZ="10dp"
@@ -167,6 +179,18 @@
             android:layout_height="wrap_content"
             android:text="Retry" />
     </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/previewMessageRefreshButton"
+        android:layout_width="53dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/ic_action_name"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

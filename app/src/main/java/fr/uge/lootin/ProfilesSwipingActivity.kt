@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -13,6 +12,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -27,10 +27,8 @@ import fr.uge.lootin.httpUtils.WebRequestUtils.Companion.onResult
 import fr.uge.lootin.models.UserList
 import fr.uge.lootin.models.Users
 import fr.uge.lootin.settings.DisplaySettingsFragment
-import fr.uge.lootin.signin.SignInActivity
 import kotlinx.coroutines.flow.SharingCommand
 import org.json.JSONObject
-import java.nio.charset.StandardCharsets
 
 
 class ProfilesSwipingActivity : AppCompatActivity() {
@@ -75,16 +73,18 @@ class ProfilesSwipingActivity : AppCompatActivity() {
             displayNextProfile()
         }
         findViewById<MaterialButton>(R.id.moreButton).setOnClickListener {
-            val bundle = Bundle();
-            bundle.putString("TOKEN", token);
-            bundle.putSerializable("USER", usersList[currentUser])
-            val firstFrag = DisplayProfileFragment();
-            firstFrag.arguments = bundle
-            supportFragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.slide_in_r_l,
-                R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
-            ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
-                .addToBackStack("userMoreFragment").commit()
+            if (usersList.size > 0 && currentUser < usersList.size) {
+                val bundle = Bundle();
+                bundle.putString("TOKEN", token);
+                bundle.putSerializable("USER", usersList[currentUser])
+                val firstFrag = DisplayProfileFragment();
+                firstFrag.arguments = bundle
+                supportFragmentManager.beginTransaction().setCustomAnimations(
+                    R.anim.slide_in_r_l,
+                    R.anim.fade_out_r_l, R.anim.fade_in_r_l, R.anim.slide_out_r_l
+                ).add(R.id.fragment_container_view, firstFrag, "userMoreFragment")
+                    .addToBackStack("userMoreFragment").commit()
+            }
         }
 
         findViewById<ImageButton>(R.id.settingsButton).setOnClickListener {

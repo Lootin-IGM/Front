@@ -52,7 +52,7 @@ class NotificationsService : Service() {
             url = Configuration.getHostNameAndPort(this).toString()
             userId = intent.getStringExtra("userId").toString()
             notifToken = intent.getStringExtra("notifToken").toString()
-            Log.i("BROOOOOOOOOOOOOOOOOOOOOOEEEIEF",   " token : " + notifToken + " id : " + userId)
+            Log.i("BROO",   " token : " + notifToken + " id : " + userId)
             val action = intent.action
             Log.i("test", "using an intent with action $action")
             when (action) {
@@ -268,6 +268,14 @@ class NotificationsService : Service() {
         private const val TAG = "--ACTIVITY--TEXT"
     }
 
+    private fun sendIntent(data: String) {
+        Intent().also { intent ->
+            intent.action = "fr.uge.lootin.NEWMESSAGE"
+            intent.putExtra("data", data)
+            sendBroadcast(intent)
+        }
+    }
+
     private fun notificator(payload: String) {
         val builder = NotificationCompat.Builder(this@NotificationsService, NOTIFICATION_CHANNEL_ID)
         var contentTitle = ""
@@ -293,6 +301,10 @@ class NotificationsService : Service() {
         )
         builder.setContentIntent(contentIntent)
         managerCompat.notify(notifyNumber, builder.build())
+
+        sendIntent("loot")
+
+
 
         notifyNumber++
     }
