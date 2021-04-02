@@ -71,6 +71,27 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/noMatchesPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:visibility="invisible"
+            app:cardBackgroundColor="#00FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/matchRecyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/matchRecyclerView">
+
+            <TextView
+                android:id="@+id/noMatches"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="#00FFFFFF"
+                android:textColor="#FFFFFF"
+                android:text="@string/no_match" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/loadingPanelMatches"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,7 +124,8 @@
                 android:id="@+id/retryMatches"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Retry" />
+                android:text="@string/retry" />
+                android:text="@string/retry" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,7 +199,7 @@
             android:id="@+id/retryPreviewMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Retry" />
+            android:text="@string/retry" />
     </androidx.cardview.widget.CardView>
 
     <ImageView
@@ -191,6 +213,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/noMessagesPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00FFFFFF"
+        android:visibility="invisible"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/loadingPanelChatManager"
+        app:layout_constraintEnd_toEndOf="@+id/previewMessagesId"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/noMessages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:text="@string/no_message"
+            android:textColor="#FFFFFF" />
+    </androidx.cardview.widget.CardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

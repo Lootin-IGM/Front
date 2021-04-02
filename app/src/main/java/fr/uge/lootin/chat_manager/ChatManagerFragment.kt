@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,17 +36,20 @@ import fr.uge.lootin.chat_manager.preview_message.PreviewMessageAdapter
 import fr.uge.lootin.chat_manager.preview_message.TypeMessage
 import fr.uge.lootin.config.Configuration
 import fr.uge.lootin.httpUtils.WebRequestUtils
+import org.json.JSONArray
 import org.json.JSONObject
 
 
 class ChatManagerFragment : Fragment() {
-    val chatManagerReceiver =  object : BroadcastReceiver(){
+    private val chatManagerReceiver =  object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
-
             val datapa: String? = intent?.getStringExtra("data")
-            Log.i("my_log", "on a reçu $datapa")
-            refreshMatchButton()
-            refreshPreviewMessageButton()
+            if (datapa.equals("message")) {
+                refreshPreviewMessageButton()
+            }
+            if (datapa.equals("loot")) {
+                refreshMatchButton()
+            }
         }
     }
 
@@ -99,19 +103,19 @@ class ChatManagerFragment : Fragment() {
         queue.add(stringRequest)
     }
     private fun treatEmptyMatches(
-        response: JSONObject,
+        data: JSONArray,
         list_matches: ArrayList<Match>,
         matchAdapter: MatchAdapter,
         page: Int,
         layout: View
     ) {
-        val data = response.getJSONArray("data")
         val matchesSize = list_matches.size
         val pos = page * SIZE_PAGE_MATCHES
         val from = list_matches.size - pos
         if (from >= data.length()) {
             return
         }
+        layout.findViewById<CardView>(R.id.noMatchesPanel).visibility = View.GONE
         for (i in from until data.length()) {
             val match = data.getJSONObject(i)
             if (match.isNull("lastMessage")) {
@@ -128,30 +132,33 @@ class ChatManagerFragment : Fragment() {
         if (matchesSize == 0 && list_matches.size > 0) {
             layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.GONE
             layout.findViewById<RecyclerView>(R.id.matchRecyclerView).visibility = View.VISIBLE
+            layout.findViewById<CardView>(R.id.retryPanelMatches).visibility = View.GONE
         }
         matchAdapter.notifyItemInserted(matchesSize)
     }
 
     private fun treatLastMessage(
-        response: JSONObject,
+        data: JSONArray,
         list_messages: ArrayList<PreviewMessage>,
         previewMessageAdapter: PreviewMessageAdapter,
         page: Int,
         layout: View
     ) {
-        val data = response.getJSONArray("data")
         val previewMessagesSize = list_messages.size
         val pos = page * SIZE_PAGE_PREVIEW_MESSAGE
         val from = list_messages.size - pos
+
         if (from >= data.length()) {
             return
         }
+
+        layout.findViewById<CardView>(R.id.noMessagesPanel).visibility = View.GONE
         for (i in from until data.length()) {
             val match = data.getJSONObject(i)
 
             val lastMessage = match.getJSONObject("lastMessage")
             var type: TypeMessage = TypeMessage.TEXT
-            //TODO A CHANGER!!!
+
             if (lastMessage.getString("typeMessage").equals("PICTURE")) {
                 type = TypeMessage.PHOTO
             }
@@ -176,11 +183,15 @@ class ChatManagerFragment : Fragment() {
             )
 
         }
+
         if (previewMessagesSize == 0 && list_messages.size > 0) {
             layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.GONE
             layout.findViewById<RecyclerView>(R.id.previewMessagesId).visibility = View.VISIBLE
+            layout.findViewById<CardView>(R.id.retryPanelPreviewMessage).visibility = View.GONE
         }
         previewMessageAdapter.notifyItemInserted(previewMessagesSize)
+
+
     }
 
     private fun requestGetEmptyMatches(
@@ -200,7 +211,12 @@ class ChatManagerFragment : Fragment() {
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
                     if (response != null) {
-                        treatEmptyMatches(response, list_matches, matchAdapter, page, layout)
+                        val data = response.getJSONArray("data")
+                        if (list_matches.size == 0 && data.length() == 0) {
+                            layout.findViewById<CardView>(R.id.loadingPanelMatches).visibility = View.GONE
+                            layout.findViewById<CardView>(R.id.noMatchesPanel).visibility = View.VISIBLE
+                        }
+                        treatEmptyMatches(data, list_matches, matchAdapter, page, layout)
                     }
                 }
             },
@@ -257,14 +273,15 @@ class ChatManagerFragment : Fragment() {
             JSONObject("{\"nbMatches\": " + nb_matches + ",\"page\":" + page + "}"),
             object : Response.Listener<JSONObject?> {
                 override fun onResponse(response: JSONObject?) {
+
                     if (response != null) {
-                        treatLastMessage(
-                            response,
-                            list_messages,
-                            previewMessageAdapter,
-                            page,
-                            layout
-                        )
+                        val data = response.getJSONArray("data")
+                        if (list_messages.size == 0 && data.length() == 0) {
+                            layout.findViewById<CardView>(R.id.loadingPanelChatManager).visibility = View.GONE
+                            layout.findViewById<CardView>(R.id.noMessagesPanel).visibility = View.VISIBLE
+                        }
+
+                        treatLastMessage(data,list_messages,previewMessageAdapter,page,layout)
                     }
                 }
             },

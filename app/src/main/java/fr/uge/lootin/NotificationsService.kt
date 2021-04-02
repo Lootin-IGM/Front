@@ -283,10 +283,12 @@ class NotificationsService : Service() {
         if (payload.contains("message")) {
             contentTitle = "New message"
             contentText = "You have a new message !"
+            sendIntent("message")
         }
         if (payload.contains("loot")) {
             contentTitle = "New loot"
             contentText = "You have a new loot !"
+            sendIntent("loot")
         }
         builder.setContentTitle(contentTitle)
         builder.setContentText(contentText)
@@ -301,10 +303,6 @@ class NotificationsService : Service() {
         )
         builder.setContentIntent(contentIntent)
         managerCompat.notify(notifyNumber, builder.build())
-
-        sendIntent("loot")
-
-
 
         notifyNumber++
     }
