@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.uge.lootin">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/lootin_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/lootin_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Lootin" />
+        android:largeHeap="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.Lootin">
+        <service
+            android:name=".NotificationsService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+
+
+
+        <receiver android:name=".BootStartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <activity android:name=".form.FormActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".register.RegisterActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ProfilesSwipingActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".signin.SignInActivity" android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".chat_manager.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".chat_manager.ChatManagerActivity" android:screenOrientation="portrait"/>
+    </application>
+
 
 </manifest>

@@ -1,0 +1,6 @@
+- Inscription
+- Connexion
+- Page de Loots
+- Réglages du profil
+- Gestion des Loots
+- Chat
