@@ -84,6 +84,7 @@ In the src/main/assets/config.json file, set your own IP address in the ip field
 
 ### Launch application
 The easiest way to build and run Lootin is to open it in Android Studio and simply press the run button after choosing the emulator or the device where to run the application.
+You can find more information by consulting the documentations located in the "Livrables" directory.
 
 ## Developers
 This project was developed by:
